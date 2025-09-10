@@ -1251,15 +1251,15 @@ export namespace Prisma {
    */
 
   export type ProfileCountOutputType = {
-    servers: number
-    members: number
     channels: number
+    members: number
+    servers: number
   }
 
   export type ProfileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    servers?: boolean | ProfileCountOutputTypeCountServersArgs
-    members?: boolean | ProfileCountOutputTypeCountMembersArgs
     channels?: boolean | ProfileCountOutputTypeCountChannelsArgs
+    members?: boolean | ProfileCountOutputTypeCountMembersArgs
+    servers?: boolean | ProfileCountOutputTypeCountServersArgs
   }
 
   // Custom InputTypes
@@ -1276,8 +1276,8 @@ export namespace Prisma {
   /**
    * ProfileCountOutputType without action
    */
-  export type ProfileCountOutputTypeCountServersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ServerWhereInput
+  export type ProfileCountOutputTypeCountChannelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelWhereInput
   }
 
   /**
@@ -1290,8 +1290,8 @@ export namespace Prisma {
   /**
    * ProfileCountOutputType without action
    */
-  export type ProfileCountOutputTypeCountChannelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ChannelWhereInput
+  export type ProfileCountOutputTypeCountServersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ServerWhereInput
   }
 
 
@@ -1300,13 +1300,13 @@ export namespace Prisma {
    */
 
   export type ServerCountOutputType = {
-    members: number
     channels: number
+    members: number
   }
 
   export type ServerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    members?: boolean | ServerCountOutputTypeCountMembersArgs
     channels?: boolean | ServerCountOutputTypeCountChannelsArgs
+    members?: boolean | ServerCountOutputTypeCountMembersArgs
   }
 
   // Custom InputTypes
@@ -1323,15 +1323,15 @@ export namespace Prisma {
   /**
    * ServerCountOutputType without action
    */
-  export type ServerCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MemberWhereInput
+  export type ServerCountOutputTypeCountChannelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ChannelWhereInput
   }
 
   /**
    * ServerCountOutputType without action
    */
-  export type ServerCountOutputTypeCountChannelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ChannelWhereInput
+  export type ServerCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MemberWhereInput
   }
 
 
@@ -1581,9 +1581,9 @@ export namespace Prisma {
     email?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    servers?: boolean | Profile$serversArgs<ExtArgs>
-    members?: boolean | Profile$membersArgs<ExtArgs>
     channels?: boolean | Profile$channelsArgs<ExtArgs>
+    members?: boolean | Profile$membersArgs<ExtArgs>
+    servers?: boolean | Profile$serversArgs<ExtArgs>
     _count?: boolean | ProfileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profile"]>
 
@@ -1619,9 +1619,9 @@ export namespace Prisma {
 
   export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "imageUrl" | "email" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
   export type ProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    servers?: boolean | Profile$serversArgs<ExtArgs>
-    members?: boolean | Profile$membersArgs<ExtArgs>
     channels?: boolean | Profile$channelsArgs<ExtArgs>
+    members?: boolean | Profile$membersArgs<ExtArgs>
+    servers?: boolean | Profile$serversArgs<ExtArgs>
     _count?: boolean | ProfileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1630,9 +1630,9 @@ export namespace Prisma {
   export type $ProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Profile"
     objects: {
-      servers: Prisma.$ServerPayload<ExtArgs>[]
-      members: Prisma.$MemberPayload<ExtArgs>[]
       channels: Prisma.$ChannelPayload<ExtArgs>[]
+      members: Prisma.$MemberPayload<ExtArgs>[]
+      servers: Prisma.$ServerPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2036,9 +2036,9 @@ export namespace Prisma {
    */
   export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    servers<T extends Profile$serversArgs<ExtArgs> = {}>(args?: Subset<T, Profile$serversArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    members<T extends Profile$membersArgs<ExtArgs> = {}>(args?: Subset<T, Profile$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     channels<T extends Profile$channelsArgs<ExtArgs> = {}>(args?: Subset<T, Profile$channelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    members<T extends Profile$membersArgs<ExtArgs> = {}>(args?: Subset<T, Profile$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    servers<T extends Profile$serversArgs<ExtArgs> = {}>(args?: Subset<T, Profile$serversArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ServerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2463,27 +2463,27 @@ export namespace Prisma {
   }
 
   /**
-   * Profile.servers
+   * Profile.channels
    */
-  export type Profile$serversArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Profile$channelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Server
+     * Select specific fields to fetch from the Channel
      */
-    select?: ServerSelect<ExtArgs> | null
+    select?: ChannelSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Server
+     * Omit specific fields from the Channel
      */
-    omit?: ServerOmit<ExtArgs> | null
+    omit?: ChannelOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ServerInclude<ExtArgs> | null
-    where?: ServerWhereInput
-    orderBy?: ServerOrderByWithRelationInput | ServerOrderByWithRelationInput[]
-    cursor?: ServerWhereUniqueInput
+    include?: ChannelInclude<ExtArgs> | null
+    where?: ChannelWhereInput
+    orderBy?: ChannelOrderByWithRelationInput | ChannelOrderByWithRelationInput[]
+    cursor?: ChannelWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: ServerScalarFieldEnum | ServerScalarFieldEnum[]
+    distinct?: ChannelScalarFieldEnum | ChannelScalarFieldEnum[]
   }
 
   /**
@@ -2511,27 +2511,27 @@ export namespace Prisma {
   }
 
   /**
-   * Profile.channels
+   * Profile.servers
    */
-  export type Profile$channelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Profile$serversArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Channel
+     * Select specific fields to fetch from the Server
      */
-    select?: ChannelSelect<ExtArgs> | null
+    select?: ServerSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Channel
+     * Omit specific fields from the Server
      */
-    omit?: ChannelOmit<ExtArgs> | null
+    omit?: ServerOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ChannelInclude<ExtArgs> | null
-    where?: ChannelWhereInput
-    orderBy?: ChannelOrderByWithRelationInput | ChannelOrderByWithRelationInput[]
-    cursor?: ChannelWhereUniqueInput
+    include?: ServerInclude<ExtArgs> | null
+    where?: ServerWhereInput
+    orderBy?: ServerOrderByWithRelationInput | ServerOrderByWithRelationInput[]
+    cursor?: ServerWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: ChannelScalarFieldEnum | ChannelScalarFieldEnum[]
+    distinct?: ServerScalarFieldEnum | ServerScalarFieldEnum[]
   }
 
   /**
@@ -2733,9 +2733,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     profileId?: boolean
-    profile?: boolean | ProfileDefaultArgs<ExtArgs>
-    members?: boolean | Server$membersArgs<ExtArgs>
     channels?: boolean | Server$channelsArgs<ExtArgs>
+    members?: boolean | Server$membersArgs<ExtArgs>
+    profile?: boolean | ProfileDefaultArgs<ExtArgs>
     _count?: boolean | ServerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["server"]>
 
@@ -2773,9 +2773,9 @@ export namespace Prisma {
 
   export type ServerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "imageUrl" | "inviteCode" | "createdAt" | "updatedAt" | "profileId", ExtArgs["result"]["server"]>
   export type ServerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    profile?: boolean | ProfileDefaultArgs<ExtArgs>
-    members?: boolean | Server$membersArgs<ExtArgs>
     channels?: boolean | Server$channelsArgs<ExtArgs>
+    members?: boolean | Server$membersArgs<ExtArgs>
+    profile?: boolean | ProfileDefaultArgs<ExtArgs>
     _count?: boolean | ServerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ServerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2788,9 +2788,9 @@ export namespace Prisma {
   export type $ServerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Server"
     objects: {
-      profile: Prisma.$ProfilePayload<ExtArgs>
-      members: Prisma.$MemberPayload<ExtArgs>[]
       channels: Prisma.$ChannelPayload<ExtArgs>[]
+      members: Prisma.$MemberPayload<ExtArgs>[]
+      profile: Prisma.$ProfilePayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3194,9 +3194,9 @@ export namespace Prisma {
    */
   export interface Prisma__ServerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    profile<T extends ProfileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProfileDefaultArgs<ExtArgs>>): Prisma__ProfileClient<$Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    members<T extends Server$membersArgs<ExtArgs> = {}>(args?: Subset<T, Server$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     channels<T extends Server$channelsArgs<ExtArgs> = {}>(args?: Subset<T, Server$channelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    members<T extends Server$membersArgs<ExtArgs> = {}>(args?: Subset<T, Server$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    profile<T extends ProfileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProfileDefaultArgs<ExtArgs>>): Prisma__ProfileClient<$Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3629,30 +3629,6 @@ export namespace Prisma {
   }
 
   /**
-   * Server.members
-   */
-  export type Server$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Member
-     */
-    select?: MemberSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Member
-     */
-    omit?: MemberOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberInclude<ExtArgs> | null
-    where?: MemberWhereInput
-    orderBy?: MemberOrderByWithRelationInput | MemberOrderByWithRelationInput[]
-    cursor?: MemberWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: MemberScalarFieldEnum | MemberScalarFieldEnum[]
-  }
-
-  /**
    * Server.channels
    */
   export type Server$channelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3674,6 +3650,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ChannelScalarFieldEnum | ChannelScalarFieldEnum[]
+  }
+
+  /**
+   * Server.members
+   */
+  export type Server$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Member
+     */
+    select?: MemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Member
+     */
+    omit?: MemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MemberInclude<ExtArgs> | null
+    where?: MemberWhereInput
+    orderBy?: MemberOrderByWithRelationInput | MemberOrderByWithRelationInput[]
+    cursor?: MemberWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MemberScalarFieldEnum | MemberScalarFieldEnum[]
   }
 
   /**
@@ -6114,8 +6114,8 @@ export namespace Prisma {
     deleted?: boolean
     memberId?: boolean
     channelId?: boolean
-    member?: boolean | MemberDefaultArgs<ExtArgs>
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    member?: boolean | MemberDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
   export type MessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6127,8 +6127,8 @@ export namespace Prisma {
     deleted?: boolean
     memberId?: boolean
     channelId?: boolean
-    member?: boolean | MemberDefaultArgs<ExtArgs>
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    member?: boolean | MemberDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
   export type MessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6140,8 +6140,8 @@ export namespace Prisma {
     deleted?: boolean
     memberId?: boolean
     channelId?: boolean
-    member?: boolean | MemberDefaultArgs<ExtArgs>
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    member?: boolean | MemberDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["message"]>
 
   export type MessageSelectScalar = {
@@ -6157,23 +6157,23 @@ export namespace Prisma {
 
   export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "fileUrl" | "createdAt" | "updatedAt" | "deleted" | "memberId" | "channelId", ExtArgs["result"]["message"]>
   export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    member?: boolean | MemberDefaultArgs<ExtArgs>
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    member?: boolean | MemberDefaultArgs<ExtArgs>
   }
   export type MessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    member?: boolean | MemberDefaultArgs<ExtArgs>
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    member?: boolean | MemberDefaultArgs<ExtArgs>
   }
   export type MessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    member?: boolean | MemberDefaultArgs<ExtArgs>
     channel?: boolean | ChannelDefaultArgs<ExtArgs>
+    member?: boolean | MemberDefaultArgs<ExtArgs>
   }
 
   export type $MessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Message"
     objects: {
-      member: Prisma.$MemberPayload<ExtArgs>
       channel: Prisma.$ChannelPayload<ExtArgs>
+      member: Prisma.$MemberPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6578,8 +6578,8 @@ export namespace Prisma {
    */
   export interface Prisma__MessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    member<T extends MemberDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MemberDefaultArgs<ExtArgs>>): Prisma__MemberClient<$Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     channel<T extends ChannelDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ChannelDefaultArgs<ExtArgs>>): Prisma__ChannelClient<$Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    member<T extends MemberDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MemberDefaultArgs<ExtArgs>>): Prisma__MemberClient<$Result.GetResult<Prisma.$MemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7230,9 +7230,9 @@ export namespace Prisma {
     email?: StringFilter<"Profile"> | string
     createdAt?: DateTimeFilter<"Profile"> | Date | string
     updatedAt?: DateTimeFilter<"Profile"> | Date | string
-    servers?: ServerListRelationFilter
-    members?: MemberListRelationFilter
     channels?: ChannelListRelationFilter
+    members?: MemberListRelationFilter
+    servers?: ServerListRelationFilter
   }
 
   export type ProfileOrderByWithRelationInput = {
@@ -7243,9 +7243,9 @@ export namespace Prisma {
     email?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    servers?: ServerOrderByRelationAggregateInput
-    members?: MemberOrderByRelationAggregateInput
     channels?: ChannelOrderByRelationAggregateInput
+    members?: MemberOrderByRelationAggregateInput
+    servers?: ServerOrderByRelationAggregateInput
   }
 
   export type ProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -7259,9 +7259,9 @@ export namespace Prisma {
     imageUrl?: StringNullableFilter<"Profile"> | string | null
     createdAt?: DateTimeFilter<"Profile"> | Date | string
     updatedAt?: DateTimeFilter<"Profile"> | Date | string
-    servers?: ServerListRelationFilter
-    members?: MemberListRelationFilter
     channels?: ChannelListRelationFilter
+    members?: MemberListRelationFilter
+    servers?: ServerListRelationFilter
   }, "id" | "userId" | "email">
 
   export type ProfileOrderByWithAggregationInput = {
@@ -7301,9 +7301,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Server"> | Date | string
     updatedAt?: DateTimeFilter<"Server"> | Date | string
     profileId?: StringFilter<"Server"> | string
-    profile?: XOR<ProfileScalarRelationFilter, ProfileWhereInput>
-    members?: MemberListRelationFilter
     channels?: ChannelListRelationFilter
+    members?: MemberListRelationFilter
+    profile?: XOR<ProfileScalarRelationFilter, ProfileWhereInput>
   }
 
   export type ServerOrderByWithRelationInput = {
@@ -7314,9 +7314,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     profileId?: SortOrder
-    profile?: ProfileOrderByWithRelationInput
-    members?: MemberOrderByRelationAggregateInput
     channels?: ChannelOrderByRelationAggregateInput
+    members?: MemberOrderByRelationAggregateInput
+    profile?: ProfileOrderByWithRelationInput
   }
 
   export type ServerWhereUniqueInput = Prisma.AtLeast<{
@@ -7330,9 +7330,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Server"> | Date | string
     updatedAt?: DateTimeFilter<"Server"> | Date | string
     profileId?: StringFilter<"Server"> | string
-    profile?: XOR<ProfileScalarRelationFilter, ProfileWhereInput>
-    members?: MemberListRelationFilter
     channels?: ChannelListRelationFilter
+    members?: MemberListRelationFilter
+    profile?: XOR<ProfileScalarRelationFilter, ProfileWhereInput>
   }, "id" | "inviteCode">
 
   export type ServerOrderByWithAggregationInput = {
@@ -7510,8 +7510,8 @@ export namespace Prisma {
     deleted?: BoolFilter<"Message"> | boolean
     memberId?: StringFilter<"Message"> | string
     channelId?: StringFilter<"Message"> | string
-    member?: XOR<MemberScalarRelationFilter, MemberWhereInput>
     channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
+    member?: XOR<MemberScalarRelationFilter, MemberWhereInput>
   }
 
   export type MessageOrderByWithRelationInput = {
@@ -7523,8 +7523,8 @@ export namespace Prisma {
     deleted?: SortOrder
     memberId?: SortOrder
     channelId?: SortOrder
-    member?: MemberOrderByWithRelationInput
     channel?: ChannelOrderByWithRelationInput
+    member?: MemberOrderByWithRelationInput
   }
 
   export type MessageWhereUniqueInput = Prisma.AtLeast<{
@@ -7539,8 +7539,8 @@ export namespace Prisma {
     deleted?: BoolFilter<"Message"> | boolean
     memberId?: StringFilter<"Message"> | string
     channelId?: StringFilter<"Message"> | string
-    member?: XOR<MemberScalarRelationFilter, MemberWhereInput>
     channel?: XOR<ChannelScalarRelationFilter, ChannelWhereInput>
+    member?: XOR<MemberScalarRelationFilter, MemberWhereInput>
   }, "id">
 
   export type MessageOrderByWithAggregationInput = {
@@ -7579,9 +7579,9 @@ export namespace Prisma {
     email: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    servers?: ServerCreateNestedManyWithoutProfileInput
-    members?: MemberCreateNestedManyWithoutProfileInput
     channels?: ChannelCreateNestedManyWithoutProfileInput
+    members?: MemberCreateNestedManyWithoutProfileInput
+    servers?: ServerCreateNestedManyWithoutProfileInput
   }
 
   export type ProfileUncheckedCreateInput = {
@@ -7592,9 +7592,9 @@ export namespace Prisma {
     email: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    servers?: ServerUncheckedCreateNestedManyWithoutProfileInput
-    members?: MemberUncheckedCreateNestedManyWithoutProfileInput
     channels?: ChannelUncheckedCreateNestedManyWithoutProfileInput
+    members?: MemberUncheckedCreateNestedManyWithoutProfileInput
+    servers?: ServerUncheckedCreateNestedManyWithoutProfileInput
   }
 
   export type ProfileUpdateInput = {
@@ -7605,9 +7605,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    servers?: ServerUpdateManyWithoutProfileNestedInput
-    members?: MemberUpdateManyWithoutProfileNestedInput
     channels?: ChannelUpdateManyWithoutProfileNestedInput
+    members?: MemberUpdateManyWithoutProfileNestedInput
+    servers?: ServerUpdateManyWithoutProfileNestedInput
   }
 
   export type ProfileUncheckedUpdateInput = {
@@ -7618,9 +7618,9 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    servers?: ServerUncheckedUpdateManyWithoutProfileNestedInput
-    members?: MemberUncheckedUpdateManyWithoutProfileNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutProfileNestedInput
+    members?: MemberUncheckedUpdateManyWithoutProfileNestedInput
+    servers?: ServerUncheckedUpdateManyWithoutProfileNestedInput
   }
 
   export type ProfileCreateManyInput = {
@@ -7660,9 +7660,9 @@ export namespace Prisma {
     inviteCode: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    profile: ProfileCreateNestedOneWithoutServersInput
-    members?: MemberCreateNestedManyWithoutServerInput
     channels?: ChannelCreateNestedManyWithoutServerInput
+    members?: MemberCreateNestedManyWithoutServerInput
+    profile: ProfileCreateNestedOneWithoutServersInput
   }
 
   export type ServerUncheckedCreateInput = {
@@ -7673,8 +7673,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     profileId: string
-    members?: MemberUncheckedCreateNestedManyWithoutServerInput
     channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
+    members?: MemberUncheckedCreateNestedManyWithoutServerInput
   }
 
   export type ServerUpdateInput = {
@@ -7684,9 +7684,9 @@ export namespace Prisma {
     inviteCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    profile?: ProfileUpdateOneRequiredWithoutServersNestedInput
-    members?: MemberUpdateManyWithoutServerNestedInput
     channels?: ChannelUpdateManyWithoutServerNestedInput
+    members?: MemberUpdateManyWithoutServerNestedInput
+    profile?: ProfileUpdateOneRequiredWithoutServersNestedInput
   }
 
   export type ServerUncheckedUpdateInput = {
@@ -7697,8 +7697,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     profileId?: StringFieldUpdateOperationsInput | string
-    members?: MemberUncheckedUpdateManyWithoutServerNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
+    members?: MemberUncheckedUpdateManyWithoutServerNestedInput
   }
 
   export type ServerCreateManyInput = {
@@ -7874,8 +7874,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     deleted?: boolean
-    member: MemberCreateNestedOneWithoutMessagesInput
     channel: ChannelCreateNestedOneWithoutMessagesInput
+    member: MemberCreateNestedOneWithoutMessagesInput
   }
 
   export type MessageUncheckedCreateInput = {
@@ -7896,8 +7896,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     deleted?: BoolFieldUpdateOperationsInput | boolean
-    member?: MemberUpdateOneRequiredWithoutMessagesNestedInput
     channel?: ChannelUpdateOneRequiredWithoutMessagesNestedInput
+    member?: MemberUpdateOneRequiredWithoutMessagesNestedInput
   }
 
   export type MessageUncheckedUpdateInput = {
@@ -7983,10 +7983,10 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type ServerListRelationFilter = {
-    every?: ServerWhereInput
-    some?: ServerWhereInput
-    none?: ServerWhereInput
+  export type ChannelListRelationFilter = {
+    every?: ChannelWhereInput
+    some?: ChannelWhereInput
+    none?: ChannelWhereInput
   }
 
   export type MemberListRelationFilter = {
@@ -7995,10 +7995,10 @@ export namespace Prisma {
     none?: MemberWhereInput
   }
 
-  export type ChannelListRelationFilter = {
-    every?: ChannelWhereInput
-    some?: ChannelWhereInput
-    none?: ChannelWhereInput
+  export type ServerListRelationFilter = {
+    every?: ServerWhereInput
+    some?: ServerWhereInput
+    none?: ServerWhereInput
   }
 
   export type SortOrderInput = {
@@ -8006,7 +8006,7 @@ export namespace Prisma {
     nulls?: NullsOrder
   }
 
-  export type ServerOrderByRelationAggregateInput = {
+  export type ChannelOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -8014,7 +8014,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type ChannelOrderByRelationAggregateInput = {
+  export type ServerOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -8244,14 +8244,14 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type MemberScalarRelationFilter = {
-    is?: MemberWhereInput
-    isNot?: MemberWhereInput
-  }
-
   export type ChannelScalarRelationFilter = {
     is?: ChannelWhereInput
     isNot?: ChannelWhereInput
+  }
+
+  export type MemberScalarRelationFilter = {
+    is?: MemberWhereInput
+    isNot?: MemberWhereInput
   }
 
   export type MessageCountOrderByAggregateInput = {
@@ -8295,11 +8295,11 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type ServerCreateNestedManyWithoutProfileInput = {
-    create?: XOR<ServerCreateWithoutProfileInput, ServerUncheckedCreateWithoutProfileInput> | ServerCreateWithoutProfileInput[] | ServerUncheckedCreateWithoutProfileInput[]
-    connectOrCreate?: ServerCreateOrConnectWithoutProfileInput | ServerCreateOrConnectWithoutProfileInput[]
-    createMany?: ServerCreateManyProfileInputEnvelope
-    connect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+  export type ChannelCreateNestedManyWithoutProfileInput = {
+    create?: XOR<ChannelCreateWithoutProfileInput, ChannelUncheckedCreateWithoutProfileInput> | ChannelCreateWithoutProfileInput[] | ChannelUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: ChannelCreateOrConnectWithoutProfileInput | ChannelCreateOrConnectWithoutProfileInput[]
+    createMany?: ChannelCreateManyProfileInputEnvelope
+    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
   }
 
   export type MemberCreateNestedManyWithoutProfileInput = {
@@ -8309,18 +8309,18 @@ export namespace Prisma {
     connect?: MemberWhereUniqueInput | MemberWhereUniqueInput[]
   }
 
-  export type ChannelCreateNestedManyWithoutProfileInput = {
-    create?: XOR<ChannelCreateWithoutProfileInput, ChannelUncheckedCreateWithoutProfileInput> | ChannelCreateWithoutProfileInput[] | ChannelUncheckedCreateWithoutProfileInput[]
-    connectOrCreate?: ChannelCreateOrConnectWithoutProfileInput | ChannelCreateOrConnectWithoutProfileInput[]
-    createMany?: ChannelCreateManyProfileInputEnvelope
-    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
-  }
-
-  export type ServerUncheckedCreateNestedManyWithoutProfileInput = {
+  export type ServerCreateNestedManyWithoutProfileInput = {
     create?: XOR<ServerCreateWithoutProfileInput, ServerUncheckedCreateWithoutProfileInput> | ServerCreateWithoutProfileInput[] | ServerUncheckedCreateWithoutProfileInput[]
     connectOrCreate?: ServerCreateOrConnectWithoutProfileInput | ServerCreateOrConnectWithoutProfileInput[]
     createMany?: ServerCreateManyProfileInputEnvelope
     connect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+  }
+
+  export type ChannelUncheckedCreateNestedManyWithoutProfileInput = {
+    create?: XOR<ChannelCreateWithoutProfileInput, ChannelUncheckedCreateWithoutProfileInput> | ChannelCreateWithoutProfileInput[] | ChannelUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: ChannelCreateOrConnectWithoutProfileInput | ChannelCreateOrConnectWithoutProfileInput[]
+    createMany?: ChannelCreateManyProfileInputEnvelope
+    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
   }
 
   export type MemberUncheckedCreateNestedManyWithoutProfileInput = {
@@ -8330,11 +8330,11 @@ export namespace Prisma {
     connect?: MemberWhereUniqueInput | MemberWhereUniqueInput[]
   }
 
-  export type ChannelUncheckedCreateNestedManyWithoutProfileInput = {
-    create?: XOR<ChannelCreateWithoutProfileInput, ChannelUncheckedCreateWithoutProfileInput> | ChannelCreateWithoutProfileInput[] | ChannelUncheckedCreateWithoutProfileInput[]
-    connectOrCreate?: ChannelCreateOrConnectWithoutProfileInput | ChannelCreateOrConnectWithoutProfileInput[]
-    createMany?: ChannelCreateManyProfileInputEnvelope
-    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+  export type ServerUncheckedCreateNestedManyWithoutProfileInput = {
+    create?: XOR<ServerCreateWithoutProfileInput, ServerUncheckedCreateWithoutProfileInput> | ServerCreateWithoutProfileInput[] | ServerUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: ServerCreateOrConnectWithoutProfileInput | ServerCreateOrConnectWithoutProfileInput[]
+    createMany?: ServerCreateManyProfileInputEnvelope
+    connect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -8347,34 +8347,6 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
-  }
-
-  export type ServerUpdateManyWithoutProfileNestedInput = {
-    create?: XOR<ServerCreateWithoutProfileInput, ServerUncheckedCreateWithoutProfileInput> | ServerCreateWithoutProfileInput[] | ServerUncheckedCreateWithoutProfileInput[]
-    connectOrCreate?: ServerCreateOrConnectWithoutProfileInput | ServerCreateOrConnectWithoutProfileInput[]
-    upsert?: ServerUpsertWithWhereUniqueWithoutProfileInput | ServerUpsertWithWhereUniqueWithoutProfileInput[]
-    createMany?: ServerCreateManyProfileInputEnvelope
-    set?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
-    disconnect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
-    delete?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
-    connect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
-    update?: ServerUpdateWithWhereUniqueWithoutProfileInput | ServerUpdateWithWhereUniqueWithoutProfileInput[]
-    updateMany?: ServerUpdateManyWithWhereWithoutProfileInput | ServerUpdateManyWithWhereWithoutProfileInput[]
-    deleteMany?: ServerScalarWhereInput | ServerScalarWhereInput[]
-  }
-
-  export type MemberUpdateManyWithoutProfileNestedInput = {
-    create?: XOR<MemberCreateWithoutProfileInput, MemberUncheckedCreateWithoutProfileInput> | MemberCreateWithoutProfileInput[] | MemberUncheckedCreateWithoutProfileInput[]
-    connectOrCreate?: MemberCreateOrConnectWithoutProfileInput | MemberCreateOrConnectWithoutProfileInput[]
-    upsert?: MemberUpsertWithWhereUniqueWithoutProfileInput | MemberUpsertWithWhereUniqueWithoutProfileInput[]
-    createMany?: MemberCreateManyProfileInputEnvelope
-    set?: MemberWhereUniqueInput | MemberWhereUniqueInput[]
-    disconnect?: MemberWhereUniqueInput | MemberWhereUniqueInput[]
-    delete?: MemberWhereUniqueInput | MemberWhereUniqueInput[]
-    connect?: MemberWhereUniqueInput | MemberWhereUniqueInput[]
-    update?: MemberUpdateWithWhereUniqueWithoutProfileInput | MemberUpdateWithWhereUniqueWithoutProfileInput[]
-    updateMany?: MemberUpdateManyWithWhereWithoutProfileInput | MemberUpdateManyWithWhereWithoutProfileInput[]
-    deleteMany?: MemberScalarWhereInput | MemberScalarWhereInput[]
   }
 
   export type ChannelUpdateManyWithoutProfileNestedInput = {
@@ -8391,21 +8363,7 @@ export namespace Prisma {
     deleteMany?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
   }
 
-  export type ServerUncheckedUpdateManyWithoutProfileNestedInput = {
-    create?: XOR<ServerCreateWithoutProfileInput, ServerUncheckedCreateWithoutProfileInput> | ServerCreateWithoutProfileInput[] | ServerUncheckedCreateWithoutProfileInput[]
-    connectOrCreate?: ServerCreateOrConnectWithoutProfileInput | ServerCreateOrConnectWithoutProfileInput[]
-    upsert?: ServerUpsertWithWhereUniqueWithoutProfileInput | ServerUpsertWithWhereUniqueWithoutProfileInput[]
-    createMany?: ServerCreateManyProfileInputEnvelope
-    set?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
-    disconnect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
-    delete?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
-    connect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
-    update?: ServerUpdateWithWhereUniqueWithoutProfileInput | ServerUpdateWithWhereUniqueWithoutProfileInput[]
-    updateMany?: ServerUpdateManyWithWhereWithoutProfileInput | ServerUpdateManyWithWhereWithoutProfileInput[]
-    deleteMany?: ServerScalarWhereInput | ServerScalarWhereInput[]
-  }
-
-  export type MemberUncheckedUpdateManyWithoutProfileNestedInput = {
+  export type MemberUpdateManyWithoutProfileNestedInput = {
     create?: XOR<MemberCreateWithoutProfileInput, MemberUncheckedCreateWithoutProfileInput> | MemberCreateWithoutProfileInput[] | MemberUncheckedCreateWithoutProfileInput[]
     connectOrCreate?: MemberCreateOrConnectWithoutProfileInput | MemberCreateOrConnectWithoutProfileInput[]
     upsert?: MemberUpsertWithWhereUniqueWithoutProfileInput | MemberUpsertWithWhereUniqueWithoutProfileInput[]
@@ -8417,6 +8375,20 @@ export namespace Prisma {
     update?: MemberUpdateWithWhereUniqueWithoutProfileInput | MemberUpdateWithWhereUniqueWithoutProfileInput[]
     updateMany?: MemberUpdateManyWithWhereWithoutProfileInput | MemberUpdateManyWithWhereWithoutProfileInput[]
     deleteMany?: MemberScalarWhereInput | MemberScalarWhereInput[]
+  }
+
+  export type ServerUpdateManyWithoutProfileNestedInput = {
+    create?: XOR<ServerCreateWithoutProfileInput, ServerUncheckedCreateWithoutProfileInput> | ServerCreateWithoutProfileInput[] | ServerUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: ServerCreateOrConnectWithoutProfileInput | ServerCreateOrConnectWithoutProfileInput[]
+    upsert?: ServerUpsertWithWhereUniqueWithoutProfileInput | ServerUpsertWithWhereUniqueWithoutProfileInput[]
+    createMany?: ServerCreateManyProfileInputEnvelope
+    set?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    disconnect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    delete?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    connect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    update?: ServerUpdateWithWhereUniqueWithoutProfileInput | ServerUpdateWithWhereUniqueWithoutProfileInput[]
+    updateMany?: ServerUpdateManyWithWhereWithoutProfileInput | ServerUpdateManyWithWhereWithoutProfileInput[]
+    deleteMany?: ServerScalarWhereInput | ServerScalarWhereInput[]
   }
 
   export type ChannelUncheckedUpdateManyWithoutProfileNestedInput = {
@@ -8433,10 +8405,39 @@ export namespace Prisma {
     deleteMany?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
   }
 
-  export type ProfileCreateNestedOneWithoutServersInput = {
-    create?: XOR<ProfileCreateWithoutServersInput, ProfileUncheckedCreateWithoutServersInput>
-    connectOrCreate?: ProfileCreateOrConnectWithoutServersInput
-    connect?: ProfileWhereUniqueInput
+  export type MemberUncheckedUpdateManyWithoutProfileNestedInput = {
+    create?: XOR<MemberCreateWithoutProfileInput, MemberUncheckedCreateWithoutProfileInput> | MemberCreateWithoutProfileInput[] | MemberUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: MemberCreateOrConnectWithoutProfileInput | MemberCreateOrConnectWithoutProfileInput[]
+    upsert?: MemberUpsertWithWhereUniqueWithoutProfileInput | MemberUpsertWithWhereUniqueWithoutProfileInput[]
+    createMany?: MemberCreateManyProfileInputEnvelope
+    set?: MemberWhereUniqueInput | MemberWhereUniqueInput[]
+    disconnect?: MemberWhereUniqueInput | MemberWhereUniqueInput[]
+    delete?: MemberWhereUniqueInput | MemberWhereUniqueInput[]
+    connect?: MemberWhereUniqueInput | MemberWhereUniqueInput[]
+    update?: MemberUpdateWithWhereUniqueWithoutProfileInput | MemberUpdateWithWhereUniqueWithoutProfileInput[]
+    updateMany?: MemberUpdateManyWithWhereWithoutProfileInput | MemberUpdateManyWithWhereWithoutProfileInput[]
+    deleteMany?: MemberScalarWhereInput | MemberScalarWhereInput[]
+  }
+
+  export type ServerUncheckedUpdateManyWithoutProfileNestedInput = {
+    create?: XOR<ServerCreateWithoutProfileInput, ServerUncheckedCreateWithoutProfileInput> | ServerCreateWithoutProfileInput[] | ServerUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: ServerCreateOrConnectWithoutProfileInput | ServerCreateOrConnectWithoutProfileInput[]
+    upsert?: ServerUpsertWithWhereUniqueWithoutProfileInput | ServerUpsertWithWhereUniqueWithoutProfileInput[]
+    createMany?: ServerCreateManyProfileInputEnvelope
+    set?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    disconnect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    delete?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    connect?: ServerWhereUniqueInput | ServerWhereUniqueInput[]
+    update?: ServerUpdateWithWhereUniqueWithoutProfileInput | ServerUpdateWithWhereUniqueWithoutProfileInput[]
+    updateMany?: ServerUpdateManyWithWhereWithoutProfileInput | ServerUpdateManyWithWhereWithoutProfileInput[]
+    deleteMany?: ServerScalarWhereInput | ServerScalarWhereInput[]
+  }
+
+  export type ChannelCreateNestedManyWithoutServerInput = {
+    create?: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput> | ChannelCreateWithoutServerInput[] | ChannelUncheckedCreateWithoutServerInput[]
+    connectOrCreate?: ChannelCreateOrConnectWithoutServerInput | ChannelCreateOrConnectWithoutServerInput[]
+    createMany?: ChannelCreateManyServerInputEnvelope
+    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
   }
 
   export type MemberCreateNestedManyWithoutServerInput = {
@@ -8446,7 +8447,13 @@ export namespace Prisma {
     connect?: MemberWhereUniqueInput | MemberWhereUniqueInput[]
   }
 
-  export type ChannelCreateNestedManyWithoutServerInput = {
+  export type ProfileCreateNestedOneWithoutServersInput = {
+    create?: XOR<ProfileCreateWithoutServersInput, ProfileUncheckedCreateWithoutServersInput>
+    connectOrCreate?: ProfileCreateOrConnectWithoutServersInput
+    connect?: ProfileWhereUniqueInput
+  }
+
+  export type ChannelUncheckedCreateNestedManyWithoutServerInput = {
     create?: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput> | ChannelCreateWithoutServerInput[] | ChannelUncheckedCreateWithoutServerInput[]
     connectOrCreate?: ChannelCreateOrConnectWithoutServerInput | ChannelCreateOrConnectWithoutServerInput[]
     createMany?: ChannelCreateManyServerInputEnvelope
@@ -8460,19 +8467,18 @@ export namespace Prisma {
     connect?: MemberWhereUniqueInput | MemberWhereUniqueInput[]
   }
 
-  export type ChannelUncheckedCreateNestedManyWithoutServerInput = {
+  export type ChannelUpdateManyWithoutServerNestedInput = {
     create?: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput> | ChannelCreateWithoutServerInput[] | ChannelUncheckedCreateWithoutServerInput[]
     connectOrCreate?: ChannelCreateOrConnectWithoutServerInput | ChannelCreateOrConnectWithoutServerInput[]
+    upsert?: ChannelUpsertWithWhereUniqueWithoutServerInput | ChannelUpsertWithWhereUniqueWithoutServerInput[]
     createMany?: ChannelCreateManyServerInputEnvelope
+    set?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    disconnect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
+    delete?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
     connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
-  }
-
-  export type ProfileUpdateOneRequiredWithoutServersNestedInput = {
-    create?: XOR<ProfileCreateWithoutServersInput, ProfileUncheckedCreateWithoutServersInput>
-    connectOrCreate?: ProfileCreateOrConnectWithoutServersInput
-    upsert?: ProfileUpsertWithoutServersInput
-    connect?: ProfileWhereUniqueInput
-    update?: XOR<XOR<ProfileUpdateToOneWithWhereWithoutServersInput, ProfileUpdateWithoutServersInput>, ProfileUncheckedUpdateWithoutServersInput>
+    update?: ChannelUpdateWithWhereUniqueWithoutServerInput | ChannelUpdateWithWhereUniqueWithoutServerInput[]
+    updateMany?: ChannelUpdateManyWithWhereWithoutServerInput | ChannelUpdateManyWithWhereWithoutServerInput[]
+    deleteMany?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
   }
 
   export type MemberUpdateManyWithoutServerNestedInput = {
@@ -8489,7 +8495,15 @@ export namespace Prisma {
     deleteMany?: MemberScalarWhereInput | MemberScalarWhereInput[]
   }
 
-  export type ChannelUpdateManyWithoutServerNestedInput = {
+  export type ProfileUpdateOneRequiredWithoutServersNestedInput = {
+    create?: XOR<ProfileCreateWithoutServersInput, ProfileUncheckedCreateWithoutServersInput>
+    connectOrCreate?: ProfileCreateOrConnectWithoutServersInput
+    upsert?: ProfileUpsertWithoutServersInput
+    connect?: ProfileWhereUniqueInput
+    update?: XOR<XOR<ProfileUpdateToOneWithWhereWithoutServersInput, ProfileUpdateWithoutServersInput>, ProfileUncheckedUpdateWithoutServersInput>
+  }
+
+  export type ChannelUncheckedUpdateManyWithoutServerNestedInput = {
     create?: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput> | ChannelCreateWithoutServerInput[] | ChannelUncheckedCreateWithoutServerInput[]
     connectOrCreate?: ChannelCreateOrConnectWithoutServerInput | ChannelCreateOrConnectWithoutServerInput[]
     upsert?: ChannelUpsertWithWhereUniqueWithoutServerInput | ChannelUpsertWithWhereUniqueWithoutServerInput[]
@@ -8515,20 +8529,6 @@ export namespace Prisma {
     update?: MemberUpdateWithWhereUniqueWithoutServerInput | MemberUpdateWithWhereUniqueWithoutServerInput[]
     updateMany?: MemberUpdateManyWithWhereWithoutServerInput | MemberUpdateManyWithWhereWithoutServerInput[]
     deleteMany?: MemberScalarWhereInput | MemberScalarWhereInput[]
-  }
-
-  export type ChannelUncheckedUpdateManyWithoutServerNestedInput = {
-    create?: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput> | ChannelCreateWithoutServerInput[] | ChannelUncheckedCreateWithoutServerInput[]
-    connectOrCreate?: ChannelCreateOrConnectWithoutServerInput | ChannelCreateOrConnectWithoutServerInput[]
-    upsert?: ChannelUpsertWithWhereUniqueWithoutServerInput | ChannelUpsertWithWhereUniqueWithoutServerInput[]
-    createMany?: ChannelCreateManyServerInputEnvelope
-    set?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
-    disconnect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
-    delete?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
-    connect?: ChannelWhereUniqueInput | ChannelWhereUniqueInput[]
-    update?: ChannelUpdateWithWhereUniqueWithoutServerInput | ChannelUpdateWithWhereUniqueWithoutServerInput[]
-    updateMany?: ChannelUpdateManyWithWhereWithoutServerInput | ChannelUpdateManyWithWhereWithoutServerInput[]
-    deleteMany?: ChannelScalarWhereInput | ChannelScalarWhereInput[]
   }
 
   export type ProfileCreateNestedOneWithoutMembersInput = {
@@ -8679,28 +8679,20 @@ export namespace Prisma {
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
-  export type MemberCreateNestedOneWithoutMessagesInput = {
-    create?: XOR<MemberCreateWithoutMessagesInput, MemberUncheckedCreateWithoutMessagesInput>
-    connectOrCreate?: MemberCreateOrConnectWithoutMessagesInput
-    connect?: MemberWhereUniqueInput
-  }
-
   export type ChannelCreateNestedOneWithoutMessagesInput = {
     create?: XOR<ChannelCreateWithoutMessagesInput, ChannelUncheckedCreateWithoutMessagesInput>
     connectOrCreate?: ChannelCreateOrConnectWithoutMessagesInput
     connect?: ChannelWhereUniqueInput
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
-  export type MemberUpdateOneRequiredWithoutMessagesNestedInput = {
+  export type MemberCreateNestedOneWithoutMessagesInput = {
     create?: XOR<MemberCreateWithoutMessagesInput, MemberUncheckedCreateWithoutMessagesInput>
     connectOrCreate?: MemberCreateOrConnectWithoutMessagesInput
-    upsert?: MemberUpsertWithoutMessagesInput
     connect?: MemberWhereUniqueInput
-    update?: XOR<XOR<MemberUpdateToOneWithWhereWithoutMessagesInput, MemberUpdateWithoutMessagesInput>, MemberUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type ChannelUpdateOneRequiredWithoutMessagesNestedInput = {
@@ -8709,6 +8701,14 @@ export namespace Prisma {
     upsert?: ChannelUpsertWithoutMessagesInput
     connect?: ChannelWhereUniqueInput
     update?: XOR<XOR<ChannelUpdateToOneWithWhereWithoutMessagesInput, ChannelUpdateWithoutMessagesInput>, ChannelUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type MemberUpdateOneRequiredWithoutMessagesNestedInput = {
+    create?: XOR<MemberCreateWithoutMessagesInput, MemberUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: MemberCreateOrConnectWithoutMessagesInput
+    upsert?: MemberUpsertWithoutMessagesInput
+    connect?: MemberWhereUniqueInput
+    update?: XOR<XOR<MemberUpdateToOneWithWhereWithoutMessagesInput, MemberUpdateWithoutMessagesInput>, MemberUncheckedUpdateWithoutMessagesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -8867,35 +8867,33 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type ServerCreateWithoutProfileInput = {
+  export type ChannelCreateWithoutProfileInput = {
     id?: string
     name: string
-    imageUrl: string
-    inviteCode: string
+    type?: $Enums.ChannelType
     createdAt?: Date | string
     updatedAt?: Date | string
-    members?: MemberCreateNestedManyWithoutServerInput
-    channels?: ChannelCreateNestedManyWithoutServerInput
+    server: ServerCreateNestedOneWithoutChannelsInput
+    messages?: MessageCreateNestedManyWithoutChannelInput
   }
 
-  export type ServerUncheckedCreateWithoutProfileInput = {
+  export type ChannelUncheckedCreateWithoutProfileInput = {
     id?: string
     name: string
-    imageUrl: string
-    inviteCode: string
+    type?: $Enums.ChannelType
     createdAt?: Date | string
     updatedAt?: Date | string
-    members?: MemberUncheckedCreateNestedManyWithoutServerInput
-    channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
+    serverId: string
+    messages?: MessageUncheckedCreateNestedManyWithoutChannelInput
   }
 
-  export type ServerCreateOrConnectWithoutProfileInput = {
-    where: ServerWhereUniqueInput
-    create: XOR<ServerCreateWithoutProfileInput, ServerUncheckedCreateWithoutProfileInput>
+  export type ChannelCreateOrConnectWithoutProfileInput = {
+    where: ChannelWhereUniqueInput
+    create: XOR<ChannelCreateWithoutProfileInput, ChannelUncheckedCreateWithoutProfileInput>
   }
 
-  export type ServerCreateManyProfileInputEnvelope = {
-    data: ServerCreateManyProfileInput | ServerCreateManyProfileInput[]
+  export type ChannelCreateManyProfileInputEnvelope = {
+    data: ChannelCreateManyProfileInput | ChannelCreateManyProfileInput[]
     skipDuplicates?: boolean
   }
 
@@ -8927,91 +8925,36 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type ChannelCreateWithoutProfileInput = {
+  export type ServerCreateWithoutProfileInput = {
     id?: string
     name: string
-    type?: $Enums.ChannelType
+    imageUrl: string
+    inviteCode: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    server: ServerCreateNestedOneWithoutChannelsInput
-    messages?: MessageCreateNestedManyWithoutChannelInput
+    channels?: ChannelCreateNestedManyWithoutServerInput
+    members?: MemberCreateNestedManyWithoutServerInput
   }
 
-  export type ChannelUncheckedCreateWithoutProfileInput = {
+  export type ServerUncheckedCreateWithoutProfileInput = {
     id?: string
     name: string
-    type?: $Enums.ChannelType
+    imageUrl: string
+    inviteCode: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    serverId: string
-    messages?: MessageUncheckedCreateNestedManyWithoutChannelInput
+    channels?: ChannelUncheckedCreateNestedManyWithoutServerInput
+    members?: MemberUncheckedCreateNestedManyWithoutServerInput
   }
 
-  export type ChannelCreateOrConnectWithoutProfileInput = {
-    where: ChannelWhereUniqueInput
-    create: XOR<ChannelCreateWithoutProfileInput, ChannelUncheckedCreateWithoutProfileInput>
-  }
-
-  export type ChannelCreateManyProfileInputEnvelope = {
-    data: ChannelCreateManyProfileInput | ChannelCreateManyProfileInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ServerUpsertWithWhereUniqueWithoutProfileInput = {
+  export type ServerCreateOrConnectWithoutProfileInput = {
     where: ServerWhereUniqueInput
-    update: XOR<ServerUpdateWithoutProfileInput, ServerUncheckedUpdateWithoutProfileInput>
     create: XOR<ServerCreateWithoutProfileInput, ServerUncheckedCreateWithoutProfileInput>
   }
 
-  export type ServerUpdateWithWhereUniqueWithoutProfileInput = {
-    where: ServerWhereUniqueInput
-    data: XOR<ServerUpdateWithoutProfileInput, ServerUncheckedUpdateWithoutProfileInput>
-  }
-
-  export type ServerUpdateManyWithWhereWithoutProfileInput = {
-    where: ServerScalarWhereInput
-    data: XOR<ServerUpdateManyMutationInput, ServerUncheckedUpdateManyWithoutProfileInput>
-  }
-
-  export type ServerScalarWhereInput = {
-    AND?: ServerScalarWhereInput | ServerScalarWhereInput[]
-    OR?: ServerScalarWhereInput[]
-    NOT?: ServerScalarWhereInput | ServerScalarWhereInput[]
-    id?: StringFilter<"Server"> | string
-    name?: StringFilter<"Server"> | string
-    imageUrl?: StringFilter<"Server"> | string
-    inviteCode?: StringFilter<"Server"> | string
-    createdAt?: DateTimeFilter<"Server"> | Date | string
-    updatedAt?: DateTimeFilter<"Server"> | Date | string
-    profileId?: StringFilter<"Server"> | string
-  }
-
-  export type MemberUpsertWithWhereUniqueWithoutProfileInput = {
-    where: MemberWhereUniqueInput
-    update: XOR<MemberUpdateWithoutProfileInput, MemberUncheckedUpdateWithoutProfileInput>
-    create: XOR<MemberCreateWithoutProfileInput, MemberUncheckedCreateWithoutProfileInput>
-  }
-
-  export type MemberUpdateWithWhereUniqueWithoutProfileInput = {
-    where: MemberWhereUniqueInput
-    data: XOR<MemberUpdateWithoutProfileInput, MemberUncheckedUpdateWithoutProfileInput>
-  }
-
-  export type MemberUpdateManyWithWhereWithoutProfileInput = {
-    where: MemberScalarWhereInput
-    data: XOR<MemberUpdateManyMutationInput, MemberUncheckedUpdateManyWithoutProfileInput>
-  }
-
-  export type MemberScalarWhereInput = {
-    AND?: MemberScalarWhereInput | MemberScalarWhereInput[]
-    OR?: MemberScalarWhereInput[]
-    NOT?: MemberScalarWhereInput | MemberScalarWhereInput[]
-    id?: StringFilter<"Member"> | string
-    role?: EnumMemberRoleFilter<"Member"> | $Enums.MemberRole
-    createdAt?: DateTimeFilter<"Member"> | Date | string
-    updatedAt?: DateTimeFilter<"Member"> | Date | string
-    profileId?: StringFilter<"Member"> | string
-    serverId?: StringFilter<"Member"> | string
+  export type ServerCreateManyProfileInputEnvelope = {
+    data: ServerCreateManyProfileInput | ServerCreateManyProfileInput[]
+    skipDuplicates?: boolean
   }
 
   export type ChannelUpsertWithWhereUniqueWithoutProfileInput = {
@@ -9043,61 +8986,61 @@ export namespace Prisma {
     serverId?: StringFilter<"Channel"> | string
   }
 
-  export type ProfileCreateWithoutServersInput = {
-    id?: string
-    userId: string
-    name: string
-    imageUrl?: string | null
-    email: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: MemberCreateNestedManyWithoutProfileInput
-    channels?: ChannelCreateNestedManyWithoutProfileInput
-  }
-
-  export type ProfileUncheckedCreateWithoutServersInput = {
-    id?: string
-    userId: string
-    name: string
-    imageUrl?: string | null
-    email: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    members?: MemberUncheckedCreateNestedManyWithoutProfileInput
-    channels?: ChannelUncheckedCreateNestedManyWithoutProfileInput
-  }
-
-  export type ProfileCreateOrConnectWithoutServersInput = {
-    where: ProfileWhereUniqueInput
-    create: XOR<ProfileCreateWithoutServersInput, ProfileUncheckedCreateWithoutServersInput>
-  }
-
-  export type MemberCreateWithoutServerInput = {
-    id?: string
-    role?: $Enums.MemberRole
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    profile: ProfileCreateNestedOneWithoutMembersInput
-    messages?: MessageCreateNestedManyWithoutMemberInput
-  }
-
-  export type MemberUncheckedCreateWithoutServerInput = {
-    id?: string
-    role?: $Enums.MemberRole
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    profileId: string
-    messages?: MessageUncheckedCreateNestedManyWithoutMemberInput
-  }
-
-  export type MemberCreateOrConnectWithoutServerInput = {
+  export type MemberUpsertWithWhereUniqueWithoutProfileInput = {
     where: MemberWhereUniqueInput
-    create: XOR<MemberCreateWithoutServerInput, MemberUncheckedCreateWithoutServerInput>
+    update: XOR<MemberUpdateWithoutProfileInput, MemberUncheckedUpdateWithoutProfileInput>
+    create: XOR<MemberCreateWithoutProfileInput, MemberUncheckedCreateWithoutProfileInput>
   }
 
-  export type MemberCreateManyServerInputEnvelope = {
-    data: MemberCreateManyServerInput | MemberCreateManyServerInput[]
-    skipDuplicates?: boolean
+  export type MemberUpdateWithWhereUniqueWithoutProfileInput = {
+    where: MemberWhereUniqueInput
+    data: XOR<MemberUpdateWithoutProfileInput, MemberUncheckedUpdateWithoutProfileInput>
+  }
+
+  export type MemberUpdateManyWithWhereWithoutProfileInput = {
+    where: MemberScalarWhereInput
+    data: XOR<MemberUpdateManyMutationInput, MemberUncheckedUpdateManyWithoutProfileInput>
+  }
+
+  export type MemberScalarWhereInput = {
+    AND?: MemberScalarWhereInput | MemberScalarWhereInput[]
+    OR?: MemberScalarWhereInput[]
+    NOT?: MemberScalarWhereInput | MemberScalarWhereInput[]
+    id?: StringFilter<"Member"> | string
+    role?: EnumMemberRoleFilter<"Member"> | $Enums.MemberRole
+    createdAt?: DateTimeFilter<"Member"> | Date | string
+    updatedAt?: DateTimeFilter<"Member"> | Date | string
+    profileId?: StringFilter<"Member"> | string
+    serverId?: StringFilter<"Member"> | string
+  }
+
+  export type ServerUpsertWithWhereUniqueWithoutProfileInput = {
+    where: ServerWhereUniqueInput
+    update: XOR<ServerUpdateWithoutProfileInput, ServerUncheckedUpdateWithoutProfileInput>
+    create: XOR<ServerCreateWithoutProfileInput, ServerUncheckedCreateWithoutProfileInput>
+  }
+
+  export type ServerUpdateWithWhereUniqueWithoutProfileInput = {
+    where: ServerWhereUniqueInput
+    data: XOR<ServerUpdateWithoutProfileInput, ServerUncheckedUpdateWithoutProfileInput>
+  }
+
+  export type ServerUpdateManyWithWhereWithoutProfileInput = {
+    where: ServerScalarWhereInput
+    data: XOR<ServerUpdateManyMutationInput, ServerUncheckedUpdateManyWithoutProfileInput>
+  }
+
+  export type ServerScalarWhereInput = {
+    AND?: ServerScalarWhereInput | ServerScalarWhereInput[]
+    OR?: ServerScalarWhereInput[]
+    NOT?: ServerScalarWhereInput | ServerScalarWhereInput[]
+    id?: StringFilter<"Server"> | string
+    name?: StringFilter<"Server"> | string
+    imageUrl?: StringFilter<"Server"> | string
+    inviteCode?: StringFilter<"Server"> | string
+    createdAt?: DateTimeFilter<"Server"> | Date | string
+    updatedAt?: DateTimeFilter<"Server"> | Date | string
+    profileId?: StringFilter<"Server"> | string
   }
 
   export type ChannelCreateWithoutServerInput = {
@@ -9130,6 +9073,95 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type MemberCreateWithoutServerInput = {
+    id?: string
+    role?: $Enums.MemberRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    profile: ProfileCreateNestedOneWithoutMembersInput
+    messages?: MessageCreateNestedManyWithoutMemberInput
+  }
+
+  export type MemberUncheckedCreateWithoutServerInput = {
+    id?: string
+    role?: $Enums.MemberRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    profileId: string
+    messages?: MessageUncheckedCreateNestedManyWithoutMemberInput
+  }
+
+  export type MemberCreateOrConnectWithoutServerInput = {
+    where: MemberWhereUniqueInput
+    create: XOR<MemberCreateWithoutServerInput, MemberUncheckedCreateWithoutServerInput>
+  }
+
+  export type MemberCreateManyServerInputEnvelope = {
+    data: MemberCreateManyServerInput | MemberCreateManyServerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProfileCreateWithoutServersInput = {
+    id?: string
+    userId: string
+    name: string
+    imageUrl?: string | null
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    channels?: ChannelCreateNestedManyWithoutProfileInput
+    members?: MemberCreateNestedManyWithoutProfileInput
+  }
+
+  export type ProfileUncheckedCreateWithoutServersInput = {
+    id?: string
+    userId: string
+    name: string
+    imageUrl?: string | null
+    email: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    channels?: ChannelUncheckedCreateNestedManyWithoutProfileInput
+    members?: MemberUncheckedCreateNestedManyWithoutProfileInput
+  }
+
+  export type ProfileCreateOrConnectWithoutServersInput = {
+    where: ProfileWhereUniqueInput
+    create: XOR<ProfileCreateWithoutServersInput, ProfileUncheckedCreateWithoutServersInput>
+  }
+
+  export type ChannelUpsertWithWhereUniqueWithoutServerInput = {
+    where: ChannelWhereUniqueInput
+    update: XOR<ChannelUpdateWithoutServerInput, ChannelUncheckedUpdateWithoutServerInput>
+    create: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput>
+  }
+
+  export type ChannelUpdateWithWhereUniqueWithoutServerInput = {
+    where: ChannelWhereUniqueInput
+    data: XOR<ChannelUpdateWithoutServerInput, ChannelUncheckedUpdateWithoutServerInput>
+  }
+
+  export type ChannelUpdateManyWithWhereWithoutServerInput = {
+    where: ChannelScalarWhereInput
+    data: XOR<ChannelUpdateManyMutationInput, ChannelUncheckedUpdateManyWithoutServerInput>
+  }
+
+  export type MemberUpsertWithWhereUniqueWithoutServerInput = {
+    where: MemberWhereUniqueInput
+    update: XOR<MemberUpdateWithoutServerInput, MemberUncheckedUpdateWithoutServerInput>
+    create: XOR<MemberCreateWithoutServerInput, MemberUncheckedCreateWithoutServerInput>
+  }
+
+  export type MemberUpdateWithWhereUniqueWithoutServerInput = {
+    where: MemberWhereUniqueInput
+    data: XOR<MemberUpdateWithoutServerInput, MemberUncheckedUpdateWithoutServerInput>
+  }
+
+  export type MemberUpdateManyWithWhereWithoutServerInput = {
+    where: MemberScalarWhereInput
+    data: XOR<MemberUpdateManyMutationInput, MemberUncheckedUpdateManyWithoutServerInput>
+  }
+
   export type ProfileUpsertWithoutServersInput = {
     update: XOR<ProfileUpdateWithoutServersInput, ProfileUncheckedUpdateWithoutServersInput>
     create: XOR<ProfileCreateWithoutServersInput, ProfileUncheckedCreateWithoutServersInput>
@@ -9149,8 +9181,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: MemberUpdateManyWithoutProfileNestedInput
     channels?: ChannelUpdateManyWithoutProfileNestedInput
+    members?: MemberUpdateManyWithoutProfileNestedInput
   }
 
   export type ProfileUncheckedUpdateWithoutServersInput = {
@@ -9161,40 +9193,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: MemberUncheckedUpdateManyWithoutProfileNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutProfileNestedInput
-  }
-
-  export type MemberUpsertWithWhereUniqueWithoutServerInput = {
-    where: MemberWhereUniqueInput
-    update: XOR<MemberUpdateWithoutServerInput, MemberUncheckedUpdateWithoutServerInput>
-    create: XOR<MemberCreateWithoutServerInput, MemberUncheckedCreateWithoutServerInput>
-  }
-
-  export type MemberUpdateWithWhereUniqueWithoutServerInput = {
-    where: MemberWhereUniqueInput
-    data: XOR<MemberUpdateWithoutServerInput, MemberUncheckedUpdateWithoutServerInput>
-  }
-
-  export type MemberUpdateManyWithWhereWithoutServerInput = {
-    where: MemberScalarWhereInput
-    data: XOR<MemberUpdateManyMutationInput, MemberUncheckedUpdateManyWithoutServerInput>
-  }
-
-  export type ChannelUpsertWithWhereUniqueWithoutServerInput = {
-    where: ChannelWhereUniqueInput
-    update: XOR<ChannelUpdateWithoutServerInput, ChannelUncheckedUpdateWithoutServerInput>
-    create: XOR<ChannelCreateWithoutServerInput, ChannelUncheckedCreateWithoutServerInput>
-  }
-
-  export type ChannelUpdateWithWhereUniqueWithoutServerInput = {
-    where: ChannelWhereUniqueInput
-    data: XOR<ChannelUpdateWithoutServerInput, ChannelUncheckedUpdateWithoutServerInput>
-  }
-
-  export type ChannelUpdateManyWithWhereWithoutServerInput = {
-    where: ChannelScalarWhereInput
-    data: XOR<ChannelUpdateManyMutationInput, ChannelUncheckedUpdateManyWithoutServerInput>
+    members?: MemberUncheckedUpdateManyWithoutProfileNestedInput
   }
 
   export type ProfileCreateWithoutMembersInput = {
@@ -9205,8 +9205,8 @@ export namespace Prisma {
     email: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    servers?: ServerCreateNestedManyWithoutProfileInput
     channels?: ChannelCreateNestedManyWithoutProfileInput
+    servers?: ServerCreateNestedManyWithoutProfileInput
   }
 
   export type ProfileUncheckedCreateWithoutMembersInput = {
@@ -9217,8 +9217,8 @@ export namespace Prisma {
     email: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    servers?: ServerUncheckedCreateNestedManyWithoutProfileInput
     channels?: ChannelUncheckedCreateNestedManyWithoutProfileInput
+    servers?: ServerUncheckedCreateNestedManyWithoutProfileInput
   }
 
   export type ProfileCreateOrConnectWithoutMembersInput = {
@@ -9233,8 +9233,8 @@ export namespace Prisma {
     inviteCode: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    profile: ProfileCreateNestedOneWithoutServersInput
     channels?: ChannelCreateNestedManyWithoutServerInput
+    profile: ProfileCreateNestedOneWithoutServersInput
   }
 
   export type ServerUncheckedCreateWithoutMembersInput = {
@@ -9302,8 +9302,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    servers?: ServerUpdateManyWithoutProfileNestedInput
     channels?: ChannelUpdateManyWithoutProfileNestedInput
+    servers?: ServerUpdateManyWithoutProfileNestedInput
   }
 
   export type ProfileUncheckedUpdateWithoutMembersInput = {
@@ -9314,8 +9314,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    servers?: ServerUncheckedUpdateManyWithoutProfileNestedInput
     channels?: ChannelUncheckedUpdateManyWithoutProfileNestedInput
+    servers?: ServerUncheckedUpdateManyWithoutProfileNestedInput
   }
 
   export type ServerUpsertWithoutMembersInput = {
@@ -9336,8 +9336,8 @@ export namespace Prisma {
     inviteCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    profile?: ProfileUpdateOneRequiredWithoutServersNestedInput
     channels?: ChannelUpdateManyWithoutServerNestedInput
+    profile?: ProfileUpdateOneRequiredWithoutServersNestedInput
   }
 
   export type ServerUncheckedUpdateWithoutMembersInput = {
@@ -9389,8 +9389,8 @@ export namespace Prisma {
     email: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    servers?: ServerCreateNestedManyWithoutProfileInput
     members?: MemberCreateNestedManyWithoutProfileInput
+    servers?: ServerCreateNestedManyWithoutProfileInput
   }
 
   export type ProfileUncheckedCreateWithoutChannelsInput = {
@@ -9401,8 +9401,8 @@ export namespace Prisma {
     email: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    servers?: ServerUncheckedCreateNestedManyWithoutProfileInput
     members?: MemberUncheckedCreateNestedManyWithoutProfileInput
+    servers?: ServerUncheckedCreateNestedManyWithoutProfileInput
   }
 
   export type ProfileCreateOrConnectWithoutChannelsInput = {
@@ -9417,8 +9417,8 @@ export namespace Prisma {
     inviteCode: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    profile: ProfileCreateNestedOneWithoutServersInput
     members?: MemberCreateNestedManyWithoutServerInput
+    profile: ProfileCreateNestedOneWithoutServersInput
   }
 
   export type ServerUncheckedCreateWithoutChannelsInput = {
@@ -9486,8 +9486,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    servers?: ServerUpdateManyWithoutProfileNestedInput
     members?: MemberUpdateManyWithoutProfileNestedInput
+    servers?: ServerUpdateManyWithoutProfileNestedInput
   }
 
   export type ProfileUncheckedUpdateWithoutChannelsInput = {
@@ -9498,8 +9498,8 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    servers?: ServerUncheckedUpdateManyWithoutProfileNestedInput
     members?: MemberUncheckedUpdateManyWithoutProfileNestedInput
+    servers?: ServerUncheckedUpdateManyWithoutProfileNestedInput
   }
 
   export type ServerUpsertWithoutChannelsInput = {
@@ -9520,8 +9520,8 @@ export namespace Prisma {
     inviteCode?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    profile?: ProfileUpdateOneRequiredWithoutServersNestedInput
     members?: MemberUpdateManyWithoutServerNestedInput
+    profile?: ProfileUpdateOneRequiredWithoutServersNestedInput
   }
 
   export type ServerUncheckedUpdateWithoutChannelsInput = {
@@ -9551,29 +9551,6 @@ export namespace Prisma {
     data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutChannelInput>
   }
 
-  export type MemberCreateWithoutMessagesInput = {
-    id?: string
-    role?: $Enums.MemberRole
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    profile: ProfileCreateNestedOneWithoutMembersInput
-    server: ServerCreateNestedOneWithoutMembersInput
-  }
-
-  export type MemberUncheckedCreateWithoutMessagesInput = {
-    id?: string
-    role?: $Enums.MemberRole
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    profileId: string
-    serverId: string
-  }
-
-  export type MemberCreateOrConnectWithoutMessagesInput = {
-    where: MemberWhereUniqueInput
-    create: XOR<MemberCreateWithoutMessagesInput, MemberUncheckedCreateWithoutMessagesInput>
-  }
-
   export type ChannelCreateWithoutMessagesInput = {
     id?: string
     name: string
@@ -9599,33 +9576,27 @@ export namespace Prisma {
     create: XOR<ChannelCreateWithoutMessagesInput, ChannelUncheckedCreateWithoutMessagesInput>
   }
 
-  export type MemberUpsertWithoutMessagesInput = {
-    update: XOR<MemberUpdateWithoutMessagesInput, MemberUncheckedUpdateWithoutMessagesInput>
+  export type MemberCreateWithoutMessagesInput = {
+    id?: string
+    role?: $Enums.MemberRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    profile: ProfileCreateNestedOneWithoutMembersInput
+    server: ServerCreateNestedOneWithoutMembersInput
+  }
+
+  export type MemberUncheckedCreateWithoutMessagesInput = {
+    id?: string
+    role?: $Enums.MemberRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    profileId: string
+    serverId: string
+  }
+
+  export type MemberCreateOrConnectWithoutMessagesInput = {
+    where: MemberWhereUniqueInput
     create: XOR<MemberCreateWithoutMessagesInput, MemberUncheckedCreateWithoutMessagesInput>
-    where?: MemberWhereInput
-  }
-
-  export type MemberUpdateToOneWithWhereWithoutMessagesInput = {
-    where?: MemberWhereInput
-    data: XOR<MemberUpdateWithoutMessagesInput, MemberUncheckedUpdateWithoutMessagesInput>
-  }
-
-  export type MemberUpdateWithoutMessagesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    profile?: ProfileUpdateOneRequiredWithoutMembersNestedInput
-    server?: ServerUpdateOneRequiredWithoutMembersNestedInput
-  }
-
-  export type MemberUncheckedUpdateWithoutMessagesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    profileId?: StringFieldUpdateOperationsInput | string
-    serverId?: StringFieldUpdateOperationsInput | string
   }
 
   export type ChannelUpsertWithoutMessagesInput = {
@@ -9659,21 +9630,33 @@ export namespace Prisma {
     serverId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type ServerCreateManyProfileInput = {
-    id?: string
-    name: string
-    imageUrl: string
-    inviteCode: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+  export type MemberUpsertWithoutMessagesInput = {
+    update: XOR<MemberUpdateWithoutMessagesInput, MemberUncheckedUpdateWithoutMessagesInput>
+    create: XOR<MemberCreateWithoutMessagesInput, MemberUncheckedCreateWithoutMessagesInput>
+    where?: MemberWhereInput
   }
 
-  export type MemberCreateManyProfileInput = {
-    id?: string
-    role?: $Enums.MemberRole
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    serverId: string
+  export type MemberUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: MemberWhereInput
+    data: XOR<MemberUpdateWithoutMessagesInput, MemberUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type MemberUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profile?: ProfileUpdateOneRequiredWithoutMembersNestedInput
+    server?: ServerUpdateOneRequiredWithoutMembersNestedInput
+  }
+
+  export type MemberUncheckedUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profileId?: StringFieldUpdateOperationsInput | string
+    serverId?: StringFieldUpdateOperationsInput | string
   }
 
   export type ChannelCreateManyProfileInput = {
@@ -9685,61 +9668,21 @@ export namespace Prisma {
     serverId: string
   }
 
-  export type ServerUpdateWithoutProfileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    imageUrl?: StringFieldUpdateOperationsInput | string
-    inviteCode?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: MemberUpdateManyWithoutServerNestedInput
-    channels?: ChannelUpdateManyWithoutServerNestedInput
+  export type MemberCreateManyProfileInput = {
+    id?: string
+    role?: $Enums.MemberRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    serverId: string
   }
 
-  export type ServerUncheckedUpdateWithoutProfileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    imageUrl?: StringFieldUpdateOperationsInput | string
-    inviteCode?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    members?: MemberUncheckedUpdateManyWithoutServerNestedInput
-    channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
-  }
-
-  export type ServerUncheckedUpdateManyWithoutProfileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    imageUrl?: StringFieldUpdateOperationsInput | string
-    inviteCode?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MemberUpdateWithoutProfileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    server?: ServerUpdateOneRequiredWithoutMembersNestedInput
-    messages?: MessageUpdateManyWithoutMemberNestedInput
-  }
-
-  export type MemberUncheckedUpdateWithoutProfileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    serverId?: StringFieldUpdateOperationsInput | string
-    messages?: MessageUncheckedUpdateManyWithoutMemberNestedInput
-  }
-
-  export type MemberUncheckedUpdateManyWithoutProfileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    serverId?: StringFieldUpdateOperationsInput | string
+  export type ServerCreateManyProfileInput = {
+    id?: string
+    name: string
+    imageUrl: string
+    inviteCode: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type ChannelUpdateWithoutProfileInput = {
@@ -9771,12 +9714,61 @@ export namespace Prisma {
     serverId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type MemberCreateManyServerInput = {
-    id?: string
-    role?: $Enums.MemberRole
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    profileId: string
+  export type MemberUpdateWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    server?: ServerUpdateOneRequiredWithoutMembersNestedInput
+    messages?: MessageUpdateManyWithoutMemberNestedInput
+  }
+
+  export type MemberUncheckedUpdateWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverId?: StringFieldUpdateOperationsInput | string
+    messages?: MessageUncheckedUpdateManyWithoutMemberNestedInput
+  }
+
+  export type MemberUncheckedUpdateManyWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    serverId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ServerUpdateWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    inviteCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: ChannelUpdateManyWithoutServerNestedInput
+    members?: MemberUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerUncheckedUpdateWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    inviteCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    channels?: ChannelUncheckedUpdateManyWithoutServerNestedInput
+    members?: MemberUncheckedUpdateManyWithoutServerNestedInput
+  }
+
+  export type ServerUncheckedUpdateManyWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    inviteCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ChannelCreateManyServerInput = {
@@ -9788,30 +9780,12 @@ export namespace Prisma {
     profileId: string
   }
 
-  export type MemberUpdateWithoutServerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    profile?: ProfileUpdateOneRequiredWithoutMembersNestedInput
-    messages?: MessageUpdateManyWithoutMemberNestedInput
-  }
-
-  export type MemberUncheckedUpdateWithoutServerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    profileId?: StringFieldUpdateOperationsInput | string
-    messages?: MessageUncheckedUpdateManyWithoutMemberNestedInput
-  }
-
-  export type MemberUncheckedUpdateManyWithoutServerInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    profileId?: StringFieldUpdateOperationsInput | string
+  export type MemberCreateManyServerInput = {
+    id?: string
+    role?: $Enums.MemberRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    profileId: string
   }
 
   export type ChannelUpdateWithoutServerInput = {
@@ -9838,6 +9812,32 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     type?: EnumChannelTypeFieldUpdateOperationsInput | $Enums.ChannelType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profileId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type MemberUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profile?: ProfileUpdateOneRequiredWithoutMembersNestedInput
+    messages?: MessageUpdateManyWithoutMemberNestedInput
+  }
+
+  export type MemberUncheckedUpdateWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profileId?: StringFieldUpdateOperationsInput | string
+    messages?: MessageUncheckedUpdateManyWithoutMemberNestedInput
+  }
+
+  export type MemberUncheckedUpdateManyWithoutServerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumMemberRoleFieldUpdateOperationsInput | $Enums.MemberRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     profileId?: StringFieldUpdateOperationsInput | string
