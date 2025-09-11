@@ -24,10 +24,13 @@ import { Input } from "@/components/ui/input";
 import { FileUpload } from "@/components/fileupload";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { useRouter } from "next/navigation"; // ✅ Import router
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+// 🔹 Validation Schema
 const formSchema = z.object({
     serverName: z
         .string()
@@ -37,6 +40,7 @@ const formSchema = z.object({
 });
 
 export const InitialModal = () => {
+    const router = useRouter(); // ✅ Next.js router
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [isUploading, setIsUploading] = useState(false);
 
@@ -50,18 +54,15 @@ export const InitialModal = () => {
 
     const isLoading = form.formState.isSubmitting;
 
+    // 🔹 Handle Form Submit
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         try {
-            console.log("Form submitted:", data);
-
-            // Fake API delay
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            setIsModalOpen(false);
-            alert(`Server created successfully! Image: ${data.serverImage}`);
+            await axios.post("/api/servers", { name: data.serverName, imageUrl: data.serverImage || null }); // map keys correctly
+            form.reset();
+            router.refresh(); // ✅ refresh state (no full reload)
+            setIsModalOpen(false); // ✅ close modal after creation
         } catch (error) {
-            console.error("Error creating server:", error);
-            alert("Failed to create server. Please try again.");
+            console.error("Failed to create server:", error);
         }
     };
 
@@ -123,6 +124,7 @@ export const InitialModal = () => {
                             )}
                         />
 
+                        {/* Submit Button */}
                         <DialogFooter className="px-0 pb-0">
                             <Button
                                 type="submit"
@@ -132,8 +134,8 @@ export const InitialModal = () => {
                                 {isUploading
                                     ? "Uploading..."
                                     : isLoading
-                                    ? "Creating..."
-                                    : "Create"}
+                                        ? "Creating..."
+                                        : "Create"}
                             </Button>
                         </DialogFooter>
                     </form>

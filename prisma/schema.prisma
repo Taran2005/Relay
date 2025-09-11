@@ -15,24 +15,24 @@ model Profile {
     email     String    @unique
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
-    channels  Channel[]
     members   Member[]
-    servers   Server[]
+    messages  Message[]
+    servers   Server[]  @relation("ServerCreator")
 }
 
 model Server {
     id         String    @id @default(uuid())
     name       String
-    imageUrl   String
-    inviteCode String    @unique
+    imageUrl   String?
+    inviteCode String?   @unique
     createdAt  DateTime  @default(now())
     updatedAt  DateTime  @updatedAt
-    profileId  String
+    creatorId  String
     channels   Channel[]
     members    Member[]
-    profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+    creator    Profile   @relation("ServerCreator", fields: [creatorId], references: [id], onDelete: Cascade)
 
-    @@index([profileId])
+    @@index([creatorId])
 }
 
 model Member {
@@ -56,13 +56,9 @@ model Channel {
     type      ChannelType @default(TEXT)
     createdAt DateTime    @default(now())
     updatedAt DateTime    @updatedAt
-    profileId String
     serverId  String
-    profile   Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
     server    Server      @relation(fields: [serverId], references: [id], onDelete: Cascade)
     messages  Message[]
-
-    @@index([profileId])
     @@index([serverId])
 }
 
@@ -74,12 +70,15 @@ model Message {
     updatedAt DateTime @updatedAt
     deleted   Boolean  @default(false)
     memberId  String
+    profileId String
     channelId String
     channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
     member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+    profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
     @@index([memberId])
     @@index([channelId])
+    @@index([profileId])
 }
 
 enum MemberRole {
