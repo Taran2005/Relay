@@ -3,6 +3,7 @@
 "use client";
 import { ActionTooltip } from "@/components/action.tooltip";
 import { FileUpload } from "@/components/fileupload";
+import { ModeToggle } from "@/components/mode-toggle";
 import { NavigationItem } from "@/components/navigation/navigation.item";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useCreateServer } from "@/lib/hooks/useCreateServer";
+import { useCreateServer } from "@/lib/hooks/use-create-server";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -120,8 +121,17 @@ export function NavigationSidebar() {
         </div>
       </div>
 
-      {/* Bottom section with Create button */}
-      <div className="flex flex-col items-center py-4 relative z-10 flex-shrink-0">
+      {/* Bottom section with Mode Toggle and Create button */}
+      <div className="flex flex-col items-center py-4 space-y-3 relative z-10 flex-shrink-0">
+        {/* Mode Toggle Button */}
+        <ActionTooltip
+          side="right"
+          align="center"
+          label="Toggle Theme"
+        >
+          <ModeToggle />
+        </ActionTooltip>
+
         <ActionTooltip
           side="right"
           align="center"

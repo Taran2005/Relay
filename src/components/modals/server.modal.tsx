@@ -24,9 +24,10 @@ import { Input } from "@/components/ui/input";
 import { FileUpload } from "@/components/fileupload";
 
 import { useCreateServer } from "@/lib/hooks/use-create-server";
+import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation"; // ✅ Import router
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
 import * as z from "zod";
@@ -42,9 +43,10 @@ const formSchema = z.object({
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
-export const InitialModal = () => {
+export const CreateServerModal = () => {
     const router = useRouter(); // ✅ Next.js router
-    const [isModalOpen, setIsModalOpen] = useState(true);
+    const { isOpen, type, onClose } = useModalStore();
+    const isModalOpen = isOpen && type === "createServer";
     const [isUploading, setIsUploading] = useState(false);
 
     const { data: profile } = useSWR('/api/currentProfile', fetcher);
@@ -63,7 +65,7 @@ export const InitialModal = () => {
         try {
             const newServer = await createServer({ name: data.serverName, imageUrl: data.serverImage || null });
             form.reset();
-            setIsModalOpen(false);
+            onClose();
             // Redirect to the new server
             if (newServer) {
                 router.push(`/servers/${newServer.id}`);
@@ -73,8 +75,15 @@ export const InitialModal = () => {
         }
     };
 
+    // Reset form when modal closes
+    useEffect(() => {
+        if (!isModalOpen) {
+            form.reset();
+        }
+    }, [isModalOpen, form]);
+
     return (
-        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <Dialog open={isModalOpen} onOpenChange={() => { if (isModalOpen) onClose(); }}>
             <DialogContent className="bg-background text-foreground p-6 overflow-hidden border-0 shadow-lg rounded-lg max-w-md">
                 <DialogHeader className="pt-0 px-0">
                     <DialogTitle className="text-2xl font-bold text-center">
