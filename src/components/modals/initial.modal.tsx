@@ -23,11 +23,12 @@ import { Input } from "@/components/ui/input";
 
 import { FileUpload } from "@/components/fileupload";
 
+import { useCreateServer } from "@/lib/hooks/useCreateServer";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { useRouter } from "next/navigation"; // ✅ Import router
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import useSWR from "swr";
 import * as z from "zod";
 
 // 🔹 Validation Schema
@@ -39,10 +40,15 @@ const formSchema = z.object({
     serverImage: z.string().optional(),
 });
 
+const fetcher = (url: string) => fetch(url).then(res => res.json());
+
 export const InitialModal = () => {
     const router = useRouter(); // ✅ Next.js router
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [isUploading, setIsUploading] = useState(false);
+
+    const { data: profile } = useSWR('/api/currentProfile', fetcher);
+    const { createServer, loading: isLoading, error: createError } = useCreateServer(profile?.id);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -52,17 +58,18 @@ export const InitialModal = () => {
         },
     });
 
-    const isLoading = form.formState.isSubmitting;
-
     // 🔹 Handle Form Submit
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         try {
-            await axios.post("/api/servers", { name: data.serverName, imageUrl: data.serverImage || null }); // map keys correctly
+            const newServer = await createServer({ name: data.serverName, imageUrl: data.serverImage || null });
             form.reset();
-            router.refresh(); // ✅ refresh state (no full reload)
-            setIsModalOpen(false); // ✅ close modal after creation
-        } catch (error) {
-            console.error("Failed to create server:", error);
+            setIsModalOpen(false);
+            // Redirect to the new server
+            if (newServer) {
+                router.push(`/servers/${newServer.id}`);
+            }
+        } catch {
+            // Error handled in hook
         }
     };
 
@@ -123,6 +130,8 @@ export const InitialModal = () => {
                                 </FormItem>
                             )}
                         />
+
+                        {createError && <p className="text-red-500 text-sm">{createError}</p>}
 
                         {/* Submit Button */}
                         <DialogFooter className="px-0 pb-0">

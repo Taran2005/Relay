@@ -11,12 +11,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import axios from "axios";
+import { useCreateServer } from "@/lib/hooks/useCreateServer";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+import useSWR from "swr";
 
 interface Server { id: string; name: string; imageUrl: string | null; }
 const NavigationItem = ({ server, active }: { server: Server; active: boolean }) => (
@@ -37,51 +38,46 @@ const NavigationItem = ({ server, active }: { server: Server; active: boolean })
   </Link>
 );
 
+const fetcher = (url: string) => fetch(url).then(res => res.json());
+
 export function NavigationSidebar() {
-  const [servers, setServers] = useState<Server[]>([]);
-  const [profile, setProfile] = useState<{ id: string } | null>(null);
   const pathname = usePathname();
-  const router = useRouter();
   const [open, setOpen] = useState(false),
     [name, setName] = useState(""),
     [imageUrl, setImageUrl] = useState<string | null>(null),
-    [uploading, setUploading] = useState(false),
-    [loading, setLoading] = useState(false);
+    [uploading, setUploading] = useState(false);
 
-  const disabled = loading || uploading || name.trim().length < 3;
+  // Fetch profile and servers with SWR
+  const { data: profile, error: profileError } = useSWR('/api/currentProfile', fetcher);
+  const { data: servers, error: serversError } = useSWR(
+    profile ? `/api/servers?memberId=${profile.id}` : null,
+    fetcher
+  );
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const response = await fetch("/api/currentProfile");
-        const pf = response.ok ? await response.json() : null;
-        setProfile(pf);
-        if (pf) {
-          const serversResponse = await fetch(`/api/servers?memberId=${pf.id}`);
-          const sv = serversResponse.ok ? await serversResponse.json() : [];
-          setServers(sv);
-        }
-      } catch (error) {
-        console.error("Error loading data:", error);
-        setProfile(null);
-        setServers([]);
-      }
-    }
-    load();
-  }, []);
+  const { createServer, loading: creating, error: createError } = useCreateServer(profile?.id);
+
+  const disabled = creating || uploading || name.trim().length < 3;
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (disabled) return;
-    setLoading(true);
     try {
-      await axios.post("/api/servers", { name: name.trim(), imageUrl });
+      await createServer({ name: name.trim(), imageUrl });
       setName(""); setImageUrl(null); setOpen(false);
-      router.refresh();
-    } catch (err) {
-      console.error(err);
-    } finally { setLoading(false); setUploading(false); }
+    } catch {
+      // Error is handled in the hook
+    }
   };
+
+  if (profileError || serversError) {
+    return (
+      <div className="flex flex-col items-center py-3 bg-background/60 backdrop-blur border-r">
+        <div className="text-xs text-muted-foreground px-2 text-center">
+          Error loading data. Please try again.
+        </div>
+      </div>
+    );
+  }
 
   if (!profile) {
     return (
@@ -101,9 +97,9 @@ export function NavigationSidebar() {
         </Link>
         <div className="h-[2px] w-8 rounded-full bg-muted/40" />
         <div className="flex flex-col items-center space-y-4 overflow-y-auto max-h-[calc(100vh-200px)] scrollbar-none">
-          {servers.map(s => (
+          {servers?.map((s: Server) => (
             <NavigationItem key={s.id} server={s} active={pathname?.startsWith(`/servers/${s.id}`)} />
-          ))}
+          )) || []}
         </div>
       </div>
 
@@ -124,9 +120,10 @@ export function NavigationSidebar() {
             <div className="flex justify-center">
               <FileUpload value={imageUrl || ""} onChange={setImageUrl} endpoint="serverImage" onUploading={setUploading} />
             </div>
-            <Input placeholder="Server name" value={name} onChange={(e) => setName(e.target.value)} disabled={loading || uploading} />
+            <Input placeholder="Server name" value={name} onChange={(e) => setName(e.target.value)} disabled={creating || uploading} />
+            {createError && <p className="text-red-500 text-sm">{createError}</p>}
             <Button type="submit" disabled={disabled} className="w-full">
-              {uploading ? "Uploading..." : loading ? "Creating..." : "Create"}
+              {uploading ? "Uploading..." : creating ? "Creating..." : "Create"}
             </Button>
           </form>
         </DialogContent>

@@ -10,12 +10,12 @@ export async function GET(req: Request) {
         const memberId = searchParams.get("memberId");
 
         if (!memberId) {
-            return new NextResponse("Member ID is required", { status: 400 });
+            return NextResponse.json({ error: "Member ID is required" }, { status: 400 });
         }
 
         const profile = await currentProfile();
         if (!profile) {
-            return new NextResponse("Unauthorized", { status: 401 });
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const servers = await db.server.findMany({
@@ -33,8 +33,8 @@ export async function GET(req: Request) {
 
         return NextResponse.json(servers);
     } catch (error) {
-        console.log(error);
-        return new NextResponse("Internal Server Error", { status: 500 });
+        console.error("Error fetching servers:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
 
@@ -42,11 +42,11 @@ export async function POST(req: Request) {
     try {
         const { name, imageUrl } = await req.json();
         if (typeof name !== 'string' || name.trim().length < 3 || name.trim().length > 30) {
-            return new NextResponse("Invalid server name", { status: 400 });
+            return NextResponse.json({ error: "Invalid server name" }, { status: 400 });
         }
         const profile = await currentProfile();
         if (!profile) {
-            return new NextResponse("Unauthorized", { status: 401 });
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
         const newServer = await db.server.create({
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
         });
         return NextResponse.json(newServer);
     } catch (error) {
-        console.log(error);
-        return new NextResponse("Internal Server Error", { status: 500 });
+        console.error("Error creating server:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 } 
