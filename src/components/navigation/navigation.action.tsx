@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/fileupload";
+import { ActionTooltip } from "@/components/action.tooltip";
 
 export const NavigationAction = () => {
     const [open, setOpen] = useState(false);
@@ -50,12 +51,18 @@ export const NavigationAction = () => {
     return (
         <>
             {/* Plus button in the sidebar */}
-            <button
-                onClick={() => setOpen(true)}
-                className="group flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/30 hover:bg-emerald-500 hover:text-white transition"
+            <ActionTooltip
+                side="right"
+                align="center"
+                label="Add a Server"
             >
-                <Plus className="h-6 w-6" />
-            </button>
+                <button
+                    onClick={() => setOpen(true)}
+                    className="group flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/30 hover:bg-emerald-500 hover:text-white transition"
+                >
+                    <Plus className="h-6 w-6" />
+                </button>
+            </ActionTooltip>
 
             {/* Modal dialog */}
             <Dialog open={open} onOpenChange={setOpen}>
