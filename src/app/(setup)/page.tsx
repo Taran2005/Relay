@@ -5,6 +5,10 @@ import { redirect } from "next/navigation";
 
 const SetupPage = async () => {
     const profile = await initialProfile();
+    
+    if (!profile) {
+        return redirect('/sign-in');
+    }
 
     const server = await db.server.findFirst({
         where: {

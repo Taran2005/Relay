@@ -18,12 +18,15 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-import * as z from "zod";
+import { FileUpload } from "@/components/fileupload";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 const formSchema = z.object({
     serverName: z
@@ -34,6 +37,9 @@ const formSchema = z.object({
 });
 
 export const InitialModal = () => {
+    const [isModalOpen, setIsModalOpen] = useState(true);
+    const [isUploading, setIsUploading] = useState(false);
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -45,28 +51,54 @@ export const InitialModal = () => {
     const isLoading = form.formState.isSubmitting;
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        console.log("Form submitted:", data);
+        try {
+            console.log("Form submitted:", data);
+
+            // Fake API delay
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            setIsModalOpen(false);
+            alert(`Server created successfully! Image: ${data.serverImage}`);
+        } catch (error) {
+            console.error("Error creating server:", error);
+            alert("Failed to create server. Please try again.");
+        }
     };
 
     return (
-        <Dialog open>
-            <DialogContent className="bg-white text-black p-0 overflow-hidden">
-                <DialogHeader className="pt-8 px-6">
-                    <DialogTitle>Customize your server</DialogTitle>
-                    <DialogDescription>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <DialogContent className="bg-background text-foreground p-6 overflow-hidden border-0 shadow-lg rounded-lg max-w-md">
+                <DialogHeader className="pt-0 px-0">
+                    <DialogTitle className="text-2xl font-bold text-center">
+                        Customize your server
+                    </DialogTitle>
+                    <DialogDescription className="text-center text-gray-400">
                         Give your server a personality with a name and image. You can always
                         change it later.
                     </DialogDescription>
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-8 px-6"
-                    >
-                        {/* Image Upload Placeholder */}
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        {/* Server Image Upload */}
                         <div className="flex items-center justify-center text-center">
-                            TODO: IMAGE UPLOAD
+                            <FormField
+                                control={form.control}
+                                name="serverImage"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <FileUpload
+                                                onChange={field.onChange}
+                                                value={field.value || ""}
+                                                endpoint="serverImage"
+                                                onUploading={setIsUploading}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                         </div>
 
                         {/* Server Name Field */}
@@ -75,11 +107,14 @@ export const InitialModal = () => {
                             name="serverName"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Server Name</FormLabel>
+                                    <FormLabel className="text-sm font-medium">
+                                        Server Name
+                                    </FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={isLoading}
                                             placeholder="Enter server name"
+                                            className="h-10 border-zinc-100"
                                             {...field}
                                         />
                                     </FormControl>
@@ -88,13 +123,17 @@ export const InitialModal = () => {
                             )}
                         />
 
-                        <DialogFooter>
+                        <DialogFooter className="px-0 pb-0">
                             <Button
                                 type="submit"
-                                disabled={isLoading}
-                                className="w-full bg-indigo-600 text-white hover:bg-indigo-700"
+                                disabled={isLoading || isUploading}
+                                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-10"
                             >
-                                Create
+                                {isUploading
+                                    ? "Uploading..."
+                                    : isLoading
+                                    ? "Creating..."
+                                    : "Create"}
                             </Button>
                         </DialogFooter>
                     </form>
