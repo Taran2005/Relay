@@ -1,8 +1,9 @@
 // NavigationSidebar.tsx
 
 "use client";
-import { FileUpload } from "@/components/fileupload";
 import { ActionTooltip } from "@/components/action.tooltip";
+import { FileUpload } from "@/components/fileupload";
+import { NavigationItem } from "@/components/navigation/navigation.item";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,38 +17,14 @@ import { useCreateServer } from "@/lib/hooks/useCreateServer";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
 import useSWR from "swr";
 
 interface Server { id: string; name: string; imageUrl: string | null; }
-const NavigationItem = ({ server, active }: { server: Server; active: boolean }) => (
-  <ActionTooltip
-    side="right"
-    align="center"
-    label={server.name}
-  >
-    <Link
-      href={`/servers/${server.id}`}
-      className={`group relative flex h-12 w-12 items-center justify-center rounded-2xl transition-all
-        ${active
-          ? "bg-emerald-500 text-white"
-          : "bg-muted/30 text-foreground hover:bg-emerald-500 hover:text-white"}`}
-    >
-      {server.imageUrl
-        ? <Image src={server.imageUrl} alt={server.name} width={48} height={48} className="rounded-inherit object-cover" />
-        : <span className="text-lg font-semibold">{server.name.charAt(0).toUpperCase()}</span>
-      }
-      <span className={`absolute left-0 top-1/2 -translate-y-1/2 bg-emerald-500 rounded-r-full transition-all duration-300
-        ${active ? "h-8 w-1" : "h-0 w-1 group-hover:h-5"}`} />
-    </Link>
-  </ActionTooltip>
-);
 
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export function NavigationSidebar() {
-  const pathname = usePathname();
   const [open, setOpen] = useState(false),
     [name, setName] = useState(""),
     [imageUrl, setImageUrl] = useState<string | null>(null),
@@ -77,8 +54,8 @@ export function NavigationSidebar() {
 
   if (profileError || serversError) {
     return (
-      <div className="flex flex-col items-center py-3 bg-background/60 backdrop-blur border-r">
-        <div className="text-xs text-muted-foreground px-2 text-center">
+      <div className="flex flex-col items-center py-4 bg-gradient-to-b from-background/80 to-background/60 backdrop-blur-xl border-r border-border/50 shadow-xl">
+        <div className="text-xs text-muted-foreground px-3 text-center bg-muted/30 rounded-lg py-2 border border-border/30">
           Error loading data. Please try again.
         </div>
       </div>
@@ -87,8 +64,8 @@ export function NavigationSidebar() {
 
   if (!profile) {
     return (
-      <div className="flex flex-col items-center py-3 bg-background/60 backdrop-blur border-r">
-        <div className="text-xs text-muted-foreground px-2 text-center">
+      <div className="flex flex-col items-center py-4 bg-gradient-to-b from-background/80 to-background/60 backdrop-blur-xl border-r border-border/50 shadow-xl">
+        <div className="text-xs text-muted-foreground px-3 text-center bg-muted/30 rounded-lg py-2 border border-border/30">
           Sign in to view servers
         </div>
       </div>
@@ -96,51 +73,100 @@ export function NavigationSidebar() {
   }
 
   return (
-    <div className="flex h-full flex-col justify-between py-3 bg-background/60 backdrop-blur border-r w-[72px]">
-      <div className="flex flex-col items-center space-y-4">
+    <div className="flex h-full w-[72px] flex-col bg-gradient-to-b from-background/95 via-background/85 to-background/75 backdrop-blur-2xl border-r border-border/60 shadow-2xl relative overflow-hidden rounded-r-3xl">
+      {/* Subtle background pattern - more elegant */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/3 to-transparent opacity-30" />
+
+      {/* Animated background particles */}
+      <div className="absolute inset-0">
+        <div className="absolute top-1/4 left-1/2 w-1 h-1 bg-blue-400/20 rounded-full animate-pulse" />
+        <div className="absolute top-3/4 right-1/3 w-0.5 h-0.5 bg-purple-400/30 rounded-full animate-pulse delay-1000" />
+        <div className="absolute bottom-1/3 left-1/4 w-0.5 h-0.5 bg-blue-300/25 rounded-full animate-pulse delay-500" />
+      </div>
+
+      {/* Top section with Home button and separator */}
+      <div className="flex flex-col items-center py-4 relative z-10 flex-shrink-0">
         <ActionTooltip
           side="right"
           align="center"
           label="Home"
         >
-          <Link href="/" className="group flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/40 hover:bg-emerald-500 hover:text-white transition">
-            <Image src="/vercel.svg" alt="Home" width={32} height={32} className="opacity-80 group-hover:opacity-100" />
+          <Link
+            href="/"
+            className="group flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-muted/40 to-muted/30 hover:from-blue-500/70 hover:to-purple-600/70 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-blue-500/25 hover:scale-105 border-2 border-muted-foreground/20 hover:border-blue-400/50 hover:ring-1 hover:ring-blue-400/30"
+          >
+            <Image
+              src="/vercel.svg"
+              alt="Home"
+              width={32}
+              height={32}
+              className="opacity-75 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110 group-hover:brightness-110 drop-shadow-sm rounded-lg"
+            />
           </Link>
         </ActionTooltip>
-        <div className="h-[2px] w-8 rounded-full bg-muted/40" />
-        <div className="flex flex-col items-center space-y-4 overflow-y-auto max-h-[calc(100vh-200px)] scrollbar-none">
+
+        {/* Elegant separator */}
+        <div className="h-[1px] w-6 bg-gradient-to-r from-transparent via-border to-transparent rounded-full mt-4" />
+      </div>
+
+      {/* Scrollable servers section */}
+      <div className="flex-1 min-h-0 px-3 py-2 relative z-10 overflow-hidden">
+        <div className="flex flex-col items-center gap-3 overflow-y-auto max-h-full scrollbar-none hover:scrollbar-thin transition-all duration-300 scroll-smooth py-1">
           {servers?.map((s: Server) => (
-            <NavigationItem key={s.id} server={s} active={pathname?.startsWith(`/servers/${s.id}`)} />
+            <div key={s.id} className="flex-shrink-0">
+              <NavigationItem id={s.id} name={s.name} imageUrl={s.imageUrl} />
+            </div>
           )) || []}
         </div>
       </div>
 
-      <ActionTooltip
-        side="right"
-        align="center"
-        label="Add a Server"
-      >
-        <button
-          onClick={() => setOpen(true)}
-          className="group flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/30 hover:bg-emerald-500 hover:text-white transition"
+      {/* Bottom section with Create button */}
+      <div className="flex flex-col items-center py-4 relative z-10 flex-shrink-0">
+        <ActionTooltip
+          side="right"
+          align="center"
+          label="Add a Server"
         >
-          <Plus className="h-6 w-6" />
-        </button>
-      </ActionTooltip>
+          <button
+            onClick={() => setOpen(true)}
+            className="group flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-muted/30 to-muted/20 hover:from-blue-500/70 hover:to-purple-600/70 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-blue-500/25 hover:scale-105 border-2 border-muted-foreground/20 hover:border-blue-400/50 hover:ring-1 hover:ring-blue-400/30"
+          >
+            <Plus className="h-6 w-6 transition-all duration-300 group-hover:scale-110 group-hover:rotate-90 group-hover:drop-shadow-sm" />
+          </button>
+        </ActionTooltip>
+      </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="bg-background border-0 shadow-lg">
+        <DialogContent className="bg-gradient-to-br from-background to-background/95 backdrop-blur-xl border border-border/50 shadow-2xl">
           <DialogHeader>
-            <DialogTitle>Create a Server</DialogTitle>
-            <DialogDescription>Give your server a name and optional image.</DialogDescription>
+            <DialogTitle className="text-xl font-semibold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+              Create a Server
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              Give your server a name and optional image.
+            </DialogDescription>
           </DialogHeader>
-          <form onSubmit={onSubmit} className="space-y-4 p-4">
+          <form onSubmit={onSubmit} className="space-y-6 p-2">
             <div className="flex justify-center">
               <FileUpload value={imageUrl || ""} onChange={setImageUrl} endpoint="serverImage" onUploading={setUploading} />
             </div>
-            <Input placeholder="Server name" value={name} onChange={(e) => setName(e.target.value)} disabled={creating || uploading} />
-            {createError && <p className="text-red-500 text-sm">{createError}</p>}
-            <Button type="submit" disabled={disabled} className="w-full">
+            <Input
+              placeholder="Server name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              disabled={creating || uploading}
+              className="bg-background/50 border-border/50 focus:border-blue-400/60 focus:ring-blue-400/30 transition-colors"
+            />
+            {createError && (
+              <p className="text-red-500 text-sm bg-red-500/10 border border-red-500/20 rounded-lg p-2">
+                {createError}
+              </p>
+            )}
+            <Button
+              type="submit"
+              disabled={disabled}
+              className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-blue-500/30"
+            >
               {uploading ? "Uploading..." : creating ? "Creating..." : "Create"}
             </Button>
           </form>
