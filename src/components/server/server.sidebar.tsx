@@ -35,7 +35,6 @@ export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
         );
     }
 
-    // If server doesn't exist or error occurred, redirect instead of showing error
     if (error || !server) {
         return (
             <div className="flex flex-col items-center justify-center h-full bg-background/95 backdrop-blur-xl border-r border-border/50 text-center p-4">
@@ -58,6 +57,7 @@ export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
             {/* Subtle background pattern */}
             <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/5 opacity-50" />
             <ServerHeader server={server} role={role} />
+
             {/* Channels Section */}
             <div className="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-4">
                 {textChannels && textChannels.length > 0 && (

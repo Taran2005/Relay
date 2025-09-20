@@ -7,7 +7,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useLeaveServer } from "@/lib/hooks/use-leave-server";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { ServerWithMembersAndProfile } from "@/types/types";
 import { MemberRole } from "@prisma/client";
@@ -40,8 +39,6 @@ export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
             return res.data;
         }
     );
-
-    const { leaveServer } = useLeaveServer(server.id, profile?.id);
 
     useEffect(() => {
         // Handle redirection only if current server is no longer in the list
@@ -92,7 +89,10 @@ export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
                     {isAdmin && (
                         <>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-destructive">
+                            <DropdownMenuItem
+                                className="text-destructive"
+                                onClick={() => onOpen("deleteServer", { server })}
+                            >
                                 <Trash className="mr-2 h-4 w-4" />
                                 Delete Server
                             </DropdownMenuItem>
@@ -103,7 +103,7 @@ export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                                 className="text-destructive"
-                                onClick={leaveServer}
+                                onClick={() => onOpen("leaveServer", { server })}
                             >
                                 <LogOut className="mr-2 h-4 w-4" />
                                 Leave Server

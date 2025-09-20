@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { DeleteServerModal } from "../modals/delete-server.modal";
 import { InviteModal } from "../modals/invite.modal";
+import { LeaveServerModal } from "../modals/leave-server.modal";
+import { ManageMembersModal } from "../modals/manage-members.modal";
 import { ServerSettingsModal } from "../modals/server-settings.modal";
 import { CreateServerModal } from "../modals/server.modal";
-import { ManageMembersModal } from "../modals/manage-members.modal";
 
 
 export const ModalProvider = () => {
@@ -17,6 +19,10 @@ export const ModalProvider = () => {
             {isMounted && <InviteModal />}
             {isMounted && <ServerSettingsModal />}
             {isMounted && <ManageMembersModal />}
+            {isMounted && <DeleteServerModal />}
+            {isMounted && <LeaveServerModal />}
+            {/* Debug: Check if modals are rendering */}
+            {console.log("ModalProvider rendering modals")}
         </>
     );
 };

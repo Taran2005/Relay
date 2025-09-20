@@ -102,3 +102,41 @@ export async function PATCH(
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
+
+export async function DELETE(
+    req: Request,
+    { params }: { params: Promise<{ serverId: string }> }
+) {
+    try {
+        const profile = await currentProfile();
+        if (!profile) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const { serverId } = await params;
+
+        // Check if user is the admin/creator of the server
+        const server = await db.server.findUnique({
+            where: {
+                id: serverId,
+                creatorId: profile.id,
+            },
+        });
+
+        if (!server) {
+            return new NextResponse("Server not found or insufficient permissions", { status: 404 });
+        }
+
+        // Delete the server (cascade will handle related records)
+        await db.server.delete({
+            where: {
+                id: serverId,
+            },
+        });
+
+        return new NextResponse("Server deleted successfully", { status: 200 });
+    } catch (error) {
+        console.log("[SERVER_ID_DELETE]", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }
+}
