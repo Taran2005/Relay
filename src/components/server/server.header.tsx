@@ -1,0 +1,115 @@
+"use client";
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useModalStore } from "@/lib/hooks/use-modal-store";
+import { ServerWithMembersAndProfile } from "@/types/types";
+import { MemberRole } from "@prisma/client";
+import axios from "axios";
+import { ChevronDown, LogOut, Settings, Trash, UserPlus, Users } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import useSWR, { useSWRConfig } from "swr";
+
+interface ServerHeaderProps {
+    server: ServerWithMembersAndProfile;
+    role?: MemberRole;
+}
+
+export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
+    const { onOpen } = useModalStore();
+    const router = useRouter();
+    const { mutate } = useSWRConfig();
+    const [isLoading, setIsLoading] = useState(false);
+    const isAdmin = role === MemberRole.ADMIN;
+    const isModerator = isAdmin || role === MemberRole.MODERATOR;
+
+    const { data: profile } = useSWR('/api/currentProfile', async (url) => {
+        const res = await axios.get(url);
+        return res.data;
+    });
+
+    const onLeaveServer = async () => {
+        try {
+            setIsLoading(true);
+            await axios.patch(`/api/servers/${server.id}/leave`);
+            mutate(`/api/servers?memberId=${profile?.id}`);
+            // Redirect to first available server or home
+            const serversRes = await axios.get(`/api/servers?memberId=${profile?.id}`);
+            const servers = serversRes.data;
+            if (servers.length > 0) {
+                router.push(`/servers/${servers[0].id}`);
+            } else {
+                router.push("/");
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-gradient-to-r from-background/95 to-background/90 backdrop-blur-sm">
+            <div className="flex items-center space-x-2">
+                <h1 className="text-lg font-semibold text-foreground truncate">
+                    {server.name}
+                </h1>
+            </div>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <button className="flex items-center space-x-1 px-2 py-1 rounded-md hover:bg-muted/50 transition-colors">
+                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                    {isModerator && (
+                        <DropdownMenuItem onClick={() => onOpen("invite", { server })}>
+                            <UserPlus className="mr-2 h-4 w-4" />
+                            Invite People
+                        </DropdownMenuItem>
+                    )}
+                    {isAdmin && (
+                        <DropdownMenuItem>
+                            <Settings className="mr-2 h-4 w-4" />
+                            Server Settings
+                        </DropdownMenuItem>
+                    )}
+                    {isAdmin && (
+                        <DropdownMenuItem>
+                            <Users className="mr-2 h-4 w-4" />
+                            Manage Members
+                        </DropdownMenuItem>
+                    )}
+                    {isAdmin && (
+                        <>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="text-destructive">
+                                <Trash className="mr-2 h-4 w-4" />
+                                Delete Server
+                            </DropdownMenuItem>
+                        </>
+                    )}
+                    {!isAdmin && (
+                        <>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                className="text-destructive"
+                                onClick={onLeaveServer}
+                                disabled={isLoading}
+                            >
+                                <LogOut className="mr-2 h-4 w-4" />
+                                {isLoading ? "Leaving..." : "Leave Server"}
+                            </DropdownMenuItem>
+                        </>
+                    )}
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
+    );
+}

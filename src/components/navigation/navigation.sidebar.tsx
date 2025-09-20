@@ -15,15 +15,16 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useCreateServer } from "@/lib/hooks/use-create-server";
+import { UserButton } from "@clerk/nextjs";
+import axios from 'axios';
 import { Plus } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
 
 interface Server { id: string; name: string; imageUrl: string | null; }
 
-const fetcher = (url: string) => fetch(url).then(res => res.json());
+const fetcher = (url: string) => axios.get(url).then(res => res.data);
 
 export function NavigationSidebar() {
   const [open, setOpen] = useState(false),
@@ -49,7 +50,7 @@ export function NavigationSidebar() {
       await createServer({ name: name.trim(), imageUrl });
       setName(""); setImageUrl(null); setOpen(false);
     } catch {
-      // Error is handled in the hook
+      
     }
   };
 
@@ -87,21 +88,17 @@ export function NavigationSidebar() {
 
       {/* Top section with Home button and separator */}
       <div className="flex flex-col items-center py-4 relative z-10 flex-shrink-0">
-        <ActionTooltip
-          side="right"
-          align="center"
-          label="Home"
-        >
+        <ActionTooltip side="right" align="center" label="Account">
           <Link
             href="/"
-            className="group flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-muted/40 to-muted/30 hover:from-blue-500/70 hover:to-purple-600/70 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-blue-500/25 hover:scale-105 border-2 border-muted-foreground/20 hover:border-blue-400/50 hover:ring-1 hover:ring-blue-400/30"
+            className="group flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-muted/40 to-muted/30 hover:from-blue-500/70 hover:to-purple-600/70 transition-all duration-300 ease-out hover:shadow-lg hover:shadow-blue-500/25 hover:scale-105 border-2 border-muted-foreground/20 hover:border-blue-400/50 hover:ring-1 hover:ring-blue-400/30 overflow-hidden"
           >
-            <Image
-              src="/vercel.svg"
-              alt="Home"
-              width={32}
-              height={32}
-              className="opacity-75 group-hover:opacity-100 transition-all duration-300 group-hover:scale-110 group-hover:brightness-110 drop-shadow-sm rounded-lg"
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: "h-10 w-10 transition-all duration-300 group-hover:scale-110",
+                },
+              }}
             />
           </Link>
         </ActionTooltip>

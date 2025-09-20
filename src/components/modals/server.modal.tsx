@@ -17,6 +17,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import axios from 'axios';
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,7 +42,7 @@ const formSchema = z.object({
     serverImage: z.string().optional(),
 });
 
-const fetcher = (url: string) => fetch(url).then(res => res.json());
+const fetcher = (url: string) => axios.get(url).then(res => res.data);
 
 export const CreateServerModal = () => {
     const router = useRouter(); // ✅ Next.js router
@@ -60,22 +61,19 @@ export const CreateServerModal = () => {
         },
     });
 
-    // 🔹 Handle Form Submit
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         try {
             const newServer = await createServer({ name: data.serverName, imageUrl: data.serverImage || null });
             form.reset();
             onClose();
-            // Redirect to the new server
             if (newServer) {
                 router.push(`/servers/${newServer.id}`);
             }
         } catch {
-            // Error handled in hook
+
         }
     };
 
-    // Reset form when modal closes
     useEffect(() => {
         if (!isModalOpen) {
             form.reset();

@@ -74,7 +74,7 @@ export const InitialModal = () => {
     };
 
     return (
-        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <Dialog open={isModalOpen}>
             <DialogContent className="bg-background text-foreground p-6 overflow-hidden border-0 shadow-lg rounded-lg max-w-md">
                 <DialogHeader className="pt-0 px-0">
                     <DialogTitle className="text-2xl font-bold text-center">

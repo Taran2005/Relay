@@ -6,7 +6,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
             <div className="hidden md:flex">
                 <NavigationSidebar />
             </div>
-            <main className="flex-1 md:pl-[72px] h-full overflow-auto">
+            <main className="flex-1 h-full overflow-auto">
                 {children}
             </main>
         </div>
