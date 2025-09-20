@@ -22,7 +22,7 @@ import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { ServerWithMembersAndProfile } from "@/types/types";
 import { MemberRole } from "@prisma/client";
 import axios from "axios";
-import { MoreVertical, Shield, ShieldCheck, UserMinus, Crown, Loader2 } from "lucide-react";
+import { Crown, Loader2, MoreVertical, Shield, ShieldCheck, UserMinus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import useSWR from "swr";
