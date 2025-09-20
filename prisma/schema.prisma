@@ -18,6 +18,7 @@ model Profile {
     members   Member[]
     messages  Message[]
     servers   Server[]  @relation("ServerCreator")
+    bans      Ban[]
 }
 
 model Server {
@@ -31,6 +32,7 @@ model Server {
     channels   Channel[]
     members    Member[]
     creator    Profile   @relation("ServerCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+    bans       Ban[]
 
     @@index([creatorId])
 }
@@ -59,6 +61,7 @@ model Channel {
     serverId  String
     server    Server      @relation(fields: [serverId], references: [id], onDelete: Cascade)
     messages  Message[]
+
     @@index([serverId])
 }
 
@@ -78,6 +81,19 @@ model Message {
 
     @@index([memberId])
     @@index([channelId])
+    @@index([profileId])
+}
+
+model Ban {
+    id        String   @id @default(uuid())
+    serverId  String
+    profileId String
+    createdAt DateTime @default(now())
+    server    Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
+    profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+    @@unique([serverId, profileId])
+    @@index([serverId])
     @@index([profileId])
 }
 

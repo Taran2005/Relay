@@ -3,6 +3,8 @@
 import { useServerData } from "@/lib/hooks/useServerData";
 import { useUser } from "@clerk/nextjs";
 import { ChannelType } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { ServerHeader } from "./server.header";
 
 interface ServerSidebarProps {
@@ -12,6 +14,18 @@ interface ServerSidebarProps {
 export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
     const { user } = useUser();
     const { server, isLoading, error } = useServerData(serverId);
+    const router = useRouter();
+
+    // Check if current user is a member of the server
+    const isMember = server?.members?.some(member => member.profile.userId === user?.id);
+    const isCreator = server?.creatorId === user?.id;
+
+    useEffect(() => {
+        // If server doesn't exist (404) or user is not a member and not creator, redirect
+        if (!isLoading && (!server || (!isMember && !isCreator))) {
+            router.push("/");
+        }
+    }, [isLoading, server, isMember, isCreator, router]);
 
     if (isLoading) {
         return (
@@ -21,10 +35,14 @@ export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
         );
     }
 
+    // If server doesn't exist or error occurred, redirect instead of showing error
     if (error || !server) {
         return (
-            <div className="flex items-center justify-center h-full bg-background/95 backdrop-blur-xl border-r border-border/50 text-muted-foreground">
-                Error loading server
+            <div className="flex flex-col items-center justify-center h-full bg-background/95 backdrop-blur-xl border-r border-border/50 text-center p-4">
+                <div className="text-red-500 text-lg font-semibold mb-2">Not Authorized</div>
+                <p className="text-muted-foreground text-sm">
+                    You are no longer a member of this server.
+                </p>
             </div>
         );
     }

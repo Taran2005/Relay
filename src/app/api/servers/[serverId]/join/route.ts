@@ -37,6 +37,18 @@ export async function PATCH(
             return new NextResponse("Already a member", { status: 400 });
         }
 
+        // Check if user is banned
+        const ban = await db.ban.findFirst({
+            where: {
+                serverId,
+                profileId: profile.id,
+            },
+        });
+
+        if (ban) {
+            return new NextResponse("You are banned from this server", { status: 403 });
+        }
+
         // Add user as a member
         const member = await db.member.create({
             data: {

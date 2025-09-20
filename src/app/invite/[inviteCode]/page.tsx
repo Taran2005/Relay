@@ -15,6 +15,7 @@ const InviteCodePage = ({ params }: { params: Promise<{ inviteCode: string }> })
     const [server, setServer] = useState<ServerWithMembersAndProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [inviteCode, setInviteCode] = useState<string>("");
+    const [isBanned, setIsBanned] = useState(false);
 
     useEffect(() => {
         const initialize = async () => {
@@ -41,6 +42,18 @@ const InviteCodePage = ({ params }: { params: Promise<{ inviteCode: string }> })
                     if (isMember) {
                         router.push(`/servers/${serverData.id}`);
                         return;
+                    }
+
+                    // Check if user is banned
+                    try {
+                        const banResponse = await axios.get(`/api/servers/${serverData.id}/bans/${profile.id}`);
+                        if (banResponse.status === 200) {
+                            setIsBanned(true);
+                            return;
+                        }
+                    } catch (banError) {
+                        // User is not banned, continue normally
+                        console.log("Ban check error:", banError);
                     }
                 }
             } catch (error) {
@@ -76,6 +89,15 @@ const InviteCodePage = ({ params }: { params: Promise<{ inviteCode: string }> })
         return (
             <div className="h-full flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            </div>
+        );
+    }
+
+    if (isBanned) {
+        return (
+            <div className="h-full flex flex-col items-center justify-center">
+                <h1 className="text-2xl font-bold text-red-500">Access Denied</h1>
+                <p className="text-gray-500">You have been banned from this server.</p>
             </div>
         );
     }

@@ -13,6 +13,8 @@ export async function GET(
         }
 
         const { serverId } = await params;
+        const { searchParams } = new URL(req.url);
+        const includeBans = searchParams.get("includeBans") === "true";
 
         const server = await db.server.findUnique({
             where: {
@@ -37,6 +39,16 @@ export async function GET(
                         role: "asc",
                     },
                 },
+                ...(includeBans && {
+                    bans: {
+                        include: {
+                            profile: true,
+                        },
+                        orderBy: {
+                            createdAt: "desc",
+                        },
+                    },
+                }),
             },
         });
 

@@ -19,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { useModalStore } from "@/lib/hooks/use-modal-store";
-import { ServerWithMembersAndProfile } from "@/types/types";
+import { ServerWithMembersAndProfileAndBans } from "@/types/types";
 import { MemberRole } from "@prisma/client";
 import axios from "axios";
 import { Crown, Loader2, MoreVertical, Shield, ShieldCheck, UserMinus } from "lucide-react";
@@ -33,10 +33,11 @@ export const ManageMembersModal = () => {
     const { isOpen, type, data, onClose } = useModalStore();
     const isModalOpen = isOpen && type === "manageMembers";
     const [loadingId, setLoadingId] = useState<string>("");
+    const [showBanned, setShowBanned] = useState(false);
 
     const serverId = data?.server?.id;
-    const { data: server, error, isLoading, mutate } = useSWR<ServerWithMembersAndProfile>(
-        serverId ? `/api/servers/${serverId}` : null,
+    const { data: server, error, isLoading, mutate } = useSWR<ServerWithMembersAndProfileAndBans>(
+        serverId ? `/api/servers/${serverId}?includeBans=true` : null,
         fetcher
     );
 
@@ -90,6 +91,57 @@ export const ManageMembersModal = () => {
         }
     };
 
+    const onBan = async (memberId: string) => {
+        try {
+            setLoadingId(memberId);
+            // First ban the user
+            await axios.post(`/api/members/${memberId}/ban`);
+            // Then remove them from members
+            await axios.delete(`/api/members/${memberId}`);
+
+            // Optimistically update the cache
+            mutate((currentServer) => {
+                if (!currentServer) return currentServer;
+                return {
+                    ...currentServer,
+                    members: currentServer.members.filter((member) => member.id !== memberId),
+                };
+            }, false);
+
+            toast.success("Member banned successfully");
+        } catch {
+            toast.error("Failed to ban member");
+            // Revert on error
+            mutate();
+        } finally {
+            setLoadingId("");
+        }
+    };
+
+    const onUnban = async (banId: string) => {
+        try {
+            setLoadingId(banId);
+            await axios.delete(`/api/bans/${banId}`);
+
+            // Optimistically update the cache
+            mutate((currentServer) => {
+                if (!currentServer) return currentServer;
+                return {
+                    ...currentServer,
+                    bans: currentServer.bans?.filter((ban) => ban.id !== banId),
+                };
+            }, false);
+
+            toast.success("Member unbanned successfully");
+        } catch {
+            toast.error("Failed to unban member");
+            // Revert on error
+            mutate();
+        } finally {
+            setLoadingId("");
+        }
+    };
+
     const roleIconMap = {
         [MemberRole.GUEST]: null,
         [MemberRole.MODERATOR]: <ShieldCheck className="h-4 w-4 ml-2 text-indigo-500" />,
@@ -123,14 +175,59 @@ export const ManageMembersModal = () => {
                     <DialogDescription className="text-center text-gray-400">
                         Manage server members and their roles
                     </DialogDescription>
+                    <div className="flex justify-center mt-4">
+                        <Button
+                            variant={showBanned ? "outline" : "default"}
+                            onClick={() => setShowBanned(false)}
+                            className="mr-2"
+                        >
+                            Members
+                        </Button>
+                        <Button
+                            variant={showBanned ? "default" : "outline"}
+                            onClick={() => setShowBanned(true)}
+                        >
+                            Banned
+                        </Button>
+                    </div>
                 </DialogHeader>
 
                 <div className="mt-6 max-h-[420px] overflow-y-auto">
                     {isLoading ? (
                         <div className="flex items-center justify-center py-8">
                             <Loader2 className="h-6 w-6 animate-spin" />
-                            <span className="ml-2">Loading members...</span>
+                            <span className="ml-2">Loading {showBanned ? "banned members" : "members"}...</span>
                         </div>
+                    ) : showBanned ? (
+                        server?.bans?.map((ban) => (
+                            <div key={ban.id} className="flex items-center gap-x-2 mb-4">
+                                <div className="h-10 w-10 rounded-full bg-red-500 flex items-center justify-center text-white font-semibold">
+                                    {ban.profile.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div className="flex flex-col gap-y-1">
+                                    <div className="text-sm font-semibold">
+                                        {ban.profile.name}
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">
+                                        Banned
+                                    </p>
+                                </div>
+                                <div className="ml-auto">
+                                    <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() => onUnban(ban.id)}
+                                        disabled={loadingId === ban.id}
+                                    >
+                                        {loadingId === ban.id ? (
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                        ) : (
+                                            "Unban"
+                                        )}
+                                    </Button>
+                                </div>
+                            </div>
+                        ))
                     ) : (
                         server?.members?.map((member) => (
                             <div key={member.id} className="flex items-center gap-x-2 mb-4">
@@ -192,6 +289,14 @@ export const ManageMembersModal = () => {
                                                 >
                                                     <UserMinus className="h-4 w-4 mr-2" />
                                                     Kick
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={() => onBan(member.id)}
+                                                    disabled={loadingId === member.id}
+                                                    className="text-destructive"
+                                                >
+                                                    <UserMinus className="h-4 w-4 mr-2" />
+                                                    Ban
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
