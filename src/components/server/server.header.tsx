@@ -78,7 +78,7 @@ export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
                         </DropdownMenuItem>
                     )}
                     {isAdmin && (
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onOpen("serverSettings", { server })}>
                             <Settings className="mr-2 h-4 w-4" />
                             Server Settings
                         </DropdownMenuItem>

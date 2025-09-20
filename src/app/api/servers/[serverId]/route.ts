@@ -50,3 +50,43 @@ export async function GET(
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
+
+export async function PATCH(
+    req: Request,
+    { params }: { params: Promise<{ serverId: string }> }
+) {
+    try {
+        const profile = await currentProfile();
+        if (!profile) {
+            return new NextResponse("Unauthorized", { status: 401 });
+        }
+
+        const { serverId } = await params;
+        const { name, imageUrl } = await req.json();
+
+        if (!name || typeof name !== 'string' || name.trim().length < 3 || name.trim().length > 30) {
+            return new NextResponse("Invalid server name", { status: 400 });
+        }
+
+        const server = await db.server.update({
+            where: {
+                id: serverId,
+                members: {
+                    some: {
+                        profileId: profile.id,
+                        role: "ADMIN"
+                    },
+                },
+            },
+            data: {
+                name: name.trim(),
+                imageUrl: imageUrl || null,
+            },
+        });
+
+        return NextResponse.json(server);
+    } catch (error) {
+        console.log("[SERVER_ID_PATCH]", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }
+}
