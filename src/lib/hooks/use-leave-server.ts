@@ -1,10 +1,8 @@
-import { useRouter } from 'next/navigation';
-import { useSWRConfig } from 'swr';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useSWRConfig } from 'swr';
 
 export const useLeaveServer = (serverId: string, profileId?: string) => {
-    const router = useRouter();
     const { mutate } = useSWRConfig();
 
     const leaveServer = async () => {

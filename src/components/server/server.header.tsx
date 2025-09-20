@@ -7,14 +7,15 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLeaveServer } from "@/lib/hooks/use-leave-server";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { ServerWithMembersAndProfile } from "@/types/types";
 import { MemberRole } from "@prisma/client";
 import axios from "axios";
 import { ChevronDown, LogOut, Settings, Trash, UserPlus, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import useSWR, { useSWRConfig } from "swr";
+import { useEffect } from "react";
+import useSWR from "swr";
 
 interface ServerHeaderProps {
     server: ServerWithMembersAndProfile;
@@ -24,8 +25,6 @@ interface ServerHeaderProps {
 export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
     const { onOpen } = useModalStore();
     const router = useRouter();
-    const { mutate } = useSWRConfig();
-    const [isLoading, setIsLoading] = useState(false);
     const isAdmin = role === MemberRole.ADMIN;
     const isModerator = isAdmin || role === MemberRole.MODERATOR;
 
@@ -34,25 +33,29 @@ export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
         return res.data;
     });
 
-    const onLeaveServer = async () => {
-        try {
-            setIsLoading(true);
-            await axios.patch(`/api/servers/${server.id}/leave`);
-            mutate(`/api/servers?memberId=${profile?.id}`);
-            // Redirect to first available server or home
-            const serversRes = await axios.get(`/api/servers?memberId=${profile?.id}`);
-            const servers = serversRes.data;
-            if (servers.length > 0) {
-                router.push(`/servers/${servers[0].id}`);
-            } else {
-                router.push("/");
-            }
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setIsLoading(false);
+    const { data: servers } = useSWR(
+        profile ? `/api/servers?memberId=${profile.id}` : null,
+        async (url) => {
+            const res = await axios.get(url);
+            return res.data;
         }
-    };
+    );
+
+    const { leaveServer } = useLeaveServer(server.id, profile?.id);
+
+    useEffect(() => {
+        // Handle redirection only if current server is no longer in the list
+        if (servers) {
+            const currentServerInList = servers.some((s: { id: string }) => s.id === server.id);
+            if (!currentServerInList) {
+                if (servers.length > 0) {
+                    router.push(`/servers/${servers[0].id}`);
+                } else {
+                    router.push("/");
+                }
+            }
+        }
+    }, [servers, router, server.id]);
 
     return (
         <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-gradient-to-r from-background/95 to-background/90 backdrop-blur-sm">
@@ -100,11 +103,10 @@ export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
                                 className="text-destructive"
-                                onClick={onLeaveServer}
-                                disabled={isLoading}
+                                onClick={leaveServer}
                             >
                                 <LogOut className="mr-2 h-4 w-4" />
-                                {isLoading ? "Leaving..." : "Leave Server"}
+                                Leave Server
                             </DropdownMenuItem>
                         </>
                     )}
