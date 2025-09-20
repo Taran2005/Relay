@@ -14,24 +14,74 @@ export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
     const { server, isLoading, error } = useServerData(serverId);
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return (
+            <div className="flex items-center justify-center h-full  bg-background/95 backdrop-blur-xl border-r border-border/50">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+        );
     }
 
     if (error || !server) {
-        return <div>Error loading server</div>;
+        return (
+            <div className="flex items-center justify-center h-full bg-background/95 backdrop-blur-xl border-r border-border/50 text-muted-foreground">
+                Error loading server
+            </div>
+        );
     }
 
     const textChannels = server.channels?.filter(channel => channel.type === ChannelType.TEXT);
     const voiceChannels = server.channels?.filter(channel => channel.type === ChannelType.AUDIO);
     const videoChannels = server.channels?.filter(channel => channel.type === ChannelType.VIDEO);
     const members = server.members?.filter(member => member.profileId !== user?.id);
-
     const role = server.members?.find(member => member.profile.userId === user?.id)?.role;
 
     return (
-        <div className="w-full h-full">
+        <div className="flex h-full w-60 flex-col bg-card/95 backdrop-blur-xl border-r border-border/60 shadow-2xl relative overflow-hidden rounded-r-3xl mr-2">
+            {/* Subtle background pattern */}
+            <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/5 opacity-50" />
             <ServerHeader server={server} role={role} />
-            {/* TODO: Render channels and members */}
+            {/* Channels Section */}
+            <div className="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-4">
+                {textChannels && textChannels.length > 0 && (
+                    <div>
+                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Text Channels</h3>
+                        {textChannels.map(channel => (
+                            <div key={channel.id} className="flex items-center p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
+                                <span className="text-sm text-foreground">{channel.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+                {voiceChannels && voiceChannels.length > 0 && (
+                    <div>
+                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Voice Channels</h3>
+                        {voiceChannels.map(channel => (
+                            <div key={channel.id} className="flex items-center p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
+                                <span className="text-sm text-foreground">{channel.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+                {videoChannels && videoChannels.length > 0 && (
+                    <div>
+                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Video Channels</h3>
+                        {videoChannels.map(channel => (
+                            <div key={channel.id} className="flex items-center p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
+                                <span className="text-sm text-foreground">{channel.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+            {/* Members Section */}
+            <div className="p-4 border-t border-border/50">
+                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Members</h3>
+                {members && members.map(member => (
+                    <div key={member.id} className="flex items-center p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                        <span className="text-sm text-foreground">{member.profile.name}</span>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };

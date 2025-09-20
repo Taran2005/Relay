@@ -50,7 +50,7 @@ export function NavigationSidebar() {
       await createServer({ name: name.trim(), imageUrl });
       setName(""); setImageUrl(null); setOpen(false);
     } catch {
-      
+
     }
   };
 
@@ -75,7 +75,7 @@ export function NavigationSidebar() {
   }
 
   return (
-    <div className="flex h-full w-[72px] flex-col bg-gradient-to-b from-background/95 via-background/85 to-background/75 backdrop-blur-2xl border-r border-border/60 shadow-2xl relative overflow-hidden rounded-r-3xl">
+    <div className="flex h-full w-[72px] flex-col bg-gradient-to-b from-background/95 via-background/85 to-background/75 backdrop-blur-2xl border-r border-border/60 shadow-2xl relative overflow-hidden">
       {/* Subtle background pattern - more elegant */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/3 to-transparent opacity-30" />
 
