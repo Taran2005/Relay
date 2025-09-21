@@ -22,6 +22,7 @@ export const LeaveServerModal = () => {
     const isModalOpen = isOpen && type === "leaveServer";
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [isConfirmed, setIsConfirmed] = useState(false);
 
     const onConfirm = async () => {
         try {
@@ -50,8 +51,24 @@ export const LeaveServerModal = () => {
                         <br />
                         <br />
                         You will no longer have access to this server and its channels.
+                        <br />
+                        <br />
+                        Please confirm by checking the box below:
                     </DialogDescription>
                 </DialogHeader>
+
+                <div className="mt-4 flex items-center space-x-2">
+                    <input
+                        type="checkbox"
+                        id="confirm-leave"
+                        checked={isConfirmed}
+                        onChange={(e) => setIsConfirmed(e.target.checked)}
+                        className="w-4 h-4"
+                    />
+                    <label htmlFor="confirm-leave" className="text-sm text-gray-400">
+                        I understand I will lose access to this server.
+                    </label>
+                </div>
 
                 <DialogFooter className="px-0 pb-0">
                     <div className="flex items-center justify-end w-full space-x-2">
@@ -64,7 +81,7 @@ export const LeaveServerModal = () => {
                             Cancel
                         </Button>
                         <Button
-                            disabled={isLoading}
+                            disabled={isLoading || !isConfirmed}
                             onClick={onConfirm}
                             variant="destructive"
                             className="h-10"

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 import { useModalStore } from "@/lib/hooks/use-modal-store";
 import axios from "axios";
@@ -22,6 +23,7 @@ export const DeleteServerModal = () => {
     const isModalOpen = isOpen && type === "deleteServer";
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [confirmText, setConfirmText] = useState("");
 
     const onConfirm = async () => {
         try {
@@ -50,8 +52,20 @@ export const DeleteServerModal = () => {
                         <br />
                         <br />
                         This will permanently delete the server, all channels, messages, and remove all members.
+                        <br />
+                        <br />
+                        To confirm, type <strong>{data.server?.name}</strong> below:
                     </DialogDescription>
                 </DialogHeader>
+
+                <div className="mt-4">
+                    <Input
+                        value={confirmText}
+                        onChange={(e) => setConfirmText(e.target.value)}
+                        placeholder={`Type "${data.server?.name}" to confirm`}
+                        className="text-center"
+                    />
+                </div>
 
                 <DialogFooter className="px-0 pb-0">
                     <div className="flex items-center justify-end w-full space-x-2">
@@ -64,7 +78,7 @@ export const DeleteServerModal = () => {
                             Cancel
                         </Button>
                         <Button
-                            disabled={isLoading}
+                            disabled={isLoading || confirmText !== data.server?.name}
                             onClick={onConfirm}
                             variant="destructive"
                             className="h-10"
