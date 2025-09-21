@@ -1,5 +1,5 @@
 import axios from 'axios';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { useSWRConfig } from 'swr';
 
 export const useLeaveServer = (serverId: string, profileId?: string) => {

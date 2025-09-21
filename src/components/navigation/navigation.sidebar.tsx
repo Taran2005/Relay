@@ -67,9 +67,7 @@ export function NavigationSidebar() {
   if (!profile) {
     return (
       <div className="flex flex-col items-center py-4 bg-gradient-to-b from-background/80 to-background/60 backdrop-blur-xl border-r border-border/50 shadow-xl">
-        <div className="text-xs text-muted-foreground px-3 text-center bg-muted/30 rounded-lg py-2 border border-border/30">
-          Sign in to view servers
-        </div>
+        
       </div>
     );
   }

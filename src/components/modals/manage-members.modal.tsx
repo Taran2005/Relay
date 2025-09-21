@@ -24,8 +24,9 @@ import { MemberRole } from "@prisma/client";
 import axios from "axios";
 import { Crown, Loader2, MoreVertical, Shield, ShieldCheck, UserMinus } from "lucide-react";
 import { useState } from "react";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import useSWR from "swr";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
@@ -46,7 +47,6 @@ export const ManageMembersModal = () => {
             setLoadingId(memberId);
             await axios.patch(`/api/members/${memberId}`, { role });
 
-            // Optimistically update the cache
             mutate((currentServer) => {
                 if (!currentServer) return currentServer;
                 return {
@@ -60,7 +60,6 @@ export const ManageMembersModal = () => {
             toast.success("Role updated successfully");
         } catch {
             toast.error("Failed to update role");
-            // Revert on error
             mutate();
         } finally {
             setLoadingId("");
@@ -194,9 +193,18 @@ export const ManageMembersModal = () => {
 
                 <div className="mt-6 max-h-[420px] overflow-y-auto">
                     {isLoading ? (
-                        <div className="flex items-center justify-center py-8">
-                            <Loader2 className="h-6 w-6 animate-spin" />
-                            <span className="ml-2">Loading {showBanned ? "banned members" : "members"}...</span>
+                        <div className="space-y-4">
+                            {/* Skeleton for member items */}
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <div key={i} className="flex items-center gap-x-2 mb-4">
+                                    <Skeleton className="h-10 w-10 rounded-full bg-muted" />
+                                    <div className="flex flex-col gap-y-1 flex-1">
+                                        <Skeleton className="h-4 w-32 bg-muted" />
+                                        <Skeleton className="h-3 w-16 bg-muted" />
+                                    </div>
+                                    <Skeleton className="h-8 w-8 bg-muted" />
+                                </div>
+                            ))}
                         </div>
                     ) : showBanned ? (
                         server?.bans?.map((ban) => (

@@ -34,7 +34,7 @@ import { useCreateChannel } from "@/lib/hooks/use-create-channel";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChannelType } from "@prisma/client";
-import { ChevronDown, Hash, Mic, Video, Check } from "lucide-react";
+import { Check, ChevronDown, Hash, Mic, Video } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -155,15 +155,13 @@ export const CreateChannelModal = () => {
                                                         <DropdownMenuItem
                                                             key={type}
                                                             onClick={() => field.onChange(type)}
-                                                            className={`flex items-center space-x-3 px-3 py-3 rounded-md cursor-pointer transition-all duration-150 hover:bg-accent/80 ${
-                                                                isSelected
+                                                            className={`flex items-center space-x-3 px-3 py-3 rounded-md cursor-pointer transition-all duration-150 hover:bg-accent/80 ${isSelected
                                                                     ? 'bg-primary/10 text-primary font-medium'
                                                                     : 'text-foreground hover:text-primary'
-                                                            }`}
+                                                                }`}
                                                         >
-                                                            <div className={`p-1.5 rounded-md transition-colors duration-150 ${
-                                                                isSelected ? 'bg-primary/20' : 'bg-muted/50 group-hover:bg-primary/10'
-                                                            }`}>
+                                                            <div className={`p-1.5 rounded-md transition-colors duration-150 ${isSelected ? 'bg-primary/20' : 'bg-muted/50 group-hover:bg-primary/10'
+                                                                }`}>
                                                                 <Icon className="h-4 w-4" />
                                                             </div>
                                                             <span className="flex-1">

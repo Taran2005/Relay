@@ -15,7 +15,7 @@ import { useModalStore } from "@/lib/hooks/use-modal-store";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 export const LeaveServerModal = () => {
     const { isOpen, type, data, onClose } = useModalStore();

@@ -6,6 +6,7 @@ import { ChannelType } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { ServerHeader } from "./server.header";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ServerSidebarProps {
     serverId: string;
@@ -16,7 +17,6 @@ export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
     const { server, isLoading, error } = useServerData(serverId);
     const router = useRouter();
 
-    // Check if current user is a member of the server
     const isMember = server?.members?.some(member => member.profile.userId === user?.id);
     const isCreator = server?.creatorId === user?.id;
 
@@ -29,8 +29,34 @@ export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-full  bg-background/95 backdrop-blur-xl border-r border-border/50">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <div className="flex h-full w-full flex-col bg-card/95 backdrop-blur-xl border-r border-border/60 shadow-2xl relative overflow-hidden rounded-r-3xl mr-2">
+                {/* Subtle background pattern */}
+                <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/5 opacity-50" />
+                {/* Header Skeleton */}
+                <div className="p-4 border-b border-border/50">
+                    <Skeleton className="h-6 w-32 bg-muted" />
+                </div>
+                {/* Channels Section Skeleton */}
+                <div className="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-4">
+                    <div>
+                        <Skeleton className="h-4 w-24 mb-2 bg-muted" />
+                        <Skeleton className="h-8 w-full mb-1 bg-muted" />
+                        <Skeleton className="h-8 w-full mb-1 bg-muted" />
+                        <Skeleton className="h-8 w-full bg-muted" />
+                    </div>
+                    <div>
+                        <Skeleton className="h-4 w-24 mb-2 bg-muted" />
+                        <Skeleton className="h-8 w-full mb-1 bg-muted" />
+                        <Skeleton className="h-8 w-full bg-muted" />
+                    </div>
+                </div>
+                {/* Members Section Skeleton */}
+                <div className="p-4 border-t border-border/50">
+                    <Skeleton className="h-4 w-16 mb-2 bg-muted" />
+                    <Skeleton className="h-8 w-full mb-1 bg-muted" />
+                    <Skeleton className="h-8 w-full mb-1 bg-muted" />
+                    <Skeleton className="h-8 w-full bg-muted" />
+                </div>
             </div>
         );
     }
@@ -53,7 +79,7 @@ export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
     const role = server.members?.find(member => member.profile.userId === user?.id)?.role;
 
     return (
-        <div className="flex h-full w-60 flex-col bg-card/95 backdrop-blur-xl border-r border-border/60 shadow-2xl relative overflow-hidden rounded-r-3xl mr-2">
+        <div className="flex h-full w-full flex-col bg-card/95 backdrop-blur-xl border-r border-border/60 shadow-2xl relative overflow-hidden rounded-r-3xl mr-2">
             {/* Subtle background pattern */}
             <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/5 opacity-50" />
             <ServerHeader server={server} role={role} />
