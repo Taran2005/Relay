@@ -34,7 +34,7 @@ import { useCreateChannel } from "@/lib/hooks/use-create-channel";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChannelType } from "@prisma/client";
-import { ChevronDown, Hash, Mic, Video } from "lucide-react";
+import { ChevronDown, Hash, Mic, Video, Check } from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -128,29 +128,50 @@ export const CreateChannelModal = () => {
                                             <DropdownMenuTrigger asChild>
                                                 <Button
                                                     variant="outline"
-                                                    className="w-full justify-between h-10"
+                                                    className="w-full justify-between h-12 px-4 bg-background border-2 border-input hover:border-primary/50 hover:bg-accent/50 transition-all duration-200 rounded-lg shadow-sm"
                                                     disabled={isLoading}
                                                 >
-                                                    <div className="flex items-center">
-                                                        {React.createElement(channelTypeIcons[field.value], {
-                                                            className: "mr-2 h-4 w-4"
-                                                        })}
-                                                        {channelTypeLabels[field.value]}
+                                                    <div className="flex items-center space-x-3">
+                                                        <div className="p-1.5 rounded-md bg-primary/10">
+                                                            {React.createElement(channelTypeIcons[field.value], {
+                                                                className: "h-4 w-4 text-primary"
+                                                            })}
+                                                        </div>
+                                                        <span className="font-medium text-foreground">
+                                                            {channelTypeLabels[field.value]} Channel
+                                                        </span>
                                                     </div>
-                                                    <ChevronDown className="h-4 w-4 opacity-50" />
+                                                    <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
                                                 </Button>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent className="w-full">
+                                            <DropdownMenuContent
+                                                className="w-[--radix-dropdown-menu-trigger-width] min-w-[200px] bg-background/95 backdrop-blur-xl border-2 border-border/50 shadow-xl rounded-lg p-1"
+                                                align="start"
+                                            >
                                                 {Object.values(ChannelType).map((type) => {
                                                     const Icon = channelTypeIcons[type];
+                                                    const isSelected = field.value === type;
                                                     return (
                                                         <DropdownMenuItem
                                                             key={type}
                                                             onClick={() => field.onChange(type)}
-                                                            className="flex items-center"
+                                                            className={`flex items-center space-x-3 px-3 py-3 rounded-md cursor-pointer transition-all duration-150 hover:bg-accent/80 ${
+                                                                isSelected
+                                                                    ? 'bg-primary/10 text-primary font-medium'
+                                                                    : 'text-foreground hover:text-primary'
+                                                            }`}
                                                         >
-                                                            <Icon className="mr-2 h-4 w-4" />
-                                                            {channelTypeLabels[type]}
+                                                            <div className={`p-1.5 rounded-md transition-colors duration-150 ${
+                                                                isSelected ? 'bg-primary/20' : 'bg-muted/50 group-hover:bg-primary/10'
+                                                            }`}>
+                                                                <Icon className="h-4 w-4" />
+                                                            </div>
+                                                            <span className="flex-1">
+                                                                {channelTypeLabels[type]} Channel
+                                                            </span>
+                                                            {isSelected && (
+                                                                <Check className="h-4 w-4 text-primary" />
+                                                            )}
                                                         </DropdownMenuItem>
                                                     );
                                                 })}
@@ -175,7 +196,7 @@ export const CreateChannelModal = () => {
                                         <Input
                                             disabled={isLoading}
                                             placeholder="Enter channel name"
-                                            className="h-10 border-zinc-100"
+                                            className="h-12 px-4 bg-background border-2 border-input hover:border-primary/50 focus:border-primary transition-all duration-200 rounded-lg shadow-sm"
                                             {...field}
                                         />
                                     </FormControl>
@@ -186,12 +207,11 @@ export const CreateChannelModal = () => {
 
                         {createError && <p className="text-red-500 text-sm">{createError}</p>}
 
-                        {/* Submit Button */}
                         <DialogFooter className="px-0 pb-0">
                             <Button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-10"
+                                className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 rounded-lg shadow-lg hover:shadow-xl font-medium text-base"
                             >
                                 {isLoading ? "Creating..." : "Create Channel"}
                             </Button>
