@@ -11,7 +11,7 @@ import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { ServerWithMembersAndProfile } from "@/types/types";
 import { MemberRole } from "@prisma/client";
 import axios from "axios";
-import { ChevronDown, LogOut, Settings, Trash, UserPlus, Users } from "lucide-react";
+import { ChevronDown, LogOut, Plus, Settings, Trash, UserPlus, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import useSWR from "swr";
@@ -72,6 +72,12 @@ export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
                         <DropdownMenuItem onClick={() => onOpen("invite", { server })}>
                             <UserPlus className="mr-2 h-4 w-4" />
                             Invite People
+                        </DropdownMenuItem>
+                    )}
+                    {isModerator && (
+                        <DropdownMenuItem onClick={() => onOpen("createChannel", { server })}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Create Channel
                         </DropdownMenuItem>
                     )}
                     {isAdmin && (
