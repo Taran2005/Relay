@@ -11,29 +11,37 @@ import {
 
 import { Button } from "@/components/ui/button";
 
+import { useLeaveServer } from "@/lib/hooks/use-leave-server";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
+import { useUser } from "@clerk/nextjs";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
+import useSWR from "swr";
 
 export const LeaveServerModal = () => {
     const { isOpen, type, data, onClose } = useModalStore();
     const isModalOpen = isOpen && type === "leaveServer";
     const router = useRouter();
+    const { user } = useUser();
     const [isLoading, setIsLoading] = useState(false);
     const [isConfirmed, setIsConfirmed] = useState(false);
+
+    const { data: profile } = useSWR(user ? '/api/currentProfile' : null, async (url) => {
+        const res = await axios.get(url);
+        return res.data;
+    });
+
+    const { leaveServer } = useLeaveServer(data.server?.id || "", profile?.id);
 
     const onConfirm = async () => {
         try {
             setIsLoading(true);
-            await axios.patch(`/api/servers/${data.server?.id}/leave`);
+            await leaveServer();
             onClose();
             router.push("/");
-            toast.success("You have left the server!");
-        } catch (error) {
-            console.error(error);
-            toast.error("Failed to leave server");
+        } catch {
+            // Error handling is done in the hook
         } finally {
             setIsLoading(false);
         }

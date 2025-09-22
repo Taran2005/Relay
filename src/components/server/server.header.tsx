@@ -10,11 +10,7 @@ import {
 import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { ServerWithMembersAndProfile } from "@/types/types";
 import { MemberRole } from "@prisma/client";
-import axios from "axios";
 import { ChevronDown, LogOut, Plus, Settings, Trash, UserPlus, Users } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import useSWR from "swr";
 
 interface ServerHeaderProps {
     server: ServerWithMembersAndProfile;
@@ -23,36 +19,8 @@ interface ServerHeaderProps {
 
 export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
     const { onOpen } = useModalStore();
-    const router = useRouter();
     const isAdmin = role === MemberRole.ADMIN;
     const isModerator = isAdmin || role === MemberRole.MODERATOR;
-
-    const { data: profile } = useSWR('/api/currentProfile', async (url) => {
-        const res = await axios.get(url);
-        return res.data;
-    });
-
-    const { data: servers } = useSWR(
-        profile ? `/api/servers?memberId=${profile.id}` : null,
-        async (url) => {
-            const res = await axios.get(url);
-            return res.data;
-        }
-    );
-
-    useEffect(() => {
-        // Handle redirection only if current server is no longer in the list
-        if (servers) {
-            const currentServerInList = servers.some((s: { id: string }) => s.id === server.id);
-            if (!currentServerInList) {
-                if (servers.length > 0) {
-                    router.push(`/servers/${servers[0].id}`);
-                } else {
-                    router.push("/");
-                }
-            }
-        }
-    }, [servers, router, server.id]);
 
     return (
         <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-gradient-to-r from-background/95 to-background/90 backdrop-blur-sm">

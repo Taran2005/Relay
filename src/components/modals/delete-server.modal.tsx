@@ -13,19 +13,40 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { useModalStore } from "@/lib/hooks/use-modal-store";
+import { useUser } from "@clerk/nextjs";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import useSWR, { mutate } from "swr";
+
+interface Server {
+    id: string;
+    name: string;
+    imageUrl: string | null;
+}
 
 export const DeleteServerModal = () => {
     const { isOpen, type, data, onClose } = useModalStore();
     const isModalOpen = isOpen && type === "deleteServer";
     const router = useRouter();
+    const { user } = useUser();
     const [isLoading, setIsLoading] = useState(false);
     const [confirmText, setConfirmText] = useState("");
 
+    const { data: profile } = useSWR(user ? '/api/currentProfile' : null, async (url) => {
+        const res = await axios.get(url);
+        return res.data;
+    });
+
     const onConfirm = async () => {
+        if (!profile?.id) return;
+
+        // Optimistically remove server from cache
+        mutate(`/api/servers?memberId=${profile.id}`, (currentServers: Server[] | undefined) =>
+            currentServers?.filter(s => s.id !== data.server?.id), false
+        );
+
         try {
             setIsLoading(true);
             await axios.delete(`/api/servers/${data.server?.id}`);
@@ -33,6 +54,8 @@ export const DeleteServerModal = () => {
             router.push("/");
             toast.success("Server deleted successfully!");
         } catch (error) {
+            // Revert optimistic update on error
+            mutate(`/api/servers?memberId=${profile.id}`);
             console.error(error);
             toast.error("Failed to delete server");
         } finally {

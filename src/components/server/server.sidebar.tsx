@@ -1,16 +1,30 @@
 "use client";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import { useServerData } from "@/lib/hooks/useServerData";
 import { useUser } from "@clerk/nextjs";
-import { ChannelType } from "@prisma/client";
+import { ChannelType, MemberRole } from "@prisma/client";
+import { Crown, Hash, Mic, ShieldCheck, Video } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { ServerHeader } from "./server.header";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ServerSearch } from "./server.search";
 
 interface ServerSidebarProps {
     serverId: string;
 }
+
+const iconMap = {
+    [ChannelType.TEXT]: <Hash className="mr-2 w-4 h-4" />,
+    [ChannelType.AUDIO]: <Mic className="mr-2 w-4 h-4" />,
+    [ChannelType.VIDEO]: <Video className="mr-2 w-4 h-4" />,
+};
+
+const roleIconMap = {
+    [MemberRole.GUEST]: null,
+    [MemberRole.MODERATOR]: <ShieldCheck className="h-4 w-4 mr-2 text-indigo-500" />,
+    [MemberRole.ADMIN]: <Crown className="h-4 w-4 mr-2 text-yellow-500" />
+};
 
 export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
     const { user } = useUser();
@@ -78,54 +92,56 @@ export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
     const members = server.members?.filter(member => member.profileId !== user?.id);
     const role = server.members?.find(member => member.profile.userId === user?.id)?.role;
 
+    const searchData = [
+        {
+            label: "Text Channels",
+            type: "channel" as const,
+            data: textChannels?.map(channel => ({
+                icon: iconMap[channel.type],
+                name: channel.name,
+                id: channel.id,
+            })) || []
+        },
+        {
+            label: "Voice Channels",
+            type: "channel" as const,
+            data: voiceChannels?.map(channel => ({
+                icon: iconMap[channel.type],
+                name: channel.name,
+                id: channel.id,
+            })) || []
+        },
+        {
+            label: "Video Channels",
+            type: "channel" as const,
+            data: videoChannels?.map(channel => ({
+                icon: iconMap[channel.type],
+                name: channel.name,
+                id: channel.id,
+            })) || []
+        },
+        {
+            label: "Members",
+            type: "member" as const,
+            data: members?.map(member => ({
+                icon: roleIconMap[member.role],
+                name: member.profile.name,
+                id: member.id,
+            })) || []
+        }
+    ];
+
     return (
         <div className="flex h-full w-full flex-col bg-card/95 backdrop-blur-xl border-r border-border/60 shadow-2xl relative overflow-hidden rounded-r-3xl mr-2">
             {/* Subtle background pattern */}
             <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/5 opacity-50" />
             <ServerHeader server={server} role={role} />
 
-            {/* Channels Section */}
-            <div className="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-4">
-                {textChannels && textChannels.length > 0 && (
-                    <div>
-                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Text Channels</h3>
-                        {textChannels.map(channel => (
-                            <div key={channel.id} className="flex items-center p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
-                                <span className="text-sm text-foreground">{channel.name}</span>
-                            </div>
-                        ))}
-                    </div>
-                )}
-                {voiceChannels && voiceChannels.length > 0 && (
-                    <div>
-                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Voice Channels</h3>
-                        {voiceChannels.map(channel => (
-                            <div key={channel.id} className="flex items-center p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
-                                <span className="text-sm text-foreground">{channel.name}</span>
-                            </div>
-                        ))}
-                    </div>
-                )}
-                {videoChannels && videoChannels.length > 0 && (
-                    <div>
-                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Video Channels</h3>
-                        {videoChannels.map(channel => (
-                            <div key={channel.id} className="flex items-center p-2 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer">
-                                <span className="text-sm text-foreground">{channel.name}</span>
-                            </div>
-                        ))}
-                    </div>
-                )}
+            {/* Search Component */}
+            <div className="p-2">
+                <ServerSearch data={searchData} serverId={serverId} />
             </div>
-            {/* Members Section */}
-            <div className="p-4 border-t border-border/50">
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Members</h3>
-                {members && members.map(member => (
-                    <div key={member.id} className="flex items-center p-2 rounded-lg hover:bg-muted/50 transition-colors">
-                        <span className="text-sm text-foreground">{member.profile.name}</span>
-                    </div>
-                ))}
-            </div>
+
         </div>
     );
 };

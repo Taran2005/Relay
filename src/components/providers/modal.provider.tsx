@@ -23,8 +23,6 @@ export const ModalProvider = () => {
             {isMounted && <CreateChannelModal />}
             {isMounted && <DeleteServerModal />}
             {isMounted && <LeaveServerModal />}
-            {/* Debug: Check if modals are rendering */}
-            {console.log("ModalProvider rendering modals")}
         </>
     );
 };
