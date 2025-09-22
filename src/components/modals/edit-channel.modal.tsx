@@ -30,7 +30,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { useCreateChannel } from "@/lib/hooks/use-create-channel";
+import { useEditChannel } from "@/lib/hooks/use-edit-channel";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChannelType } from "@prisma/client";
@@ -60,28 +60,37 @@ const channelTypeLabels = {
     [ChannelType.VIDEO]: "Video",
 };
 
-export const CreateChannelModal = () => {
+export const EditChannelModal = () => {
     const { isOpen, type, data, onClose } = useModalStore();
-    const isModalOpen = isOpen && type === "createChannel";
+    const isModalOpen = isOpen && type === "editChannel";
+    const channel = data?.channel;
     const server = data?.server;
 
-    const { createChannel, loading: isLoading, error: createError } = useCreateChannel();
+    const { editChannel, loading: isLoading, error: editError } = useEditChannel();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             channelName: "",
-            channelType: data?.channelType || ChannelType.TEXT,
+            channelType: ChannelType.TEXT,
         },
     });
 
+    useEffect(() => {
+        if (channel) {
+            form.setValue("channelName", channel.name);
+            form.setValue("channelType", channel.type);
+        }
+    }, [channel, form]);
+
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         try {
-            if (!server) return;
+            if (!channel || !server) return;
 
-            await createChannel({
+            await editChannel({
                 name: data.channelName,
                 type: data.channelType,
+                channelId: channel.id,
                 serverId: server.id,
             });
 
@@ -93,28 +102,22 @@ export const CreateChannelModal = () => {
     };
 
     useEffect(() => {
-        if (isModalOpen && data?.channelType) {
-            form.setValue("channelType", data.channelType);
-        }
-    }, [isModalOpen, data?.channelType, form]);
-
-    useEffect(() => {
         if (!isModalOpen) {
             form.reset();
         }
     }, [isModalOpen, form]);
 
-    if (!server) return null;
+    if (!channel || !server) return null;
 
     return (
         <Dialog open={isModalOpen} onOpenChange={() => { if (isModalOpen) onClose(); }}>
             <DialogContent className="bg-background text-foreground p-6 overflow-hidden border-0 shadow-lg rounded-lg max-w-md">
                 <DialogHeader className="pt-0 px-0">
                     <DialogTitle className="text-2xl font-bold text-center">
-                        Create Channel
+                        Edit Channel
                     </DialogTitle>
                     <DialogDescription className="text-center text-gray-400">
-                        Give your channel a name and select its type.
+                        Update your channel&apos;s name and type.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -209,7 +212,7 @@ export const CreateChannelModal = () => {
                             )}
                         />
 
-                        {createError && <p className="text-red-500 text-sm">{createError}</p>}
+                        {editError && <p className="text-red-500 text-sm">{editError}</p>}
 
                         <DialogFooter className="px-0 pb-0">
                             <Button
@@ -217,7 +220,7 @@ export const CreateChannelModal = () => {
                                 disabled={isLoading}
                                 className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 rounded-lg shadow-lg hover:shadow-xl font-medium text-base"
                             >
-                                {isLoading ? "Creating..." : "Create Channel"}
+                                {isLoading ? "Updating..." : "Update Channel"}
                             </Button>
                         </DialogFooter>
                     </form>

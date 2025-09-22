@@ -5,8 +5,8 @@ import { ChannelType, MemberRole } from "@prisma/client";
 
 import { redirect } from "next/navigation";
 
-import { ServerSearch } from "./server.search";
 import { ServerHeader } from "./server.header";
+import { ServerSearch } from "./server.search";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -130,14 +130,15 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
                     />
                 </div>
                 <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2" />
-                {!!textChannels?.length && (
-                    <div className="mb-2">
-                        <ServerSection
-                            sectionType="channels"
-                            channelType={ChannelType.TEXT}
-                            role={role}
-                            label="Text Channels"
-                        />
+                <div className="mb-2">
+                    <ServerSection
+                        sectionType="channels"
+                        channelType={ChannelType.TEXT}
+                        role={role}
+                        label="Text Channels"
+                        server={server}
+                    />
+                    {!!textChannels?.length && (
                         <div className="space-y-[2px]">
                             {textChannels.map((channel) => (
                                 <ServerChannel
@@ -148,16 +149,17 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
                                 />
                             ))}
                         </div>
-                    </div>
-                )}
-                {!!audioChannels?.length && (
-                    <div className="mb-2">
-                        <ServerSection
-                            sectionType="channels"
-                            channelType={ChannelType.AUDIO}
-                            role={role}
-                            label="Audio Channels"
-                        />
+                    )}
+                </div>
+                <div className="mb-2">
+                    <ServerSection
+                        sectionType="channels"
+                        channelType={ChannelType.AUDIO}
+                        role={role}
+                        label="Audio Channels"
+                        server={server}
+                    />
+                    {!!audioChannels?.length && (
                         <div className="space-y-[2px]">
                             {audioChannels.map((channel) => (
                                 <ServerChannel
@@ -168,16 +170,17 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
                                 />
                             ))}
                         </div>
-                    </div>
-                )}
-                {!!videoChannels?.length && (
-                    <div className="mb-2">
-                        <ServerSection
-                            sectionType="channels"
-                            channelType={ChannelType.VIDEO}
-                            role={role}
-                            label="Video Channels"
-                        />
+                    )}
+                </div>
+                <div className="mb-2">
+                    <ServerSection
+                        sectionType="channels"
+                        channelType={ChannelType.VIDEO}
+                        role={role}
+                        label="Video Channels"
+                        server={server}
+                    />
+                    {!!videoChannels?.length && (
                         <div className="space-y-[2px]">
                             {videoChannels.map((channel) => (
                                 <ServerChannel
@@ -188,8 +191,8 @@ export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
                                 />
                             ))}
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
                 <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2" />
                 {!!members?.length && (
                     <div className="mb-2">

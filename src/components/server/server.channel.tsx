@@ -63,18 +63,22 @@ export const ServerChannel = ({
             </p>
             {channel.name !== "general" && role !== MemberRole.GUEST && (
                 <div className="ml-auto flex items-center gap-x-2">
-                    <ActionTooltip label="Edit">
-                        <Edit
-                            onClick={(e) => onAction(e, "editChannel")}
-                            className="hidden group-hover:block w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition"
-                        />
-                    </ActionTooltip>
-                    <ActionTooltip label="Delete">
-                        <Trash
-                            onClick={(e) => onAction(e, "deleteChannel")}
-                            className="hidden group-hover:block w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition"
-                        />
-                    </ActionTooltip>
+                    {(role === MemberRole.ADMIN || role === MemberRole.MODERATOR) && (
+                        <ActionTooltip label="Edit">
+                            <Edit
+                                onClick={(e) => onAction(e, "editChannel")}
+                                className="hidden group-hover:block w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition"
+                            />
+                        </ActionTooltip>
+                    )}
+                    {role === MemberRole.ADMIN && (
+                        <ActionTooltip label="Delete">
+                            <Trash
+                                onClick={(e) => onAction(e, "deleteChannel")}
+                                className="hidden group-hover:block w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition"
+                            />
+                        </ActionTooltip>
+                    )}
                 </div>
             )}
             {channel.name === "general" && (
