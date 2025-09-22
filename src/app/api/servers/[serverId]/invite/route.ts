@@ -1,7 +1,8 @@
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
-import { NextResponse } from "next/server";
 import { MemberRole } from "@prisma/client";
+import { NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 
 
 export async function PATCH(
@@ -30,8 +31,8 @@ export async function PATCH(
         if (member.role !== MemberRole.ADMIN && member.role !== MemberRole.MODERATOR) {
             return new NextResponse("Forbidden", { status: 403 });
         }
-        
-        const inviteCode = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+        const inviteCode = uuidv4();
 
         const server = await db.server.update({
             where: {

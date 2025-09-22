@@ -4,9 +4,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useServerData } from "@/lib/hooks/useServerData";
 import { useUser } from "@clerk/nextjs";
 import { ChannelType, MemberRole } from "@prisma/client";
-import { Crown, Hash, Mic, ShieldCheck, Video } from "lucide-react";
+import { Crown, Hash, Mic, ShieldCheck, Users, Video } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import { ServerHeader } from "./server.header";
 import { ServerSearch } from "./server.search";
 
@@ -26,7 +26,7 @@ const roleIconMap = {
     [MemberRole.ADMIN]: <Crown className="h-4 w-4 mr-2 text-yellow-500" />
 };
 
-export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
+export const ServerSidebar = memo(({ serverId }: ServerSidebarProps) => {
     const { user } = useUser();
     const { server, isLoading, error } = useServerData(serverId);
     const router = useRouter();
@@ -142,6 +142,79 @@ export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
                 <ServerSearch data={searchData} serverId={serverId} />
             </div>
 
+            {/* Channels Section */}
+            <div className="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-4">
+                {textChannels?.length > 0 && (
+                    <div>
+                        <div className="text-xs uppercase font-semibold text-muted-foreground mb-2 flex items-center">
+                            <Hash className="mr-1 w-3 h-3" />
+                            Text Channels
+                        </div>
+                        {textChannels.map(channel => (
+                            <div key={channel.id} className="mb-1">
+                                <button className="flex items-center w-full px-2 py-1 rounded-md hover:bg-muted/50 transition-colors text-sm">
+                                    {iconMap[channel.type]}
+                                    {channel.name}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {voiceChannels?.length > 0 && (
+                    <div>
+                        <div className="text-xs uppercase font-semibold text-muted-foreground mb-2 flex items-center">
+                            <Mic className="mr-1 w-3 h-3" />
+                            Voice Channels
+                        </div>
+                        {voiceChannels.map(channel => (
+                            <div key={channel.id} className="mb-1">
+                                <button className="flex items-center w-full px-2 py-1 rounded-md hover:bg-muted/50 transition-colors text-sm">
+                                    {iconMap[channel.type]}
+                                    {channel.name}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {videoChannels?.length > 0 && (
+                    <div>
+                        <div className="text-xs uppercase font-semibold text-muted-foreground mb-2 flex items-center">
+                            <Video className="mr-1 w-3 h-3" />
+                            Video Channels
+                        </div>
+                        {videoChannels.map(channel => (
+                            <div key={channel.id} className="mb-1">
+                                <button className="flex items-center w-full px-2 py-1 rounded-md hover:bg-muted/50 transition-colors text-sm">
+                                    {iconMap[channel.type]}
+                                    {channel.name}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Members Section */}
+            {members?.length > 0 && (
+                <div className="p-4 border-t border-border/50">
+                    <div className="text-xs uppercase font-semibold text-muted-foreground mb-2 flex items-center">
+                        <Users className="mr-1 w-3 h-3" />
+                        Members ({members.length})
+                    </div>
+                    {members.map(member => (
+                        <div key={member.id} className="mb-1">
+                            <button className="flex items-center w-full px-2 py-1 rounded-md hover:bg-muted/50 transition-colors text-sm">
+                                {roleIconMap[member.role]}
+                                {member.profile.name}
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
-};
+});
+
+ServerSidebar.displayName = "ServerSidebar";

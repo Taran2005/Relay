@@ -1,3 +1,5 @@
+"use client";
+
 import { ServerWithMembersAndProfile } from '@/types/types';
 import axios from 'axios';
 import useSWR from 'swr';
