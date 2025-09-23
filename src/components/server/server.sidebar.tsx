@@ -1,9 +1,9 @@
-import { currentProfile } from "@/lib/current.profile";
-import { db } from "@/lib/db";
+"use client";
+
+import { useServerData } from "@/lib/hooks/useServerData";
+import { useUser } from "@clerk/nextjs";
 
 import { ChannelType, MemberRole } from "@prisma/client";
-
-import { redirect } from "next/navigation";
 
 import { ServerHeader } from "./server.header";
 import { ServerSearch } from "./server.search";
@@ -34,51 +34,50 @@ const roleIconMap = {
     [MemberRole.ADMIN]: <ShieldAlert className="mr-2 h-4 w-4 text-rose-500" />,
 };
 
-export const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
-    const profile = await currentProfile();
+export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
+    const { user } = useUser();
+    const { server, isLoading, error } = useServerData(serverId);
 
-    if (!profile) {
-        return redirect("/");
+    if (isLoading) {
+        return (
+            <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
+                <div className="flex items-center justify-center h-12 border-b border-border/50">
+                    <div className="animate-pulse bg-muted h-6 w-32 rounded"></div>
+                </div>
+                <ScrollArea className="flex-1 px-3">
+                    <div className="mt-2 space-y-2">
+                        <div className="animate-pulse bg-muted h-8 w-full rounded"></div>
+                        <div className="animate-pulse bg-muted h-8 w-3/4 rounded"></div>
+                        <div className="animate-pulse bg-muted h-8 w-1/2 rounded"></div>
+                    </div>
+                </ScrollArea>
+            </div>
+        );
     }
 
-    const server = await db.server.findUnique({
-        where: {
-            id: serverId,
-        },
-        include: {
-            channels: {
-                orderBy: {
-                    createdAt: "asc",
-                },
-            },
-            members: {
-                include: {
-                    profile: true,
-                },
-                orderBy: {
-                    role: "asc",
-                },
-            },
-        },
-    });
+    if (error || !server) {
+        return (
+            <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
+                <div className="flex items-center justify-center h-full">
+                    <p className="text-muted-foreground">Failed to load server</p>
+                </div>
+            </div>
+        );
+    }
 
-    const textChannels = server?.channels.filter(
+    const textChannels = server.channels.filter(
         (channel) => channel.type === ChannelType.TEXT
     );
-    const audioChannels = server?.channels.filter(
+    const audioChannels = server.channels.filter(
         (channel) => channel.type === ChannelType.AUDIO
     );
-    const videoChannels = server?.channels.filter(
+    const videoChannels = server.channels.filter(
         (channel) => channel.type === ChannelType.VIDEO
     );
-    const members = server?.members;
-
-    if (!server) {
-        return redirect("/");
-    }
+    const members = server.members;
 
     const role = server.members.find(
-        (member) => member.profileId === profile.id
+        (member) => member.profile.userId === user?.id
     )?.role;
 
     return (

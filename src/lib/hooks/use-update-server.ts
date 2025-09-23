@@ -31,6 +31,8 @@ export const useUpdateServer = (profileId: string | undefined) => {
                     server.id === serverId ? response.data : server
                 );
             }, false);
+            // Also update the individual server cache
+            mutate(`/api/servers/${serverId}`, response.data, false);
             return response.data;
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : 'Failed to update server';
