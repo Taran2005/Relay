@@ -15,13 +15,24 @@ export const initialProfile = async () => {
         },
     });
 
-    if (profile) return profile;
+    if (profile) {
+        // Update imageUrl if missing
+        if (!profile.imageUrl && user.imageUrl) {
+            await db.profile.update({
+                where: { id: profile.id },
+                data: { imageUrl: user.imageUrl }
+            });
+            profile.imageUrl = user.imageUrl;
+        }
+        return profile;
+    }
 
     const newProfile = await db.profile.create({
         data: {
             userId: user.id,
             name: `${user.firstName} ${user.lastName}`,
             email: user.emailAddresses[0]?.emailAddress,
+            imageUrl: user.imageUrl,
         }
     });
     return newProfile;

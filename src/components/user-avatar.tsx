@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { User } from "lucide-react";
 import Image from "next/image";
 
 interface UserAvatarProps {
@@ -7,9 +8,17 @@ interface UserAvatarProps {
 }
 
 export const UserAvatar = ({ src, className }: UserAvatarProps) => {
+    if (!src) {
+        return (
+            <div className={cn("h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center", className)}>
+                <User className="h-4 w-4 text-white" />
+            </div>
+        );
+    }
+
     return (
         <Image
-            src={src ?? "/default-avatar.png"}
+            src={src}
             alt="User Avatar"
             width={32}
             height={32}
