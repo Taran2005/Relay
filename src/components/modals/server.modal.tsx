@@ -17,20 +17,20 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import axios from 'axios';
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { FileUpload } from "@/components/fileupload";
 
-import { useCreateServer } from "@/lib/hooks/use-create-server";
+import { useCurrentProfile } from "@/lib/hooks/use-current-profile";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
+import { useCreateServer } from "@/lib/hooks/use-servers";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation"; // ✅ Import router
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import useSWR from "swr";
+import { toast } from "sonner";
 import * as z from "zod";
 
 // 🔹 Validation Schema
@@ -42,16 +42,14 @@ const formSchema = z.object({
     serverImage: z.string().optional(),
 });
 
-const fetcher = (url: string) => axios.get(url).then(res => res.data);
-
 export const CreateServerModal = () => {
-    const router = useRouter(); // ✅ Next.js router
+    const router = useRouter();
     const { isOpen, type, onClose } = useModalStore();
     const isModalOpen = isOpen && type === "createServer";
     const [isUploading, setIsUploading] = useState(false);
 
-    const { data: profile } = useSWR('/api/currentProfile', fetcher);
-    const { createServer, loading: isLoading, error: createError } = useCreateServer(profile?.id);
+    const { data: profile, isLoading: profileLoading } = useCurrentProfile();
+    const createServerMutation = useCreateServer();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -62,15 +60,26 @@ export const CreateServerModal = () => {
     });
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
+        if (!profile) {
+            toast.error("Authentication required. Please sign in.");
+            return;
+        }
+
         try {
-            const newServer = await createServer({ name: data.serverName, imageUrl: data.serverImage || null });
+            const newServer = await createServerMutation.mutateAsync({
+                name: data.serverName,
+                imageUrl: data.serverImage || null
+            });
+
             form.reset();
             onClose();
+            toast.success("Server created successfully!");
+
             if (newServer) {
                 router.push(`/servers/${newServer.id}`);
             }
         } catch {
-
+            toast.error("Failed to create server. Please try again.");
         }
     };
 
@@ -127,7 +136,7 @@ export const CreateServerModal = () => {
                                     </FormLabel>
                                     <FormControl>
                                         <Input
-                                            disabled={isLoading}
+                                            disabled={createServerMutation.isPending}
                                             placeholder="Enter server name"
                                             className="h-10 border-zinc-100"
                                             {...field}
@@ -138,18 +147,22 @@ export const CreateServerModal = () => {
                             )}
                         />
 
-                        {createError && <p className="text-red-500 text-sm">{createError}</p>}
+                        {createServerMutation.error && (
+                            <p className="text-red-500 text-sm">
+                                {createServerMutation.error.message}
+                            </p>
+                        )}
 
                         {/* Submit Button */}
                         <DialogFooter className="px-0 pb-0">
                             <Button
                                 type="submit"
-                                disabled={isLoading || isUploading}
+                                disabled={createServerMutation.isPending || isUploading || profileLoading || !profile}
                                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-10"
                             >
                                 {isUploading
                                     ? "Uploading..."
-                                    : isLoading
+                                    : createServerMutation.isPending
                                         ? "Creating..."
                                         : "Create"}
                             </Button>

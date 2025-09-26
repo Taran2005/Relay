@@ -31,31 +31,66 @@ export const SocketProvider = ({
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    const socketInstance = ClientIO(process.env.NEXT_PUBLIC_SITE_URL!, {
+    // Only connect in production or when explicitly using socket server
+    const shouldConnect = process.env.NODE_ENV === 'production' ||
+      process.env.NEXT_PUBLIC_ENABLE_SOCKET === 'true';
+
+    if (!shouldConnect) {
+      console.log("🔌 Socket.IO disabled in development. Use 'npm run dev:socket' to enable.");
+      return;
+    }
+
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
+    console.log("🔌 Attempting to connect to Socket.IO at:", siteUrl);
+
+    const socketInstance = ClientIO(siteUrl, {
       path: "/api/socket/io",
       addTrailingSlash: false,
-      transports: ['websocket', 'polling'],
-      timeout: 20000,
+      transports: ['polling', 'websocket'],
+      timeout: 10000,
+      reconnection: true,
+      reconnectionAttempts: 3,
+      reconnectionDelay: 2000,
+      forceNew: false,
     });
 
     socketInstance.on("connect", () => {
+      console.log("🟢 Socket connected successfully!", socketInstance.id);
       setIsConnected(true);
     });
 
-    socketInstance.on("disconnect", () => {
+    socketInstance.on("disconnect", (reason) => {
+      console.log("🔴 Socket disconnected:", reason);
       setIsConnected(false);
     });
 
-    socketInstance.on("connect_error", () => {
+    socketInstance.on("connect_error", (error) => {
+      console.log("❌ Socket connection error:", error.message || error);
       setIsConnected(false);
     });
 
-    socketInstance.on("error", () => {
+    socketInstance.on("error", (error) => {
+      console.log("❌ Socket error:", error);
+    });
+
+    socketInstance.on("reconnect", (attemptNumber) => {
+      console.log("� Socket reconnected on attempt:", attemptNumber);
+      setIsConnected(true);
+    });
+
+    socketInstance.on("reconnect_attempt", (attemptNumber) => {
+      console.log("🔄 Reconnection attempt:", attemptNumber);
+    });
+
+    socketInstance.on("reconnect_error", (error) => {
+      console.log("❌ Reconnection error:", error);
     });
 
     setSocket(socketInstance);
 
     return () => {
+      console.log("🔌 Cleaning up socket connection");
       socketInstance.disconnect();
     }
   }, []);
