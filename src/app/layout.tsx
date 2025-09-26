@@ -1,5 +1,6 @@
 import { ErrorBoundary } from "@/components/error-boundary";
 import { Providers } from "@/components/providers/providers";
+import { SocketStatus } from "@/components/socket-status";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -33,6 +34,7 @@ export default function RootLayout({
         <Providers>
           <ErrorBoundary>
             {children}
+            <SocketStatus />
           </ErrorBoundary>
         </Providers>
       </body>

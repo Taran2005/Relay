@@ -1,7 +1,13 @@
-import { NextRequest } from "next/server";
+import { Server as NetServer } from "http";
 import { Server as ServerIO } from "socket.io";
 
-export async function GET(req: NextRequest) {
+// Extend the global namespace for Socket.IO
+declare global {
+    var httpServer: NetServer | undefined;
+    var io: ServerIO | undefined;
+}
+
+export async function GET() {
     const res = new Response("Socket.IO endpoint active", {
         status: 200,
         headers: {
@@ -12,8 +18,8 @@ export async function GET(req: NextRequest) {
     });
 
     // Initialize Socket.IO if not already done
-    const httpServer = (global as any).httpServer;
-    if (httpServer && !(global as any).io) {
+    const httpServer = globalThis.httpServer;
+    if (httpServer && !globalThis.io) {
         console.log("🔌 Initializing Socket.IO server...");
 
         const io = new ServerIO(httpServer, {
@@ -26,7 +32,7 @@ export async function GET(req: NextRequest) {
             transports: ['polling', 'websocket'],
         });
 
-        (global as any).io = io;
+        globalThis.io = io;
 
         io.on('connection', (socket) => {
             console.log("🟢 Client connected:", socket.id);
@@ -52,6 +58,6 @@ export async function GET(req: NextRequest) {
     return res;
 }
 
-export async function POST(req: NextRequest) {
-    return GET(req);
+export async function POST() {
+    return GET();
 }
