@@ -1,4 +1,8 @@
-import { Ban, Channel, Member, Profile, Server } from "@prisma/client";
+import { Ban, Channel, Member, Message, Profile, Server } from "@prisma/client";
+import { Server as NetServer } from "http";
+import { Socket } from "net";
+import { NextApiResponse } from "next";
+import { Server as ServerIO } from "socket.io";
 
 export type ServerWithMembersAndProfile = Server & {
     members: (Member & {
@@ -15,4 +19,18 @@ export type ServerWithMembersAndProfileAndBans = Server & {
     bans: (Ban & {
         profile: Profile;
     })[];
+};
+
+export type NextApiResponseServerIo = NextApiResponse & {
+    socket: Socket & {
+        server: NetServer & {
+            io: ServerIO;
+        };
+    };
+};
+
+export type MessageWithMemberWithProfile = Message & {
+    member: Member & {
+        profile: Profile;
+    }
 };

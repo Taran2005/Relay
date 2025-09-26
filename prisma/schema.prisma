@@ -57,7 +57,7 @@ model Member {
     conversationsReceived  Conversation[] @relation("MemberTwo")
 
     // Direct messages this member sent
-    directMessagesSent DirectMessage[] @relation("DirectMessageSender")
+    directMessages DirectMessage[]
 
     @@index([profileId])
     @@index([serverId])
@@ -98,9 +98,7 @@ model Message {
 }
 
 model Conversation {
-    id        String   @id @default(uuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id String @id @default(uuid())
 
     memberOneId String
     memberOne   Member @relation("MemberOne", fields: [memberOneId], references: [id], onDelete: Cascade)
@@ -108,7 +106,7 @@ model Conversation {
     memberTwoId String
     memberTwo   Member @relation("MemberTwo", fields: [memberTwoId], references: [id], onDelete: Cascade)
 
-    messages DirectMessage[]
+    directMessages DirectMessage[]
 
     @@unique([memberOneId, memberTwoId])
     @@index([memberOneId])
@@ -123,14 +121,14 @@ model DirectMessage {
     updatedAt DateTime @updatedAt
     deleted   Boolean  @default(false)
 
+    memberId String
+    member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
     conversationId String
-    senderId       String
+    conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
-    conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-    sender       Member       @relation("DirectMessageSender", fields: [senderId], references: [id], onDelete: Cascade)
-
+    @@index([memberId])
     @@index([conversationId])
-    @@index([senderId])
 }
 
 model Ban {

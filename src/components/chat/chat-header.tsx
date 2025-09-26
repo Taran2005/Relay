@@ -6,10 +6,9 @@ import { ChannelType } from "@prisma/client";
 import { Hash, Mic, Phone, Video } from "lucide-react";
 
 interface ChatHeaderProps {
-    serverId: string;
     name: string;
     type: 'channel' | 'conversation';
-    imageUrl?: string;
+    imageUrl?: string | null;
     channelType?: ChannelType;
 }
 
