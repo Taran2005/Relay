@@ -36,6 +36,10 @@ export const useChatSocket = ({
       return;
     }
 
+    // Join the channel/room to receive messages
+    const roomName = addKey; // addKey is 'chat:channelId:messages'
+    socket.emit('join-channel', roomName);
+
     socket.on(updateKey, (message: MessageWithMemberWithProfile) => {
       queryClient.setQueryData([queryKey], (oldData: InfiniteQueryData) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
@@ -92,6 +96,7 @@ export const useChatSocket = ({
     return () => {
       socket.off(addKey);
       socket.off(updateKey);
+      socket.emit('leave-channel', roomName);
     }
   }, [queryClient, addKey, queryKey, socket, updateKey]);
 }

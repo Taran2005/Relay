@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "dev:socket": "node server-dev.js",
+    "dev": "node server.js",
     "build": "next build --turbopack",
     "start": "node server.js",
     "prod": "npm run build && npm run start:prod",
