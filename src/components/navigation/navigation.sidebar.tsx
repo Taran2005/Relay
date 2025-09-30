@@ -16,15 +16,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { useCreateServer } from "@/lib/hooks/use-create-server";
 import { UserButton } from "@clerk/nextjs";
-import axios from 'axios';
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import useSWR from "swr";
+import { useProfile } from "@/hooks/use-profile";
+import { useServers } from "@/hooks/use-servers";
 
 interface Server { id: string; name: string; imageUrl: string | null; }
-
-const fetcher = (url: string) => axios.get(url).then(res => res.data);
 
 export function NavigationSidebar() {
   const [open, setOpen] = useState(false),
@@ -32,12 +30,9 @@ export function NavigationSidebar() {
     [imageUrl, setImageUrl] = useState<string | null>(null),
     [uploading, setUploading] = useState(false);
 
-  // Fetch profile and servers with SWR
-  const { data: profile, error: profileError } = useSWR('/api/currentProfile', fetcher);
-  const { data: servers, error: serversError } = useSWR(
-    profile ? `/api/servers?memberId=${profile.id}` : null,
-    fetcher
-  );
+  // Fetch profile and servers with React Query
+  const { data: profile, error: profileError } = useProfile();
+  const { data: servers, error: serversError } = useServers(profile?.id);
 
   const { createServer, loading: creating, error: createError } = useCreateServer(profile?.id);
 

@@ -76,7 +76,12 @@ export const CreateServerModal = () => {
             toast.success("Server created successfully!");
 
             if (newServer) {
-                router.push(`/servers/${newServer.id}`);
+                const generalChannel = (newServer as any).channels?.find((channel: any) => channel.name === "general");
+                if (generalChannel) {
+                    router.push(`/servers/${newServer.id}/channels/${generalChannel.id}`);
+                } else {
+                    router.push(`/servers/${newServer.id}`);
+                }
             }
         } catch {
             toast.error("Failed to create server. Please try again.");

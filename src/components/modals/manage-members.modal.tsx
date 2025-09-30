@@ -25,42 +25,30 @@ import axios from "axios";
 import { Crown, Loader2, MoreVertical, Shield, ShieldCheck, UserMinus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import useSWR from "swr";
+import { useQueryClient } from "@tanstack/react-query";
+import { useServer } from "@/hooks/use-server";
 import { Skeleton } from "@/components/ui/skeleton";
-
-const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
 export const ManageMembersModal = () => {
     const { isOpen, type, data, onClose } = useModalStore();
     const isModalOpen = isOpen && type === "manageMembers";
     const [loadingId, setLoadingId] = useState<string>("");
     const [showBanned, setShowBanned] = useState(false);
+    const queryClient = useQueryClient();
 
     const serverId = data?.server?.id;
-    const { data: server, error, isLoading, mutate } = useSWR<ServerWithMembersAndProfileAndBans>(
-        serverId ? `/api/servers/${serverId}?includeBans=true` : null,
-        fetcher
-    );
+    const { data: server, error, isLoading } = useServer(serverId, true);
 
     const onRoleChange = async (memberId: string, role: MemberRole) => {
         try {
             setLoadingId(memberId);
             await axios.patch(`/api/members/${memberId}`, { role });
 
-            mutate((currentServer) => {
-                if (!currentServer) return currentServer;
-                return {
-                    ...currentServer,
-                    members: currentServer.members.map((member) =>
-                        member.id === memberId ? { ...member, role } : member
-                    ),
-                };
-            }, false);
+            queryClient.invalidateQueries({ queryKey: ["server", serverId, true] });
 
             toast.success("Role updated successfully");
         } catch {
             toast.error("Failed to update role");
-            mutate();
         } finally {
             setLoadingId("");
         }
@@ -71,20 +59,11 @@ export const ManageMembersModal = () => {
             setLoadingId(memberId);
             await axios.delete(`/api/members/${memberId}`);
 
-            // Optimistically update the cache
-            mutate((currentServer) => {
-                if (!currentServer) return currentServer;
-                return {
-                    ...currentServer,
-                    members: currentServer.members.filter((member) => member.id !== memberId),
-                };
-            }, false);
+            queryClient.invalidateQueries({ queryKey: ["server", serverId, true] });
 
             toast.success("Member kicked successfully");
         } catch {
             toast.error("Failed to kick member");
-            // Revert on error
-            mutate();
         } finally {
             setLoadingId("");
         }
@@ -98,20 +77,11 @@ export const ManageMembersModal = () => {
             // Then remove them from members
             await axios.delete(`/api/members/${memberId}`);
 
-            // Optimistically update the cache
-            mutate((currentServer) => {
-                if (!currentServer) return currentServer;
-                return {
-                    ...currentServer,
-                    members: currentServer.members.filter((member) => member.id !== memberId),
-                };
-            }, false);
+            queryClient.invalidateQueries({ queryKey: ["server", serverId, true] });
 
             toast.success("Member banned successfully");
         } catch {
             toast.error("Failed to ban member");
-            // Revert on error
-            mutate();
         } finally {
             setLoadingId("");
         }
@@ -122,20 +92,11 @@ export const ManageMembersModal = () => {
             setLoadingId(banId);
             await axios.delete(`/api/bans/${banId}`);
 
-            // Optimistically update the cache
-            mutate((currentServer) => {
-                if (!currentServer) return currentServer;
-                return {
-                    ...currentServer,
-                    bans: currentServer.bans?.filter((ban) => ban.id !== banId),
-                };
-            }, false);
+            queryClient.invalidateQueries({ queryKey: ["server", serverId, true] });
 
             toast.success("Member unbanned successfully");
         } catch {
             toast.error("Failed to unban member");
-            // Revert on error
-            mutate();
         } finally {
             setLoadingId("");
         }

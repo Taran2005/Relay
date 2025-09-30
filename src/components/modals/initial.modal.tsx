@@ -28,7 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation"; // ✅ Import router
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import useSWR from "swr";
+import { useProfile } from "@/hooks/use-profile";
 import * as z from "zod";
 
 // 🔹 Validation Schema
@@ -40,14 +40,12 @@ const formSchema = z.object({
     serverImage: z.string().optional(),
 });
 
-const fetcher = (url: string) => fetch(url).then(res => res.json());
-
 export const InitialModal = () => {
     const router = useRouter(); // ✅ Next.js router
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [isUploading, setIsUploading] = useState(false);
 
-    const { data: profile } = useSWR('/api/currentProfile', fetcher);
+    const { data: profile } = useProfile();
     const { createServer, loading: isLoading, error: createError } = useCreateServer(profile?.id);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -64,9 +62,14 @@ export const InitialModal = () => {
             const newServer = await createServer({ name: data.serverName, imageUrl: data.serverImage || null });
             form.reset();
             setIsModalOpen(false);
-            // Redirect to the new server
+            // Redirect to the new server's general channel
             if (newServer) {
-                router.push(`/servers/${newServer.id}`);
+                const generalChannel = (newServer as any).channels?.find((channel: any) => channel.name === "general");
+                if (generalChannel) {
+                    router.push(`/servers/${newServer.id}/channels/${generalChannel.id}`);
+                } else {
+                    router.push(`/servers/${newServer.id}`);
+                }
             }
         } catch {
             // Error handled in hook

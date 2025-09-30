@@ -5,6 +5,8 @@ import axios from "axios";
 import { Plus } from "lucide-react";
 import qs from "query-string";
 import { useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import * as z from "zod";
 
 import {
@@ -15,7 +17,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
-import { useRouter } from "next/navigation";
 
 interface ChatInputProps {
   apiUrl: string;
@@ -35,7 +36,7 @@ export const ChatInput = ({
   type,
 }: ChatInputProps) => {
   const { onOpen } = useModalStore();
-  const router = useRouter();
+  const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,9 +57,10 @@ export const ChatInput = ({
       await axios.post(url, values);
 
       form.reset();
-      router.refresh();
+      queryClient.invalidateQueries({ queryKey: [`chat:${query.channelId}`] });
     } catch (error) {
       console.error("Failed to send message:", error);
+      toast.error("Failed to send message. Please try again.");
     }
   }
 
