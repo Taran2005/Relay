@@ -10,5 +10,9 @@ export const useServers = (profileId: string | undefined) => {
       return res.data;
     },
     enabled: !!profileId,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
+    retry: 1,
+    throwOnError: false,
   });
 };

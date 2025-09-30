@@ -34,3 +34,10 @@ export type MessageWithMemberWithProfile = Message & {
         profile: Profile;
     }
 };
+
+export type ChatMessage = MessageWithMemberWithProfile & {
+    conversationId?: string | null;
+    channelId?: string | null;
+    fileUrl?: string | null;
+    deleted?: boolean;
+};

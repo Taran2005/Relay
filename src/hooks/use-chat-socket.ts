@@ -1,33 +1,34 @@
-import { Member, Message, Profile } from "@prisma/client";
-import { useQueryClient } from "@tanstack/react-query";
+import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 import { useSocket } from "@/components/providers/socket.provider";
-import { logger } from "@/lib/logger";
-import { DirectMessage } from "@prisma/client";
+import { ChatMessage } from "@/types/types";
 
 type ChatSocketProps = {
   addKey: string;
   updateKey: string;
-  queryKey: string;
-}
-
-type MessageWithMemberWithProfile = (Message | DirectMessage) & {
-  member: Member & {
-    profile: Profile;
-  }
+  queryKey: QueryKey;
+  meta?: {
+    channelId?: string;
+    conversationId?: string;
+    serverId?: string;
+  };
 };
+
+type MessageWithMemberWithProfile = ChatMessage;
 
 interface InfiniteQueryData {
   pages: {
     items: MessageWithMemberWithProfile[];
+    nextCursor?: string | null;
   }[];
 }
 
 export const useChatSocket = ({
   addKey,
   updateKey,
-  queryKey
+  queryKey,
+  meta,
 }: ChatSocketProps) => {
   const { socket } = useSocket();
   const queryClient = useQueryClient();
@@ -37,22 +38,22 @@ export const useChatSocket = ({
       return;
     }
 
-    // Join the channel/room to receive messages
-    const roomName = addKey; // addKey is 'chat:channelId:messages'
-    
-    // Ensure we're connected before joining
+    const roomName = addKey;
+    const joinPayload = {
+      room: roomName,
+      meta,
+    };
+
     if (socket.connected) {
-      socket.emit('join-channel', roomName);
-      console.log(`[CHAT_SOCKET] Joining room: ${roomName}`);
+      socket.emit('join-channel', joinPayload);
     } else {
       socket.on('connect', () => {
-        socket.emit('join-channel', roomName);
-        console.log(`[CHAT_SOCKET] Connected and joined room: ${roomName}`);
+        socket.emit('join-channel', joinPayload);
       });
     }
 
     socket.on(updateKey, (message: MessageWithMemberWithProfile) => {
-      queryClient.setQueryData([queryKey], (oldData: InfiniteQueryData) => {
+      queryClient.setQueryData<InfiniteQueryData | undefined>(queryKey, (oldData) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
           return oldData;
         }
@@ -72,21 +73,19 @@ export const useChatSocket = ({
         return {
           ...oldData,
           pages: newData,
-        }
-      })
+        };
+      });
     });
 
-    socket.on(addKey, (message: MessageWithMemberWithProfile) => {
-      logger.socket.message(message.id);
-      console.log(`[CHAT_SOCKET] Received new message on ${addKey}:`, message.id);
-      
-      queryClient.setQueryData([queryKey], (oldData: InfiniteQueryData) => {
+    const messageHandler = (message: MessageWithMemberWithProfile) => {
+      queryClient.setQueryData<InfiniteQueryData | undefined>(queryKey, (oldData) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
           return {
             pages: [{
               items: [message],
-            }]
-          }
+              nextCursor: null,
+            }],
+          } as InfiniteQueryData;
         }
 
         const newData = [...oldData.pages];
@@ -104,17 +103,14 @@ export const useChatSocket = ({
           pages: newData,
         };
       });
+    };
 
-      // Force invalidation to ensure React re-renders
-      queryClient.invalidateQueries({
-        queryKey: [queryKey]
-      });
-    });
+    socket.on(addKey, messageHandler);
 
     return () => {
-      socket.off(addKey);
+      socket.off(addKey, messageHandler);
       socket.off(updateKey);
       socket.emit('leave-channel', roomName);
-    }
-  }, [queryClient, addKey, queryKey, socket, updateKey]);
-}
+    };
+  }, [addKey, meta, queryClient, queryKey, socket, updateKey]);
+};

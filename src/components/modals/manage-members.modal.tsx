@@ -167,35 +167,41 @@ export const ManageMembersModal = () => {
                             ))}
                         </div>
                     ) : showBanned ? (
-                        server?.bans?.map((ban: Ban & { profile: Profile }) => (
-                            <div key={ban.id} className="flex items-center gap-x-2 mb-4">
-                                <div className="h-10 w-10 rounded-full bg-red-500 flex items-center justify-center text-white font-semibold">
-                                    {ban.profile.name.charAt(0).toUpperCase()}
-                                </div>
-                                <div className="flex flex-col gap-y-1">
-                                    <div className="text-sm font-semibold">
-                                        {ban.profile.name}
+                        server?.bans?.length ? (
+                            server.bans.map((ban: Ban & { profile: Profile }) => (
+                                <div key={ban.id} className="flex items-center gap-x-2 mb-4">
+                                    <div className="h-10 w-10 rounded-full bg-red-500 flex items-center justify-center text-white font-semibold">
+                                        {ban.profile.name.charAt(0).toUpperCase()}
                                     </div>
-                                    <p className="text-xs text-muted-foreground">
-                                        Banned
-                                    </p>
+                                    <div className="flex flex-col gap-y-1">
+                                        <div className="text-sm font-semibold">
+                                            {ban.profile.name}
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">
+                                            Banned
+                                        </p>
+                                    </div>
+                                    <div className="ml-auto">
+                                        <Button
+                                            variant="destructive"
+                                            size="sm"
+                                            onClick={() => onUnban(ban.id)}
+                                            disabled={loadingId === ban.id}
+                                        >
+                                            {loadingId === ban.id ? (
+                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                            ) : (
+                                                "Unban"
+                                            )}
+                                        </Button>
+                                    </div>
                                 </div>
-                                <div className="ml-auto">
-                                    <Button
-                                        variant="destructive"
-                                        size="sm"
-                                        onClick={() => onUnban(ban.id)}
-                                        disabled={loadingId === ban.id}
-                                    >
-                                        {loadingId === ban.id ? (
-                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                        ) : (
-                                            "Unban"
-                                        )}
-                                    </Button>
-                                </div>
+                            ))
+                        ) : (
+                            <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
+                                No banned members yet.
                             </div>
-                        ))
+                        )
                     ) : (
                         server?.members?.map((member: Member & { profile: Profile }) => (
                             <div key={member.id} className="flex items-center gap-x-2 mb-4">

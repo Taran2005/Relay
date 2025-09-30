@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
@@ -6,6 +7,11 @@ import { getSocketServer } from "@/lib/socket";
 import { Message } from "@prisma/client";
 
 const MESSAGES_BATCH = 5; // Reduced from 10 to improve performance
+
+const messageSchema = z.object({
+  content: z.string().trim().min(1, "Content is required").max(2000, "Content is too long"),
+  fileUrl: z.string().url().max(2048).optional().or(z.literal(null)).optional(),
+});
 
 export async function GET(req: NextRequest) {
   try {
@@ -90,7 +96,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const profile = await currentProfile();
-    const { content, fileUrl } = await req.json();
+    const body = await req.json();
     const { searchParams } = new URL(req.url);
 
     const serverId = searchParams.get("serverId");
@@ -108,9 +114,16 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Channel ID missing", { status: 400 });
     }
 
-    if (!content) {
-      return new NextResponse("Content missing", { status: 400 });
+    const parsed = messageSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json({
+        error: "Invalid message payload",
+        issues: parsed.error.flatten().fieldErrors,
+      }, { status: 400 });
     }
+
+    const { content, fileUrl } = parsed.data;
 
     const server = await db.server.findFirst({
       where: {
@@ -152,7 +165,7 @@ export async function POST(req: NextRequest) {
     const message = await db.message.create({
       data: {
         content,
-        fileUrl,
+        fileUrl: fileUrl ?? null,
         channelId: channelId as string,
         memberId: member.id,
         profileId: profile.id,
@@ -170,13 +183,8 @@ export async function POST(req: NextRequest) {
 
     const io = getSocketServer();
     if (io) {
-      // Emit to ALL clients in the channel room (including sender for other tabs)
+      // ONLY emit to the specific channel room - NO broadcasting to all users
       io.to(channelKey).emit(channelKey, message);
-      // Also broadcast to everyone (fallback for room issues)
-      io.emit(channelKey, message);
-      console.log(`[SOCKET] Emitted message to channel: ${channelKey}, room size:`, io.sockets.adapter.rooms.get(channelKey)?.size || 0);
-    } else {
-      console.warn('[SOCKET] Socket server not available');
     }
 
     return NextResponse.json(message);

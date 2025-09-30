@@ -16,12 +16,10 @@ import {
   FormField,
   FormItem
 } from "@/components/ui/form";
+import { useSendMessage } from "@/hooks/use-send-message";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { logger } from "@/lib/logger";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import qs from "query-string";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -33,7 +31,7 @@ const formSchema = z.object({
 
 export const MessageFileModal = () => {
   const { isOpen, onClose, type, data } = useModalStore();
-  const router = useRouter();
+  const sendMessage = useSendMessage();
 
   const isModalOpen = isOpen && type === "messageFile";
   const { apiUrl, query } = data;
@@ -50,22 +48,27 @@ export const MessageFileModal = () => {
     onClose();
   }
 
-  const isLoading = form.formState.isSubmitting;
+  const isLoading = form.formState.isSubmitting || sendMessage.isPending;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const url = qs.stringifyUrl({
-        url: apiUrl || "",
-        query,
-      });
+      const normalizedQuery = Object.entries(query ?? {}).reduce<Record<string, string>>((acc, [key, value]) => {
+        if (typeof value === "string") {
+          acc[key] = value;
+        } else if (Array.isArray(value) && value.length > 0 && typeof value[0] === "string") {
+          acc[key] = value[0];
+        }
 
-      await axios.post(url, {
-        ...values,
+        return acc;
+      }, {});
+
+      await sendMessage.mutateAsync({
         content: values.fileUrl,
+        apiUrl: apiUrl ?? "/api/messages",
+        query: normalizedQuery,
       });
 
       form.reset();
-      router.refresh();
       handleClose();
     } catch (error) {
       logger.error("Failed to send file message", error);

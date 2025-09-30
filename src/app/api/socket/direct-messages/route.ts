@@ -1,8 +1,7 @@
-import { getAuth } from "@clerk/nextjs/server";
-import { NextRequest, NextResponse } from "next/server";
-
 import { db } from "@/lib/db";
 import { getSocketServer } from "@/lib/socket";
+import { getAuth } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -94,7 +93,11 @@ export async function POST(request: NextRequest) {
 
     const io = getSocketServer();
     if (io) {
-      io.emit(channelKey, message);
+      // ONLY emit to the specific conversation room - NO broadcasting to all users
+      io.to(channelKey).emit(channelKey, message);
+      console.log(`[SOCKET] Emitted direct message to conversation: ${channelKey}, room size:`, io.sockets.adapter.rooms.get(channelKey)?.size || 0);
+    } else {
+      console.warn('[SOCKET] Socket server not available for direct message');
     }
 
     return NextResponse.json(message);

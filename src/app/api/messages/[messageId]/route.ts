@@ -123,7 +123,10 @@ async function handler(
       const io = getSocketServer();
       if (io) {
         const updateKey = `chat:${channelId}:messages:update`;
-        io.emit(updateKey, message);
+        const channelKey = `chat:${channelId}:messages`;
+        // ONLY emit to the specific channel room - NO broadcasting
+        io.to(channelKey).emit(updateKey, message);
+        console.log(`[SOCKET] Emitted message deletion to channel: ${channelKey}`);
       }
     }
 
@@ -175,7 +178,10 @@ async function handler(
       const io = getSocketServer();
       if (io) {
         const updateKey = `chat:${channelId}:messages:update`;
-        io.emit(updateKey, message);
+        const channelKey = `chat:${channelId}:messages`;
+        // ONLY emit to the specific channel room - NO broadcasting
+        io.to(channelKey).emit(updateKey, message);
+        console.log(`[SOCKET] Emitted message edit to channel: ${channelKey}`);
       }
     }
 

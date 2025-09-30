@@ -1,6 +1,5 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { useState } from 'react';
-import { mutate } from 'swr';
 
 interface Server {
     id: string;
@@ -14,29 +13,37 @@ interface CreateServerData {
 }
 
 export const useCreateServer = (profileId: string | undefined) => {
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const queryClient = useQueryClient();
 
-    const createServer = async (data: CreateServerData): Promise<Server | undefined> => {
-        if (!profileId) return;
+    return useMutation<Server, unknown, CreateServerData>({
+        mutationFn: async (data) => {
+            if (!profileId) {
+                throw new Error('Missing profile. Please sign in again.');
+            }
 
-        setLoading(true);
-        setError(null);
-        try {
-            const response = await axios.post('/api/servers', data);
-            // Optimistically update the servers cache
-            mutate(`/api/servers?memberId=${profileId}`, (currentServers: Server[] | undefined) => {
-                return [...(currentServers || []), response.data];
-            }, false);
+            const response = await axios.post<Server>('/api/servers', data);
             return response.data;
-        } catch (err: unknown) {
-            const errorMessage = err instanceof Error ? err.message : 'Failed to create server';
-            setError(errorMessage);
-            throw err;
-        } finally {
-            setLoading(false);
-        }
-    };
+        },
+        onSuccess: (server) => {
+            if (!profileId) {
+                return;
+            }
 
-    return { createServer, loading, error };
+            queryClient.setQueryData<Server[]>(['servers', profileId], (existing = []) => {
+                const hasServer = existing.some((item) => item.id === server.id);
+                if (hasServer) {
+                    return existing;
+                }
+
+                return [...existing, server];
+            });
+        },
+        onSettled: () => {
+            if (!profileId) {
+                return;
+            }
+
+            queryClient.invalidateQueries({ queryKey: ['servers', profileId], refetchType: 'active' });
+        },
+    });
 };

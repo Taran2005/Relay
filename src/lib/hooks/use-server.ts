@@ -15,7 +15,10 @@ export const useServer = ({ serverId }: UseServerOptions = {}) => {
     const { server, isLoading: serverLoading, error: serverError, mutate } = useServerData(serverId || "");
 
     // Write operations
-    const { createServer, loading: createLoading, error: createError } = useCreateServer(user?.id);
+    const createServerMutation = useCreateServer(user?.id);
+    const createServer = createServerMutation.mutateAsync;
+    const createLoading = createServerMutation.isPending;
+    const createError = createServerMutation.error;
     const { updateServer, loading: updateLoading, error: updateError } = useUpdateServer(user?.id);
     const { leaveServer } = useLeaveServer(serverId || "", user?.id);
 
@@ -30,7 +33,7 @@ export const useServer = ({ serverId }: UseServerOptions = {}) => {
         error,
 
         // Operations
-        createServer,
+    createServer,
         updateServer,
         leaveServer,
 

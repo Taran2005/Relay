@@ -1,103 +1,101 @@
 import { useCurrentProfile } from "@/lib/hooks/use-current-profile";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ChatMessage } from "@/types/types";
+import { MemberRole } from "@prisma/client";
+import { InfiniteData, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-
-interface Message {
-    id: string;
-    content: string;
-    createdAt: Date;
-    updatedAt: Date;
-    memberId: string;
-    channelId?: string;
-    conversationId?: string;
-    member: {
-        id: string;
-        profileId: string;
-        profile: {
-            id: string;
-            name: string;
-            imageUrl: string | null;
-        };
-    };
-}
 
 interface SendMessageData {
     content: string;
     apiUrl: string;
     query: Record<string, string>;
+    fileUrl?: string | null;
 }
 
 // Use the same query key format as the chat messages component
-export const getChatQueryKey = (chatId: string) => `chat:${chatId}`;
+type MessagesInfiniteData = InfiniteData<{
+    items: ChatMessage[];
+    nextCursor: string | null;
+}, string | undefined>;
+
+export const getChatQueryKey = (chatId: string) => ["chat", chatId] as const;
 
 export const useSendMessage = () => {
     const queryClient = useQueryClient();
     const { data: currentProfile } = useCurrentProfile();
 
     return useMutation({
-        mutationFn: async ({ content, apiUrl, query }: SendMessageData) => {
+        mutationFn: async ({ content, apiUrl, query, fileUrl }: SendMessageData) => {
             const url = new URL(apiUrl, window.location.origin);
             Object.entries(query).forEach(([key, value]) => {
                 url.searchParams.append(key, value);
             });
 
-            const response = await axios.post(url.toString(), { content });
-            return response.data as Message;
+            const response = await axios.post(url.toString(), { content, fileUrl });
+            return response.data as ChatMessage;
         },
 
-        onMutate: async ({ content, query }) => {
+        onMutate: async ({ content, query, fileUrl }) => {
             const channelId = query.channelId || query.conversationId;
             if (!channelId) return;
 
-            const queryKey = [getChatQueryKey(channelId)];
+            const queryKey = getChatQueryKey(channelId);
 
             // Cancel outgoing refetches
             await queryClient.cancelQueries({ queryKey });
 
             // Snapshot previous value
-            const previousMessages = queryClient.getQueryData(queryKey);
+            const previousMessages = queryClient.getQueryData<MessagesInfiniteData>(queryKey);
 
             // Create optimistic message
-            const optimisticMessage: Message = {
+            const now = new Date();
+            const optimisticMessage: ChatMessage = {
                 id: `temp-${Date.now()}`,
                 content,
-                createdAt: new Date(),
-                updatedAt: new Date(),
+                createdAt: now,
+                updatedAt: now,
                 memberId: 'current-member', // This will be replaced by server response
                 channelId: query.channelId,
                 conversationId: query.conversationId,
+                profileId: currentProfile?.id || 'current-profile',
+                fileUrl: fileUrl ?? null,
+                deleted: false,
                 member: {
                     id: 'current-member',
                     profileId: currentProfile?.id || 'current-profile',
+                    createdAt: now,
+                    updatedAt: now,
+                    role: MemberRole.GUEST,
+                    serverId: query.serverId || 'conversation',
                     profile: {
                         id: currentProfile?.id || 'current-profile',
                         name: currentProfile?.name || 'You',
                         imageUrl: currentProfile?.imageUrl || null,
+                        createdAt: now,
+                        updatedAt: now,
+                        userId: currentProfile?.userId || 'current-user',
+                        email: currentProfile?.email || 'you@example.com',
                     },
                 },
             };
 
             // Optimistically add message to infinite query
-            queryClient.setQueryData(queryKey, (old: unknown) => {
-                const data = old as { pages?: { items: Message[] }[]; pageParams?: unknown[] };
-                if (!data?.pages?.length) {
-                    // If no pages exist, create the first page with our message
+            queryClient.setQueryData<MessagesInfiniteData | undefined>(queryKey, (old) => {
+                if (!old) {
                     return {
-                        pages: [{ items: [optimisticMessage] }],
                         pageParams: [undefined],
+                        pages: [{ items: [optimisticMessage], nextCursor: null }],
                     };
                 }
 
-                const newPages = [...data.pages];
-                // Add the new message to the first page (most recent messages)
+                const newPages = [...old.pages];
                 newPages[0] = {
                     ...newPages[0],
                     items: [optimisticMessage, ...newPages[0].items],
                 };
 
                 return {
-                    ...data,
-                    pages: newPages
+                    ...old,
+                    pages: newPages,
                 };
             });
 
@@ -110,7 +108,7 @@ export const useSendMessage = () => {
 
             // Rollback optimistic update
             queryClient.setQueryData(
-                [getChatQueryKey(channelId)],
+                getChatQueryKey(channelId),
                 context.previousMessages
             );
         },
@@ -121,7 +119,8 @@ export const useSendMessage = () => {
 
             // Refetch to get the real message from server
             queryClient.invalidateQueries({
-                queryKey: [getChatQueryKey(channelId)]
+                queryKey: getChatQueryKey(channelId),
+                refetchType: "inactive",
             });
         },
     });

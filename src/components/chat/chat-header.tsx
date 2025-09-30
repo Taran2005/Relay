@@ -4,6 +4,7 @@ import { ActionTooltip } from "@/components/action.tooltip";
 import { UserAvatar } from "@/components/user-avatar";
 import { ChannelType } from "@prisma/client";
 import { Hash, Mic, Phone, Video } from "lucide-react";
+import { toast } from "sonner";
 
 interface ChatHeaderProps {
     name: string;
@@ -20,6 +21,10 @@ const iconMap = {
 
 export const ChatHeader = ({ name, type, imageUrl, channelType }: ChatHeaderProps) => {
     const Icon = channelType ? iconMap[channelType] : null;
+
+    const handleCallClick = () => {
+        toast.info("Voice and video calling are coming soon.");
+    };
 
     return (
         <div className="flex items-center justify-between px-4 py-3 border-b border-border/50 bg-gradient-to-r from-background/95 to-background/90 backdrop-blur-sm">
@@ -38,7 +43,11 @@ export const ChatHeader = ({ name, type, imageUrl, channelType }: ChatHeaderProp
                 {type === 'conversation' && (
                     <>
                         <ActionTooltip label="Call">
-                            <button className="p-2 rounded-md hover:bg-muted/50 transition-colors">
+                            <button
+                                type="button"
+                                onClick={handleCallClick}
+                                className="p-2 rounded-md hover:bg-muted/50 transition-colors"
+                            >
                                 <Phone className="h-4 w-4 text-muted-foreground" />
                             </button>
                         </ActionTooltip>

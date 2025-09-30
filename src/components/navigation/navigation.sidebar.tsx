@@ -34,18 +34,19 @@ export function NavigationSidebar() {
   const { data: profile, error: profileError } = useProfile();
   const { data: servers, error: serversError } = useServers(profile?.id);
 
-  const { createServer, loading: creating, error: createError } = useCreateServer(profile?.id);
+  const createServerMutation = useCreateServer(profile?.id);
 
-  const disabled = creating || uploading || name.trim().length < 3;
+  const disabled = createServerMutation.isPending || uploading || name.trim().length < 3;
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (disabled) return;
     try {
-      await createServer({ name: name.trim(), imageUrl });
+      await createServerMutation.mutateAsync({ name: name.trim(), imageUrl });
       setName(""); setImageUrl(null); setOpen(false);
-    } catch {
-
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to create server";
+      console.error(message);
     }
   };
 
@@ -154,12 +155,14 @@ export function NavigationSidebar() {
               placeholder="Server name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              disabled={creating || uploading}
+              disabled={createServerMutation.isPending || uploading}
               className="bg-background/50 border-border/50 focus:border-blue-400/60 focus:ring-blue-400/30 transition-colors"
             />
-            {createError && (
+            {!!createServerMutation.error && (
               <p className="text-red-500 text-sm bg-red-500/10 border border-red-500/20 rounded-lg p-2">
-                {createError}
+                {createServerMutation.error instanceof Error
+                  ? createServerMutation.error.message
+                  : String(createServerMutation.error ?? 'Failed to create server')}
               </p>
             )}
             <Button
@@ -167,7 +170,7 @@ export function NavigationSidebar() {
               disabled={disabled}
               className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-blue-500/30"
             >
-              {uploading ? "Uploading..." : creating ? "Creating..." : "Create"}
+              {uploading ? "Uploading..." : createServerMutation.isPending ? "Creating..." : "Create"}
             </Button>
           </form>
         </DialogContent>

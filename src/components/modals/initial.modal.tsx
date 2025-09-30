@@ -46,7 +46,13 @@ export const InitialModal = () => {
     const [isUploading, setIsUploading] = useState(false);
 
     const { data: profile } = useProfile();
-    const { createServer, loading: isLoading, error: createError } = useCreateServer(profile?.id);
+    const createServerMutation = useCreateServer(profile?.id);
+    const mutationError = createServerMutation.error;
+    const errorMessage = mutationError
+        ? mutationError instanceof Error
+            ? mutationError.message
+            : String(mutationError)
+        : null;
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -58,8 +64,15 @@ export const InitialModal = () => {
 
     // 🔹 Handle Form Submit
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
+        if (!profile) {
+            return;
+        }
+
         try {
-            const newServer = await createServer({ name: data.serverName, imageUrl: data.serverImage || null });
+            const newServer = await createServerMutation.mutateAsync({
+                name: data.serverName,
+                imageUrl: data.serverImage || null,
+            });
             form.reset();
             setIsModalOpen(false);
             // Redirect to the new server's general channel
@@ -78,8 +91,8 @@ export const InitialModal = () => {
                     router.push(`/servers/${newServer.id}`);
                 }
             }
-        } catch {
-            // Error handled in hook
+        } catch (error) {
+            console.error("Failed to create server", error);
         }
     };
 
@@ -130,7 +143,7 @@ export const InitialModal = () => {
                                     </FormLabel>
                                     <FormControl>
                                         <Input
-                                            disabled={isLoading}
+                                            disabled={createServerMutation.isPending}
                                             placeholder="Enter server name"
                                             className="h-10 border-zinc-100"
                                             {...field}
@@ -141,18 +154,20 @@ export const InitialModal = () => {
                             )}
                         />
 
-                        {createError && <p className="text-red-500 text-sm">{createError}</p>}
+                        {errorMessage && (
+                            <p className="text-red-500 text-sm">{errorMessage}</p>
+                        )}
 
                         {/* Submit Button */}
                         <DialogFooter className="px-0 pb-0">
                             <Button
                                 type="submit"
-                                disabled={isLoading || isUploading}
+                                disabled={createServerMutation.isPending || isUploading || !profile}
                                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-10"
                             >
                                 {isUploading
                                     ? "Uploading..."
-                                    : isLoading
+                                    : createServerMutation.isPending
                                         ? "Creating..."
                                         : "Create"}
                             </Button>

@@ -9,14 +9,13 @@ import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
 
 interface ChannelIdPageProps {
-  params: Promise<{
+  params: {
     serverId: string;
     channelId: string;
-  }>
+  };
 }
 
-const ChannelIdPage = async (props: ChannelIdPageProps) => {
-  const params = await props.params;
+const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
   const profile = await currentProfile();
 
   if (!profile) {
