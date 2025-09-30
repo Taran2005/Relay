@@ -3,8 +3,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 import { useSocket } from "@/components/providers/socket.provider";
-import { DirectMessage } from "@prisma/client";
 import { logger } from "@/lib/logger";
+import { DirectMessage } from "@prisma/client";
 
 type ChatSocketProps = {
   addKey: string;

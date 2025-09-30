@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import {
   createContext,
   useContext,
@@ -7,7 +8,6 @@ import {
   useState,
 } from "react";
 import { io as ClientIO, Socket } from "socket.io-client";
-import { logger } from "@/lib/logger";
 
 type SocketContextType = {
   socket: Socket | null;

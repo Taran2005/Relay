@@ -17,13 +17,13 @@ import {
   FormItem
 } from "@/components/ui/form";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
+import { logger } from "@/lib/logger";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import qs from "query-string";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { logger } from "@/lib/logger";
 
 const formSchema = z.object({
   fileUrl: z.string().min(1, {

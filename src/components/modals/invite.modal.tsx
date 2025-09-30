@@ -11,10 +11,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
+import { logger } from "@/lib/logger";
 import axios from "axios";
 import { Check, Copy, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
-import { logger } from "@/lib/logger";
 
 export const InviteModal = () => {
     const { isOpen, type, onClose, data, onOpen } = useModalStore();

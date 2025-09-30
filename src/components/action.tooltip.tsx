@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/tooltip";
 
 interface ActionTooltipProps {
-  label: string;
+  label?: string;
   children: React.ReactNode;
   side?: "top" | "right" | "bottom" | "left";
   align?: "start" | "center" | "end";
@@ -19,6 +19,11 @@ export const ActionTooltip = ({
   side,
   align,
 }: ActionTooltipProps) => {
+  // If no label is provided, just return the children without tooltip
+  if (!label) {
+    return <>{children}</>;
+  }
+
   return (
     <Tooltip delayDuration={50}>
       <TooltipTrigger asChild>

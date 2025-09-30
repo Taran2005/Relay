@@ -13,8 +13,8 @@ import {
   FormItem,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { useSendMessage } from "@/hooks/use-send-message";
+import { useModalStore } from "@/lib/hooks/use-modal-store";
 
 interface ChatInputProps {
   apiUrl: string;

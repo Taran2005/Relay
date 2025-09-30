@@ -1,6 +1,6 @@
+import type { ServerWithMembersAndProfile } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import type { ServerWithMembersAndProfile } from "@/types/types";
 
 // ✅ MODERN: React Query replacement for SWR hook
 export const useServerData = (serverId: string) => {

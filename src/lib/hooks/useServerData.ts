@@ -1,8 +1,8 @@
 "use client";
 
+import type { ServerWithMembersAndProfile } from "@/types/types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import type { ServerWithMembersAndProfile } from "@/types/types";
 
 // Query key factory for consistency
 export const serverQueryKeys = {

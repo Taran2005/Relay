@@ -10,10 +10,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
+import { logger } from "@/lib/logger";
 import axios from "axios";
 import qs from "query-string";
 import { useState } from "react";
-import { logger } from "@/lib/logger";
 
 export const DeleteMessageModal = () => {
   const { isOpen, onClose, type, data } = useModalStore();

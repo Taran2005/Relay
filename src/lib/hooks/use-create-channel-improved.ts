@@ -1,7 +1,7 @@
+import type { ServerWithMembersAndProfile } from "@/types/types";
+import { ChannelType } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { ChannelType } from "@prisma/client";
-import type { ServerWithMembersAndProfile } from "@/types/types";
 
 interface CreateChannelData {
     name: string;
@@ -30,7 +30,7 @@ export const useCreateChannel = () => {
             });
             return response.data;
         },
-        
+
         // Optimistic update
         onMutate: async (newChannel) => {
             // Cancel outgoing refetches
@@ -43,10 +43,10 @@ export const useCreateChannel = () => {
 
             // Optimistically update the server data
             queryClient.setQueryData<ServerWithMembersAndProfile>(
-                ['server', newChannel.serverId], 
+                ['server', newChannel.serverId],
                 (old) => {
                     if (!old) return old;
-                    
+
                     const tempChannel: Channel = {
                         id: `temp-${Date.now()}`,
                         name: newChannel.name,
@@ -70,7 +70,7 @@ export const useCreateChannel = () => {
         onError: (err, newChannel, context) => {
             if (context?.previousServer) {
                 queryClient.setQueryData(
-                    ['server', newChannel.serverId], 
+                    ['server', newChannel.serverId],
                     context.previousServer
                 );
             }

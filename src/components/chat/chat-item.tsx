@@ -1,5 +1,6 @@
 "use client";
 
+import { logger } from "@/lib/logger";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Member, MemberRole, Profile } from "@prisma/client";
 import axios from "axios";
@@ -11,7 +12,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { logger } from "@/lib/logger";
 
 import { ActionTooltip } from "@/components/action.tooltip";
 import { Button } from "@/components/ui/button";

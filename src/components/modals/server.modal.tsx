@@ -26,8 +26,8 @@ import { FileUpload } from "@/components/fileupload";
 import { useCurrentProfile } from "@/lib/hooks/use-current-profile";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { useCreateServer } from "@/lib/hooks/use-servers";
-import type { Server } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import type { Server } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -83,7 +83,7 @@ export const CreateServerModal = () => {
                 const generalChannel = serverWithChannels.channels?.find(
                     (channel) => channel.name === "general"
                 );
-                
+
                 if (generalChannel) {
                     router.push(`/servers/${newServer.id}/channels/${generalChannel.id}`);
                 } else {
