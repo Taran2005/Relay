@@ -33,7 +33,7 @@ export const useServer = ({ serverId }: UseServerOptions = {}) => {
         error,
 
         // Operations
-    createServer,
+        createServer,
         updateServer,
         leaveServer,
 
