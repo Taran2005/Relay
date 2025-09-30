@@ -23,12 +23,12 @@ import { Input } from "@/components/ui/input";
 
 import { FileUpload } from "@/components/fileupload";
 
+import { useProfile } from "@/hooks/use-profile";
 import { useCreateServer } from "@/lib/hooks/use-create-server";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation"; // ✅ Import router
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useProfile } from "@/hooks/use-profile";
 import * as z from "zod";
 
 // 🔹 Validation Schema
@@ -64,7 +64,14 @@ export const InitialModal = () => {
             setIsModalOpen(false);
             // Redirect to the new server's general channel
             if (newServer) {
-                const generalChannel = (newServer as any).channels?.find((channel: any) => channel.name === "general");
+                interface ServerWithChannels {
+                    id: string;
+                    channels?: { id: string; name: string }[];
+                }
+                const serverWithChannels = newServer as ServerWithChannels;
+                const generalChannel = serverWithChannels.channels?.find(
+                    (channel) => channel.name === "general"
+                );
                 if (generalChannel) {
                     router.push(`/servers/${newServer.id}/channels/${generalChannel.id}`);
                 } else {

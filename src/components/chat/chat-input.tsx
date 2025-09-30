@@ -1,11 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { Plus } from "lucide-react";
-import qs from "query-string";
 import { useForm } from "react-hook-form";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import * as z from "zod";
 
@@ -17,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
+import { useSendMessage } from "@/hooks/use-send-message";
 
 interface ChatInputProps {
   apiUrl: string;
@@ -36,7 +34,7 @@ export const ChatInput = ({
   type,
 }: ChatInputProps) => {
   const { onOpen } = useModalStore();
-  const queryClient = useQueryClient();
+  const sendMessageMutation = useSendMessage();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,23 +43,20 @@ export const ChatInput = ({
     }
   });
 
-  const isLoading = form.formState.isSubmitting;
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const url = qs.stringifyUrl({
-        url: apiUrl,
-        query,
-      });
-
-      await axios.post(url, values);
-
-      form.reset();
-      queryClient.invalidateQueries({ queryKey: [`chat:${query.channelId}`] });
-    } catch (error) {
-      console.error("Failed to send message:", error);
-      toast.error("Failed to send message. Please try again.");
-    }
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    sendMessageMutation.mutate({
+      content: values.content,
+      apiUrl,
+      query,
+    }, {
+      onSuccess: () => {
+        form.reset();
+      },
+      onError: (error) => {
+        console.error("Failed to send message:", error);
+        toast.error("Failed to send message. Please try again.");
+      }
+    });
   }
 
   return (
@@ -82,7 +77,7 @@ export const ChatInput = ({
                     <Plus className="text-white dark:text-[#313338]" />
                   </button>
                   <Input
-                    disabled={isLoading}
+                    disabled={sendMessageMutation.isPending}
                     className="px-14 py-6 bg-zinc-200/90 dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200"
                     placeholder={`Message ${type === "conversation" ? name : "#" + name}`}
                     {...field}

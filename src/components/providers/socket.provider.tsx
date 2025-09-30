@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import { io as ClientIO, Socket } from "socket.io-client";
+import { logger } from "@/lib/logger";
 
 type SocketContextType = {
   socket: Socket | null;
@@ -33,7 +34,7 @@ export const SocketProvider = ({
   useEffect(() => {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
-    console.log("🔌 Attempting to connect to Socket.IO at:", siteUrl);
+    logger.socket.init(siteUrl);
 
     const socketInstance = ClientIO(siteUrl, {
       path: "/api/socket/io",
@@ -47,41 +48,41 @@ export const SocketProvider = ({
     });
 
     socketInstance.on("connect", () => {
-      console.log("🟢 Socket connected successfully!", socketInstance.id);
+      logger.socket.connect(socketInstance.id!);
       setIsConnected(true);
     });
 
     socketInstance.on("disconnect", (reason) => {
-      console.log("🔴 Socket disconnected:", reason);
+      logger.socket.disconnect('socket', reason);
       setIsConnected(false);
     });
 
     socketInstance.on("connect_error", (error) => {
-      console.log("❌ Socket connection error:", error.message || error);
+      logger.socket.error(error.message || error);
       setIsConnected(false);
     });
 
     socketInstance.on("error", (error) => {
-      console.log("❌ Socket error:", error);
+      logger.socket.error(error);
     });
 
     socketInstance.on("reconnect", (attemptNumber) => {
-      console.log("� Socket reconnected on attempt:", attemptNumber);
+      logger.socket.reconnected(attemptNumber);
       setIsConnected(true);
     });
 
     socketInstance.on("reconnect_attempt", (attemptNumber) => {
-      console.log("🔄 Reconnection attempt:", attemptNumber);
+      logger.socket.reconnect(attemptNumber);
     });
 
     socketInstance.on("reconnect_error", (error) => {
-      console.log("❌ Reconnection error:", error);
+      logger.socket.error(error);
     });
 
     setSocket(socketInstance);
 
     return () => {
-      console.log("🔌 Cleaning up socket connection");
+      logger.socket.cleanup();
       socketInstance.disconnect();
     }
   }, []);

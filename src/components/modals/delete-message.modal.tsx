@@ -13,6 +13,7 @@ import { useModalStore } from "@/lib/hooks/use-modal-store";
 import axios from "axios";
 import qs from "query-string";
 import { useState } from "react";
+import { logger } from "@/lib/logger";
 
 export const DeleteMessageModal = () => {
   const { isOpen, onClose, type, data } = useModalStore();
@@ -33,7 +34,7 @@ export const DeleteMessageModal = () => {
 
       onClose();
     } catch (error) {
-      console.log(error);
+      logger.error("Failed to delete message", error);
     } finally {
       setIsLoading(false);
     }

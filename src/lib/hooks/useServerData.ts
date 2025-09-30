@@ -1,21 +1,42 @@
 "use client";
 
-import { ServerWithMembersAndProfile } from '@/types/types';
-import axios from 'axios';
-import useSWR from 'swr';
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import type { ServerWithMembersAndProfile } from "@/types/types";
 
-const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+// Query key factory for consistency
+export const serverQueryKeys = {
+    all: ['servers'] as const,
+    lists: () => [...serverQueryKeys.all, 'list'] as const,
+    list: (filters: Record<string, unknown>) => [...serverQueryKeys.lists(), filters] as const,
+    details: () => [...serverQueryKeys.all, 'detail'] as const,
+    detail: (id: string) => [...serverQueryKeys.details(), id] as const,
+} as const;
 
 export const useServerData = (serverId: string) => {
-    const { data, error, isLoading, mutate } = useSWR<ServerWithMembersAndProfile>(
-        serverId ? `/api/servers/${serverId}` : null,
-        fetcher
-    );
+    const queryClient = useQueryClient();
+
+    const query = useQuery({
+        queryKey: serverQueryKeys.detail(serverId),
+        queryFn: async (): Promise<ServerWithMembersAndProfile> => {
+            const { data } = await axios.get(`/api/servers/${serverId}`);
+            return data;
+        },
+        enabled: !!serverId,
+        staleTime: 5 * 60 * 1000, // 5 minutes
+        retry: 2,
+        throwOnError: false,
+    });
+
+    // Provide mutate function for compatibility
+    const mutate = () => {
+        queryClient.invalidateQueries({ queryKey: serverQueryKeys.detail(serverId) });
+    };
 
     return {
-        server: data,
-        isLoading,
-        error,
+        server: query.data,
+        isLoading: query.isLoading,
+        error: query.error,
         mutate,
     };
 };

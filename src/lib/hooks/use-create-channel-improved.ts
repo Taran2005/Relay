@@ -2,7 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { ChannelType } from "@prisma/client";
 import type { ServerWithMembersAndProfile } from "@/types/types";
-import { serverQueryKeys } from "./useServerData";
+
+interface CreateChannelData {
+    name: string;
+    type: ChannelType;
+    serverId: string;
+}
 
 interface Channel {
     id: string;
@@ -13,12 +18,7 @@ interface Channel {
     updatedAt: Date;
 }
 
-interface CreateChannelData {
-    name: string;
-    type: ChannelType;
-    serverId: string;
-}
-
+// ✅ MODERN: React Query mutation with optimistic updates
 export const useCreateChannel = () => {
     const queryClient = useQueryClient();
 
@@ -34,16 +34,16 @@ export const useCreateChannel = () => {
         // Optimistic update
         onMutate: async (newChannel) => {
             // Cancel outgoing refetches
-            await queryClient.cancelQueries({ queryKey: serverQueryKeys.detail(newChannel.serverId) });
+            await queryClient.cancelQueries({ queryKey: ['server', newChannel.serverId] });
 
             // Snapshot previous value
             const previousServer = queryClient.getQueryData<ServerWithMembersAndProfile>(
-                serverQueryKeys.detail(newChannel.serverId)
+                ['server', newChannel.serverId]
             );
 
             // Optimistically update the server data
             queryClient.setQueryData<ServerWithMembersAndProfile>(
-                serverQueryKeys.detail(newChannel.serverId), 
+                ['server', newChannel.serverId], 
                 (old) => {
                     if (!old) return old;
                     
@@ -70,7 +70,7 @@ export const useCreateChannel = () => {
         onError: (err, newChannel, context) => {
             if (context?.previousServer) {
                 queryClient.setQueryData(
-                    serverQueryKeys.detail(newChannel.serverId), 
+                    ['server', newChannel.serverId], 
                     context.previousServer
                 );
             }
@@ -78,7 +78,7 @@ export const useCreateChannel = () => {
 
         // Always refetch after mutation settles
         onSettled: (data, error, variables) => {
-            queryClient.invalidateQueries({ queryKey: serverQueryKeys.detail(variables.serverId) });
+            queryClient.invalidateQueries({ queryKey: ['server', variables.serverId] });
         },
     });
 };

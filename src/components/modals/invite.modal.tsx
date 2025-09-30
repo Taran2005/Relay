@@ -14,6 +14,7 @@ import { useModalStore } from "@/lib/hooks/use-modal-store";
 import axios from "axios";
 import { Check, Copy, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
+import { logger } from "@/lib/logger";
 
 export const InviteModal = () => {
     const { isOpen, type, onClose, data, onOpen } = useModalStore();
@@ -37,7 +38,7 @@ export const InviteModal = () => {
                     const response = await axios.patch(`/api/servers/${server.id}/invite`);
                     onOpen("invite", { server: response.data });
                 } catch (error) {
-                    console.log(error);
+                    logger.error("Failed to generate new invite", error);
                 } finally {
                     setIsLoading(false);
                 }

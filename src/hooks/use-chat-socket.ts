@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import { useSocket } from "@/components/providers/socket.provider";
 import { DirectMessage } from "@prisma/client";
+import { logger } from "@/lib/logger";
 
 type ChatSocketProps = {
   addKey: string;
@@ -66,7 +67,7 @@ export const useChatSocket = ({
     });
 
     socket.on(addKey, (message: MessageWithMemberWithProfile) => {
-      console.log("📨 Received new message via socket:", message.id);
+      logger.socket.message(message.id);
       queryClient.setQueryData([queryKey], (oldData: InfiniteQueryData) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
           return {

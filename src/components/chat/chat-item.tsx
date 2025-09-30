@@ -9,9 +9,9 @@ import { useParams, useRouter } from "next/navigation";
 import qs from "query-string";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import * as z from "zod";
+import { logger } from "@/lib/logger";
 
 import { ActionTooltip } from "@/components/action.tooltip";
 import { Button } from "@/components/ui/button";
@@ -67,7 +67,6 @@ export const ChatItem = ({
   const { onOpen } = useModalStore();
   const params = useParams();
   const router = useRouter();
-  const queryClient = useQueryClient();
 
   const onMemberClick = () => {
     if (member.id === currentMember.id) {
@@ -110,7 +109,7 @@ export const ChatItem = ({
       form.reset();
       setIsEditing(false);
     } catch (error) {
-      console.log(error);
+      logger.error("Failed to delete message", error);
       toast.error("Failed to edit message. Please try again.");
     }
   }

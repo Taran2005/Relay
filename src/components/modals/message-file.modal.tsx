@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import qs from "query-string";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { logger } from "@/lib/logger";
 
 const formSchema = z.object({
   fileUrl: z.string().min(1, {
@@ -67,7 +68,7 @@ export const MessageFileModal = () => {
       router.refresh();
       handleClose();
     } catch (error) {
-      console.log(error);
+      logger.error("Failed to send file message", error);
     }
   }
 

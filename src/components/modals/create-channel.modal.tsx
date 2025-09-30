@@ -65,7 +65,7 @@ export const CreateChannelModal = () => {
     const isModalOpen = isOpen && type === "createChannel";
     const server = data?.server;
 
-    const { createChannel, loading: isLoading, error: createError } = useCreateChannel();
+    const createChannelMutation = useCreateChannel();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -75,21 +75,19 @@ export const CreateChannelModal = () => {
         },
     });
 
-    const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        try {
-            if (!server) return;
+    const onSubmit = (data: z.infer<typeof formSchema>) => {
+        if (!server) return;
 
-            await createChannel({
-                name: data.channelName,
-                type: data.channelType,
-                serverId: server.id,
-            });
-
-            form.reset();
-            onClose();
-        } catch {
-            // Error is handled by the hook
-        }
+        createChannelMutation.mutate({
+            name: data.channelName,
+            type: data.channelType,
+            serverId: server.id,
+        }, {
+            onSuccess: () => {
+                form.reset();
+                onClose();
+            }
+        });
     };
 
     useEffect(() => {
@@ -135,7 +133,7 @@ export const CreateChannelModal = () => {
                                                 <Button
                                                     variant="outline"
                                                     className="w-full justify-between h-12 px-4 bg-background border-2 border-input hover:border-primary/50 hover:bg-accent/50 transition-all duration-200 rounded-lg shadow-sm"
-                                                    disabled={isLoading}
+                                                    disabled={createChannelMutation.isPending}
                                                 >
                                                     <div className="flex items-center space-x-3">
                                                         <div className="p-1.5 rounded-md bg-primary/10">
@@ -198,7 +196,7 @@ export const CreateChannelModal = () => {
                                     </FormLabel>
                                     <FormControl>
                                         <Input
-                                            disabled={isLoading}
+                                            disabled={createChannelMutation.isPending}
                                             placeholder="Enter channel name"
                                             className="h-12 px-4 bg-background border-2 border-input hover:border-primary/50 focus:border-primary transition-all duration-200 rounded-lg shadow-sm"
                                             {...field}
@@ -209,15 +207,19 @@ export const CreateChannelModal = () => {
                             )}
                         />
 
-                        {createError && <p className="text-red-500 text-sm">{createError}</p>}
+                        {createChannelMutation.error && (
+                            <p className="text-red-500 text-sm">
+                                {createChannelMutation.error.message}
+                            </p>
+                        )}
 
                         <DialogFooter className="px-0 pb-0">
                             <Button
                                 type="submit"
-                                disabled={isLoading}
+                                disabled={createChannelMutation.isPending}
                                 className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 rounded-lg shadow-lg hover:shadow-xl font-medium text-base"
                             >
-                                {isLoading ? "Creating..." : "Create Channel"}
+                                {createChannelMutation.isPending ? "Creating..." : "Create Channel"}
                             </Button>
                         </DialogFooter>
                     </form>

@@ -26,6 +26,7 @@ import { FileUpload } from "@/components/fileupload";
 import { useCurrentProfile } from "@/lib/hooks/use-current-profile";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { useCreateServer } from "@/lib/hooks/use-servers";
+import type { Server } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -65,27 +66,35 @@ export const CreateServerModal = () => {
             return;
         }
 
-        try {
-            const newServer = await createServerMutation.mutateAsync({
-                name: data.serverName,
-                imageUrl: data.serverImage || null
-            });
+        createServerMutation.mutate({
+            name: data.serverName,
+            imageUrl: data.serverImage || null
+        }, {
+            onSuccess: (newServer) => {
+                form.reset();
+                onClose();
+                toast.success("Server created successfully!");
 
-            form.reset();
-            onClose();
-            toast.success("Server created successfully!");
-
-            if (newServer) {
-                const generalChannel = (newServer as any).channels?.find((channel: any) => channel.name === "general");
+                // Type-safe channel access
+                interface ServerWithChannels extends Server {
+                    channels?: { id: string; name: string }[];
+                }
+                const serverWithChannels = newServer as ServerWithChannels;
+                const generalChannel = serverWithChannels.channels?.find(
+                    (channel) => channel.name === "general"
+                );
+                
                 if (generalChannel) {
                     router.push(`/servers/${newServer.id}/channels/${generalChannel.id}`);
                 } else {
                     router.push(`/servers/${newServer.id}`);
                 }
+            },
+            onError: (error) => {
+                console.error("Server creation failed:", error);
+                toast.error("Failed to create server. Please try again.");
             }
-        } catch {
-            toast.error("Failed to create server. Please try again.");
-        }
+        });
     };
 
     useEffect(() => {

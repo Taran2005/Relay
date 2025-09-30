@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import { useState } from "react";
 import { ModalProvider } from "./modal.provider";
 import { SocketProvider } from "./socket.provider";
+import { ErrorBoundary } from "@/components/error-boundary-improved";
 
 export function Providers({ children }: { children: React.ReactNode }) {
     // ✅ Create stable QueryClient instance
@@ -24,22 +25,24 @@ export function Providers({ children }: { children: React.ReactNode }) {
     }));
 
     return (
-        <ClerkProvider>
-            <QueryClientProvider client={queryClient}>
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="dark"
-                    enableSystem
-                    disableTransitionOnChange
-                    storageKey="relay-theme"
-                >
-                    <SocketProvider>
-                        <ModalProvider />
-                        <Toaster />
-                        {children}
-                    </SocketProvider>
-                </ThemeProvider>
-            </QueryClientProvider>
-        </ClerkProvider>
+        <ErrorBoundary>
+            <ClerkProvider>
+                <QueryClientProvider client={queryClient}>
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="dark"
+                        enableSystem
+                        disableTransitionOnChange
+                        storageKey="relay-theme"
+                    >
+                        <SocketProvider>
+                            <ModalProvider />
+                            <Toaster />
+                            {children}
+                        </SocketProvider>
+                    </ThemeProvider>
+                </QueryClientProvider>
+            </ClerkProvider>
+        </ErrorBoundary>
     );
 }

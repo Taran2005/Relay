@@ -18,16 +18,15 @@ import {
 
 import { Button } from "@/components/ui/button";
 
+import { Skeleton } from "@/components/ui/skeleton";
+import { useServer } from "@/hooks/use-server";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
-import { ServerWithMembersAndProfileAndBans } from "@/types/types";
-import { MemberRole } from "@prisma/client";
+import { Ban, Member, MemberRole, Profile } from "@prisma/client";
+import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Crown, Loader2, MoreVertical, Shield, ShieldCheck, UserMinus } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
-import { useServer } from "@/hooks/use-server";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export const ManageMembersModal = () => {
     const { isOpen, type, data, onClose } = useModalStore();
@@ -168,7 +167,7 @@ export const ManageMembersModal = () => {
                             ))}
                         </div>
                     ) : showBanned ? (
-                        server?.bans?.map((ban) => (
+                        server?.bans?.map((ban: Ban & { profile: Profile }) => (
                             <div key={ban.id} className="flex items-center gap-x-2 mb-4">
                                 <div className="h-10 w-10 rounded-full bg-red-500 flex items-center justify-center text-white font-semibold">
                                     {ban.profile.name.charAt(0).toUpperCase()}
@@ -198,7 +197,7 @@ export const ManageMembersModal = () => {
                             </div>
                         ))
                     ) : (
-                        server?.members?.map((member) => (
+                        server?.members?.map((member: Member & { profile: Profile }) => (
                             <div key={member.id} className="flex items-center gap-x-2 mb-4">
                                 <div className="h-10 w-10 rounded-full bg-sky-500 flex items-center justify-center text-white font-semibold">
                                     {member.profile.name.charAt(0).toUpperCase()}

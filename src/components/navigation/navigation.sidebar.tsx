@@ -14,13 +14,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useProfile } from "@/hooks/use-profile";
+import { useServers } from "@/hooks/use-servers";
 import { useCreateServer } from "@/lib/hooks/use-create-server";
 import { UserButton } from "@clerk/nextjs";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { useProfile } from "@/hooks/use-profile";
-import { useServers } from "@/hooks/use-servers";
 
 interface Server { id: string; name: string; imageUrl: string | null; }
 
@@ -62,7 +62,7 @@ export function NavigationSidebar() {
   if (!profile) {
     return (
       <div className="flex flex-col items-center py-4 bg-gradient-to-b from-background/80 to-background/60 backdrop-blur-xl border-r border-border/50 shadow-xl">
-        
+
       </div>
     );
   }
