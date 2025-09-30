@@ -39,7 +39,17 @@ export const useChatSocket = ({
 
     // Join the channel/room to receive messages
     const roomName = addKey; // addKey is 'chat:channelId:messages'
-    socket.emit('join-channel', roomName);
+    
+    // Ensure we're connected before joining
+    if (socket.connected) {
+      socket.emit('join-channel', roomName);
+      console.log(`[CHAT_SOCKET] Joining room: ${roomName}`);
+    } else {
+      socket.on('connect', () => {
+        socket.emit('join-channel', roomName);
+        console.log(`[CHAT_SOCKET] Connected and joined room: ${roomName}`);
+      });
+    }
 
     socket.on(updateKey, (message: MessageWithMemberWithProfile) => {
       queryClient.setQueryData([queryKey], (oldData: InfiniteQueryData) => {
@@ -68,6 +78,8 @@ export const useChatSocket = ({
 
     socket.on(addKey, (message: MessageWithMemberWithProfile) => {
       logger.socket.message(message.id);
+      console.log(`[CHAT_SOCKET] Received new message on ${addKey}:`, message.id);
+      
       queryClient.setQueryData([queryKey], (oldData: InfiniteQueryData) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
           return {
@@ -91,6 +103,11 @@ export const useChatSocket = ({
           ...oldData,
           pages: newData,
         };
+      });
+
+      // Force invalidation to ensure React re-renders
+      queryClient.invalidateQueries({
+        queryKey: [queryKey]
       });
     });
 

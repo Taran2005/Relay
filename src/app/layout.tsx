@@ -1,4 +1,5 @@
 import { ErrorBoundary } from "@/components/error-boundary";
+import { PollingDebugger } from "@/components/polling-debugger";
 import { Providers } from "@/components/providers/providers";
 import { SocketStatus } from "@/components/socket-status";
 import { cn } from "@/lib/utils";
@@ -35,6 +36,7 @@ export default function RootLayout({
           <ErrorBoundary>
             {children}
             <SocketStatus />
+            <PollingDebugger />
           </ErrorBoundary>
         </Providers>
       </body>

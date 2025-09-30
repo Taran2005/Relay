@@ -170,7 +170,13 @@ export async function POST(req: NextRequest) {
 
     const io = getSocketServer();
     if (io) {
+      // Emit to ALL clients in the channel room (including sender for other tabs)
+      io.to(channelKey).emit(channelKey, message);
+      // Also broadcast to everyone (fallback for room issues)
       io.emit(channelKey, message);
+      console.log(`[SOCKET] Emitted message to channel: ${channelKey}, room size:`, io.sockets.adapter.rooms.get(channelKey)?.size || 0);
+    } else {
+      console.warn('[SOCKET] Socket server not available');
     }
 
     return NextResponse.json(message);

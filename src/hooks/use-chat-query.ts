@@ -41,7 +41,10 @@ export const useChatQuery = ({
     queryKey: [queryKey],
     queryFn: fetchMessages,
     getNextPageParam: (lastPage) => lastPage?.nextCursor,
-    refetchInterval: isConnected ? false : 5000, // Reduce polling to every 5 seconds
+    refetchInterval: isConnected ? false : 1000, // Poll every 1 second when disconnected
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
     initialPageParam: undefined,
   });
 

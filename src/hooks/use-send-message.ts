@@ -1,6 +1,6 @@
+import { useCurrentProfile } from "@/lib/hooks/use-current-profile";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useCurrentProfile } from "@/lib/hooks/use-current-profile";
 
 interface Message {
     id: string;
@@ -95,9 +95,9 @@ export const useSendMessage = () => {
                     items: [optimisticMessage, ...newPages[0].items],
                 };
 
-                return { 
-                    ...data, 
-                    pages: newPages 
+                return {
+                    ...data,
+                    pages: newPages
                 };
             });
 

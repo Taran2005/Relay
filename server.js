@@ -32,6 +32,19 @@ app.prepare().then(() => {
 
     io.on('connection', (socket) => {
         console.log('Client connected:', socket.id);
+        
+        // Handle joining channels/rooms
+        socket.on('join-channel', (channelId) => {
+            console.log(`Socket ${socket.id} joining channel: ${channelId}`);
+            socket.join(channelId);
+        });
+        
+        // Handle leaving channels/rooms
+        socket.on('leave-channel', (channelId) => {
+            console.log(`Socket ${socket.id} leaving channel: ${channelId}`);
+            socket.leave(channelId);
+        });
+        
         socket.on('disconnect', () => {
             console.log('Client disconnected:', socket.id);
         });

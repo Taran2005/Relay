@@ -49,6 +49,7 @@ export const SocketProvider = ({
 
     socketInstance.on("connect", () => {
       logger.socket.connect(socketInstance.id!);
+      console.log('[SOCKET] Connected with ID:', socketInstance.id);
       setIsConnected(true);
     });
 
