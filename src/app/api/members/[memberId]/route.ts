@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(
     req: Request,
-    { params }: { params: Promise<{ memberId: string }> }
+    { params }: { params: Promise<{ [key: string]: string | string[] }> }
 ) {
     try {
         const profile = await currentProfile();
@@ -12,7 +12,8 @@ export async function DELETE(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const { memberId } = await params;
+        const paramsData = await params;
+        const memberId = paramsData.memberId as string;
 
         // Check if the current user is an admin of the server
         const memberToKick = await db.member.findUnique({
@@ -73,7 +74,8 @@ export async function PATCH(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const { memberId } = await params;
+        const paramsData = await params;
+        const memberId = paramsData.memberId as string;
         const { role } = await req.json();
 
         // Check if the current user is an admin of the server

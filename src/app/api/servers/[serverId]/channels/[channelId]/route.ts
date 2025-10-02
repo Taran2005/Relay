@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
     req: Request,
-    { params }: { params: Promise<{ serverId: string; channelId: string }> }
+    { params }: { params: Promise<{ [key: string]: string }> }
 ) {
     try {
         const profile = await currentProfile();
@@ -13,7 +13,8 @@ export async function PATCH(
             return new NextResponse("Unauthorized", { status: 401 });
         }
 
-        const { serverId, channelId } = await params;
+        const paramsData = await params;
+        const { serverId, channelId } = paramsData as { serverId: string; channelId: string };
         const { name, type } = await req.json();
 
         if (!name || typeof name !== 'string' || name.trim().length < 1 || name.trim().length > 100) {

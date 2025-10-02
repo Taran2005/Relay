@@ -3,10 +3,11 @@ import { NextResponse } from "next/server";
 
 export async function GET(
     req: Request,
-    { params }: { params: Promise<{ serverId: string; profileId: string }> }
+    { params }: { params: Promise<{ [key: string]: string }> }
 ) {
     try {
-        const { serverId, profileId } = await params;
+        const paramsData = await params;
+        const { serverId, profileId } = paramsData as { serverId: string; profileId: string };
 
         // Check if user is banned from this server
         const ban = await db.ban.findFirst({

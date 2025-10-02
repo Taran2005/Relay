@@ -225,9 +225,9 @@ export const ChatItem = ({
           )}
         </div>
       </div>
-      {canDeleteMessage && (
+      {canDeleteMessage && !id.startsWith('temp-') && (
         <div className="hidden group-hover:flex items-center gap-x-2 absolute p-1 -top-2 right-5 bg-white dark:bg-zinc-800 border rounded-sm">
-          {canEditMessage && (
+          {canEditMessage && !id.startsWith('temp-') && (
             <ActionTooltip label="Edit">
               <Edit
                 onClick={() => setIsEditing(true)}
