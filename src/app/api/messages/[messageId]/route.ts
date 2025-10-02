@@ -18,7 +18,11 @@ async function handler(
   try {
     const profile = await currentProfile();
     const { searchParams } = new URL(req.url);
-    const { content } = await req.json();
+    let content = null;
+    if (req.method === "PATCH") {
+      const body = await req.json();
+      content = body.content;
+    }
 
     const serverId = searchParams.get("serverId");
     const channelId = searchParams.get("channelId");
