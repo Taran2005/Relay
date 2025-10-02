@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+# Relay
 
-First, run the development server:
+A modern Discord-inspired chat platform built with Next.js, Prisma, Clerk, Socket.IO, and LiveKit for real-time messaging plus voice & video rooms.
+
+</div>
+
+## ✨ Features
+
+- Server & channel management with text, voice, and video channel types
+- Direct conversations with typing in real time and message history
+- LiveKit-powered audio/video rooms for channels and 1:1 calls
+- Clerk authentication and role-based server permissions
+- Prisma + PostgreSQL data layer
+
+## 🚀 Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The app boots on [http://localhost:3000](http://localhost:3000). Make sure your database and Clerk credentials are configured before starting the server.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔐 Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file in the project root (next to `package.json`) and provide the secrets below. Existing installs will already use variables for Clerk and the database—add these LiveKit entries alongside them:
 
-## Learn More
+```bash
+LIVEKIT_URL=     # e.g. wss://example-cluster.livekit.cloud
+LIVEKIT_API_KEY=
+LIVEKIT_API_SECRET=
+```
 
-To learn more about Next.js, take a look at the following resources:
+If you expose your app on a custom domain, optionally set `NEXT_PUBLIC_SITE_URL` for the Socket.IO client and `ALLOWED_ORIGINS` for the Socket server. Remember to keep `JWT_SECRET` configured for socket authentication in production.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎥 LiveKit configuration
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Spin up a LiveKit Cloud instance (or self-hosted deployment).
+2. Generate an API key & secret from the LiveKit dashboard.
+3. Copy the host URL (WebSocket address) and paste all three values into `.env.local` as shown above.
+4. Restart the dev server so the new environment variables load.
 
-## Deploy on Vercel
+With the credentials in place:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Joining an **audio** or **video** channel automatically opens a LiveKit room in the channel view.
+- In direct conversations, the phone and camera icons start LiveKit-powered voice or video calls in an overlay that both participants can join.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🧪 Useful scripts
+
+```bash
+npm run dev      # Start the Next.js + Socket.IO dev server
+npm run lint     # Lint the project
+npm run build    # Production build (uses Turbopack)
+```
+
+## 📚 Additional references
+
+- [Next.js Docs](https://nextjs.org/docs)
+- [Prisma Docs](https://www.prisma.io/docs)
+- [LiveKit Docs](https://docs.livekit.io/)

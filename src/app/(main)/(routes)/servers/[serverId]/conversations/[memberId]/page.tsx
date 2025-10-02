@@ -55,6 +55,14 @@ const MemberIdPage = async ({
         imageUrl={otherMember.profile.imageUrl}
         name={otherMember.profile.name}
         type="conversation"
+        callContext={{
+          target: {
+            type: "conversation",
+            targetId: conversation.id,
+            title: otherMember.profile.name,
+          },
+          allowVideo: true,
+        }}
       />
       <ChatMessages
         member={currentMember}

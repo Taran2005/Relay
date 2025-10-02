@@ -6,6 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { useState } from "react";
+import { CallProvider } from "../call/call-provider";
 import { ModalProvider } from "./modal.provider";
 import { SocketProvider } from "./socket.provider";
 
@@ -48,6 +49,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
                     >
                         <SocketProvider>
                             <ModalProvider />
+                            <CallProvider />
                             <Toaster />
                             {children}
                         </SocketProvider>

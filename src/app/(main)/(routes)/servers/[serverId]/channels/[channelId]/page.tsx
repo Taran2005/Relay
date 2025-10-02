@@ -2,6 +2,7 @@ import { RedirectToSignIn } from "@clerk/nextjs";
 import { ChannelType } from "@prisma/client";
 import { redirect } from "next/navigation";
 
+import { ChannelCallView } from "@/components/call/channel-call-view";
 import { ChatHeader } from "@/components/chat/chat-header";
 import { ChatInput } from "@/components/chat/chat-input";
 import { ChatMessages } from "@/components/chat/chat-messages";
@@ -44,8 +45,9 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
       <ChatHeader
         name={channel.name}
         type="channel"
+        channelType={channel.type}
       />
-      {channel.type === ChannelType.TEXT && (
+      {channel.type === ChannelType.TEXT ? (
         <>
           <ChatMessages
             member={member}
@@ -71,6 +73,13 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
             }}
           />
         </>
+      ) : (
+        <ChannelCallView
+          channelId={channel.id}
+          serverId={channel.serverId}
+          channelName={channel.name}
+          startVideo={channel.type === ChannelType.VIDEO}
+        />
       )}
     </div>
   );
