@@ -2,10 +2,10 @@ import { RedirectToSignIn } from "@clerk/nextjs";
 import { ChannelType } from "@prisma/client";
 import { redirect } from "next/navigation";
 
+import { MediaRoom } from "@/components/call/MediaRoom";
 import { ChatHeader } from "@/components/chat/chat-header";
 import { ChatInput } from "@/components/chat/chat-input";
 import { ChatMessages } from "@/components/chat/chat-messages";
-import { MediaRoom } from "@/components/call/MediaRoom";
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
 

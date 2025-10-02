@@ -12,25 +12,25 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 
 import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
+import { useEffect, useState } from "react";
 import { ServerChannel } from "./server.channel";
+import { ServerMember } from "./server.member";
+import { ServerSection } from "./server.section";
 
 // Client-only ScrollArea to prevent hydration mismatches
 function ClientScrollArea({ children, ...props }: React.ComponentProps<typeof ScrollArea>) {
-  const [isClient, setIsClient] = useState(false);
+    const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
-  if (!isClient) {
-    return <div className={props.className}>{children}</div>;
-  }
+    if (!isClient) {
+        return <div className={props.className}>{children}</div>;
+    }
 
-  return <ScrollArea {...props}>{children}</ScrollArea>;
+    return <ScrollArea {...props}>{children}</ScrollArea>;
 }
-import { useEffect, useState } from "react";
-import { ServerMember } from "./server.member";
-import { ServerSection } from "./server.section";
 
 interface ServerSidebarProps {
     serverId: string;
