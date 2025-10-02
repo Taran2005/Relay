@@ -33,7 +33,7 @@ export const SocketProvider = ({
   useEffect(() => {
     const initializeSocket = async () => {
       try {
-        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : "http://localhost:3000");
 
         // Try to get authentication token, but don't fail if it's not available
         let token = null;

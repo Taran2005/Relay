@@ -115,9 +115,13 @@ app.prepare().then(() => {
     });
 
     // Parse allowed origins from environment
+    const defaultOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000'];
+    if (process.env.NEXT_PUBLIC_SITE_URL) {
+        defaultOrigins.push(process.env.NEXT_PUBLIC_SITE_URL);
+    }
     const allowedOrigins = process.env.ALLOWED_ORIGINS
         ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
-        : ['http://localhost:3000', 'http://127.0.0.1:3000'];
+        : defaultOrigins;
 
     const io = new Server(httpServer, {
         path: "/api/socket/io",
