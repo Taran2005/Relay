@@ -13,6 +13,22 @@ import { Separator } from "@/components/ui/separator";
 
 import { Hash, Mic, ShieldAlert, ShieldCheck, Video } from "lucide-react";
 import { ServerChannel } from "./server.channel";
+
+// Client-only ScrollArea to prevent hydration mismatches
+function ClientScrollArea({ children, ...props }: React.ComponentProps<typeof ScrollArea>) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return <div className={props.className}>{children}</div>;
+  }
+
+  return <ScrollArea {...props}>{children}</ScrollArea>;
+}
+import { useEffect, useState } from "react";
 import { ServerMember } from "./server.member";
 import { ServerSection } from "./server.section";
 
@@ -44,13 +60,13 @@ export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
                 <div className="flex items-center justify-center h-12 border-b border-border/50">
                     <div className="animate-pulse bg-muted h-6 w-32 rounded"></div>
                 </div>
-                <ScrollArea className="flex-1 px-3">
+                <ClientScrollArea className="flex-1 px-3">
                     <div className="mt-2 space-y-2">
                         <div className="animate-pulse bg-muted h-8 w-full rounded"></div>
                         <div className="animate-pulse bg-muted h-8 w-3/4 rounded"></div>
                         <div className="animate-pulse bg-muted h-8 w-1/2 rounded"></div>
                     </div>
-                </ScrollArea>
+                </ClientScrollArea>
             </div>
         );
     }
@@ -83,7 +99,7 @@ export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
     return (
         <div className="flex flex-col h-full text-primary w-full dark:bg-[#2B2D31] bg-[#F2F3F5]">
             <ServerHeader server={server} role={role} />
-            <ScrollArea className="flex-1 px-3">
+            <ClientScrollArea className="flex-1 px-3">
                 <div className="mt-2">
                     <ServerSearch
                         data={[
@@ -209,7 +225,7 @@ export const ServerSidebar = ({ serverId }: ServerSidebarProps) => {
                         </div>
                     </div>
                 )}
-            </ScrollArea>
+            </ClientScrollArea>
         </div>
     );
 };

@@ -5,17 +5,19 @@ import { redirect } from "next/navigation";
 import { ChatHeader } from "@/components/chat/chat-header";
 import { ChatInput } from "@/components/chat/chat-input";
 import { ChatMessages } from "@/components/chat/chat-messages";
+import { MediaRoom } from "@/components/call/MediaRoom";
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
 
 interface ChannelIdPageProps {
-  params: {
+  params: Promise<{
     serverId: string;
     channelId: string;
-  };
+  }>;
 }
 
 const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
+  const { serverId, channelId } = await params;
   const profile = await currentProfile();
 
   if (!profile) {
@@ -24,13 +26,13 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
 
   const channel = await db.channel.findUnique({
     where: {
-      id: params.channelId,
+      id: channelId,
     },
   });
 
   const member = await db.member.findFirst({
     where: {
-      serverId: params.serverId,
+      serverId: serverId,
       profileId: profile.id,
     }
   });
@@ -71,6 +73,20 @@ const ChannelIdPage = async ({ params }: ChannelIdPageProps) => {
             }}
           />
         </>
+      )}
+      {channel.type === ChannelType.AUDIO && (
+        <MediaRoom
+          chatId={channel.id}
+          video={false}
+          audio={true}
+        />
+      )}
+      {channel.type === ChannelType.VIDEO && (
+        <MediaRoom
+          chatId={channel.id}
+          video={true}
+          audio={true}
+        />
       )}
     </div>
   );
