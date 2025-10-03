@@ -21,8 +21,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { UserAvatar } from "@/components/user-avatar";
-import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { useEditMessage } from "@/lib/hooks/use-message-operations";
+import { useModalStore } from "@/lib/hooks/use-modal-store";
 import { cn } from "@/lib/utils";
 
 interface ChatItemProps {

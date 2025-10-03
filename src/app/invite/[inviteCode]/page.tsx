@@ -2,13 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { logger } from "@/lib/logger";
 import { ServerWithMembersAndProfile } from "@/types/types";
 import { Member, Profile } from "@prisma/client";
 import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { logger } from "@/lib/logger";
 
 const InviteCodePage = ({ params }: { params: Promise<{ inviteCode: string }> }) => {
     const router = useRouter();
