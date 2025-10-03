@@ -149,8 +149,10 @@ export const CreateChannelModal = () => {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent
-                                                className="w-[--radix-dropdown-menu-trigger-width] min-w-[200px] bg-background/95 backdrop-blur-xl border-2 border-border/50 shadow-xl rounded-lg p-1"
+                                                className="w-full bg-background/95 backdrop-blur-xl border-2 border-border/50 shadow-xl rounded-lg p-1"
                                                 align="start"
+                                                sideOffset={5}
+                                                style={{ width: 'var(--radix-dropdown-menu-trigger-width)' }}
                                             >
                                                 {Object.values(ChannelType).map((type) => {
                                                     const Icon = channelTypeIcons[type];
