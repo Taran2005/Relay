@@ -9,7 +9,6 @@ const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
 const port = process.env.PORT || 3000;
 
-const FALLBACK_SECRET = 'your-fallback-jwt-secret-change-this';
 const JWT_SECRET = (() => {
     if (process.env.JWT_SECRET) {
         return process.env.JWT_SECRET;
@@ -19,7 +18,7 @@ const JWT_SECRET = (() => {
         throw new Error('JWT_SECRET must be set in production environments');
     }
 
-    return FALLBACK_SECRET;
+    throw new Error('JWT_SECRET must be set in environment variables');
 })();
 
 const prisma = new PrismaClient();
