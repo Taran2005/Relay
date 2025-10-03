@@ -8,6 +8,7 @@ import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { logger } from "@/lib/logger";
 
 const InviteCodePage = ({ params }: { params: Promise<{ inviteCode: string }> }) => {
     const router = useRouter();
@@ -53,11 +54,11 @@ const InviteCodePage = ({ params }: { params: Promise<{ inviteCode: string }> })
                         }
                     } catch (banError) {
                         // User is not banned, continue normally
-                        console.log("Ban check error:", banError);
+                        logger.debug("Ban check error:", banError);
                     }
                 }
             } catch (error) {
-                console.log(error);
+                logger.error("Failed to load invite page", error);
             } finally {
                 setLoading(false);
             }
@@ -79,7 +80,7 @@ const InviteCodePage = ({ params }: { params: Promise<{ inviteCode: string }> })
                 router.push(`/servers/${server.id}`);
             }
         } catch (error) {
-            console.log(error);
+            logger.error("Failed to join server", error);
         } finally {
             setLoading(false);
         }

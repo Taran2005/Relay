@@ -4,8 +4,6 @@ export async function GET() {
         ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
         : ['http://localhost:3000', 'http://127.0.0.1:3000'];
 
-    console.log("✅ Socket.IO endpoint accessed - server running via server.js");
-
     return new Response("Socket.IO endpoint active - using server.js instance", {
         status: 200,
         headers: {

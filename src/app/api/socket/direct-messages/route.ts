@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { getSocketServer } from "@/lib/socket";
 import { getAuth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
@@ -95,14 +96,13 @@ export async function POST(request: NextRequest) {
     if (io) {
       // ONLY emit to the specific conversation room - NO broadcasting to all users
       io.to(channelKey).emit(channelKey, message);
-      console.log(`[SOCKET] Emitted direct message to conversation: ${channelKey}, room size:`, io.sockets.adapter.rooms.get(channelKey)?.size || 0);
     } else {
       console.warn('[SOCKET] Socket server not available for direct message');
     }
 
     return NextResponse.json(message);
   } catch (error) {
-    console.log("[DIRECT_MESSAGES_POST]", error);
+    logger.error("[DIRECT_MESSAGES_POST]", error);
     return NextResponse.json({ message: "Internal Error" }, { status: 500 });
   }
 }

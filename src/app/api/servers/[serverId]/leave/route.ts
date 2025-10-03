@@ -1,5 +1,6 @@
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { NextResponse } from "next/server";
 
 export async function PATCH(
@@ -48,7 +49,7 @@ export async function PATCH(
 
         return NextResponse.json({ message: "Left server successfully" });
     } catch (error) {
-        console.log("[SERVER_LEAVE]", error);
+        logger.error("[SERVER_LEAVE]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

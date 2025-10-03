@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -27,7 +28,7 @@ export async function GET(
 
         return NextResponse.json(server);
     } catch (error) {
-        console.log("[INVITE_INFO_GET]", error);
+        logger.error("[INVITE_INFO_GET]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

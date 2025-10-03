@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 const MESSAGES_BATCH = 5;
 
@@ -78,7 +79,7 @@ export async function GET(
     });
 
   } catch (error) {
-    console.log("[DIRECT_MESSAGES_GET]", error);
+    logger.error("[DIRECT_MESSAGES_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

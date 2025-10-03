@@ -3,11 +3,9 @@
 import { logger } from "@/lib/logger";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Member, MemberRole, Profile } from "@prisma/client";
-import axios from "axios";
 import { Edit, FileIcon, ShieldAlert, ShieldCheck, Trash } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import qs from "query-string";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -24,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { UserAvatar } from "@/components/user-avatar";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
+import { useEditMessage } from "@/lib/hooks/use-message-operations";
 import { cn } from "@/lib/utils";
 
 interface ChatItemProps {
@@ -97,19 +96,20 @@ export const ChatItem = ({
 
   const isLoading = form.formState.isSubmitting;
 
+  const editMessage = useEditMessage();
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const url = qs.stringifyUrl({
-        url: `${socketUrl}/${id}`,
+      await editMessage.mutateAsync({
+        content: values.content,
+        apiUrl: `${socketUrl}/${id}`,
         query: socketQuery,
       });
-
-      await axios.patch(url, values);
 
       form.reset();
       setIsEditing(false);
     } catch (error) {
-      logger.error("Failed to delete message", error);
+      logger.error("Failed to edit message", error);
       toast.error("Failed to edit message. Please try again.");
     }
   }

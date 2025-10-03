@@ -1,5 +1,6 @@
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { NextResponse } from "next/server";
 
 export async function POST(
@@ -71,7 +72,7 @@ export async function POST(
 
         return new NextResponse("Member banned successfully", { status: 200 });
     } catch (error) {
-        console.log("[MEMBER_BAN_POST]", error);
+        logger.error("[MEMBER_BAN_POST]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

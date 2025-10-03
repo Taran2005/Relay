@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { getSocketServer } from "@/lib/socket";
 
 async function handler(
@@ -110,7 +111,6 @@ async function handler(
                 const updateKey = `chat:${conversationId}:messages:update`;
                 const channelKey = `chat:${conversationId}:messages`;
                 io.to(channelKey).emit(updateKey, directMessage);
-                console.log(`[SOCKET] Emitted direct message deletion to conversation: ${channelKey}`);
             }
         }
 
@@ -142,15 +142,15 @@ async function handler(
                 const updateKey = `chat:${conversationId}:messages:update`;
                 const channelKey = `chat:${conversationId}:messages`;
                 io.to(channelKey).emit(updateKey, directMessage);
-                console.log(`[SOCKET] Emitted direct message update to conversation: ${channelKey}`);
             }
         }
 
         return NextResponse.json(directMessage);
     } catch (error) {
-        console.log("[MESSAGE_ID]", error);
+        logger.error("[MESSAGE_ID]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
 
 export { handler as DELETE, handler as PATCH };
+

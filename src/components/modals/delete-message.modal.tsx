@@ -10,13 +10,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useModalStore } from "@/lib/hooks/use-modal-store";
+import { useDeleteMessage } from "@/lib/hooks/use-message-operations";
 import { logger } from "@/lib/logger";
-import axios from "axios";
-import qs from "query-string";
 import { useState } from "react";
 
 export const DeleteMessageModal = () => {
   const { isOpen, onClose, type, data } = useModalStore();
+  const deleteMessage = useDeleteMessage();
   const [isLoading, setIsLoading] = useState(false);
 
   const isModalOpen = isOpen && type === "deleteMessage";
@@ -25,12 +25,10 @@ export const DeleteMessageModal = () => {
   const onClick = async () => {
     try {
       setIsLoading(true);
-      const url = qs.stringifyUrl({
-        url: apiUrl || "",
-        query,
+      await deleteMessage.mutateAsync({
+        apiUrl: apiUrl || "",
+        query: (query as Record<string, string>) || {},
       });
-
-      await axios.delete(url);
 
       onClose();
     } catch (error) {

@@ -1,5 +1,6 @@
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { NextResponse } from "next/server";
 
 export async function DELETE(
@@ -59,7 +60,7 @@ export async function DELETE(
 
         return new NextResponse("Member kicked successfully", { status: 200 });
     } catch (error) {
-        console.log("[MEMBER_DELETE]", error);
+        logger.error("[MEMBER_DELETE]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
@@ -125,7 +126,7 @@ export async function PATCH(
 
         return new NextResponse("Role updated successfully", { status: 200 });
     } catch (error) {
-        console.log("[MEMBER_PATCH]", error);
+        logger.error("[MEMBER_PATCH]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

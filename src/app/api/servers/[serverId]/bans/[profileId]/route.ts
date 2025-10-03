@@ -1,9 +1,10 @@
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { NextResponse } from "next/server";
 
 export async function GET(
     req: Request,
-    { params }: { params: Promise<{ [key: string]: string }> }
+    { params }: { params: Promise<{ [key: string]: string | string[] }> }
 ) {
     try {
         const paramsData = await params;
@@ -23,7 +24,7 @@ export async function GET(
 
         return new NextResponse("User is not banned", { status: 404 });
     } catch (error) {
-        console.log("[BAN_CHECK_GET]", error);
+        logger.error("[BAN_CHECK_GET]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

@@ -1,5 +1,6 @@
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { ChannelType, MemberRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 
@@ -50,7 +51,7 @@ export async function POST(
 
         return NextResponse.json(channel);
     } catch (error) {
-        console.log("[CHANNELS_POST]", error);
+        logger.error("[CHANNELS_POST]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

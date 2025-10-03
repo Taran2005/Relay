@@ -1,5 +1,6 @@
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { MemberRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
@@ -44,7 +45,7 @@ export async function PATCH(
         });
         return NextResponse.json(server);
     } catch (error) {
-        console.log("[SERVER_INVITE_PATCH]", error);
+        logger.error("[SERVER_INVITE_PATCH]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

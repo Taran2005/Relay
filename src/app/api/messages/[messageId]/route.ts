@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { getSocketServer } from "@/lib/socket";
 import { MessageWithMemberWithProfile } from "@/types/types";
 
@@ -130,7 +131,6 @@ async function handler(
         const channelKey = `chat:${channelId}:messages`;
         // ONLY emit to the specific channel room - NO broadcasting
         io.to(channelKey).emit(updateKey, message);
-        console.log(`[SOCKET] Emitted message deletion to channel: ${channelKey}`);
       }
     }
 
@@ -185,13 +185,12 @@ async function handler(
         const channelKey = `chat:${channelId}:messages`;
         // ONLY emit to the specific channel room - NO broadcasting
         io.to(channelKey).emit(updateKey, message);
-        console.log(`[SOCKET] Emitted message edit to channel: ${channelKey}`);
       }
     }
 
     return NextResponse.json(message);
   } catch (error) {
-    console.log("[MESSAGE_ID]", error);
+    logger.error("[MESSAGE_ID]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

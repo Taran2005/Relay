@@ -44,12 +44,15 @@ export const useChatSocket = ({
       meta,
     };
 
+    let connectHandler: (() => void) | undefined;
+
     if (socket.connected) {
       socket.emit('join-channel', joinPayload);
     } else {
-      socket.on('connect', () => {
+      connectHandler = () => {
         socket.emit('join-channel', joinPayload);
-      });
+      };
+      socket.on('connect', connectHandler);
     }
 
     socket.on(updateKey, (message: MessageWithMemberWithProfile) => {
@@ -110,6 +113,9 @@ export const useChatSocket = ({
     return () => {
       socket.off(addKey, messageHandler);
       socket.off(updateKey);
+      if (connectHandler) {
+        socket.off('connect', connectHandler);
+      }
       socket.emit('leave-channel', roomName);
     };
   }, [addKey, meta, queryClient, queryKey, socket, updateKey]);

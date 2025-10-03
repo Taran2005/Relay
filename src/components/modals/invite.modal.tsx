@@ -67,7 +67,7 @@ export const InviteModal = () => {
 
             onOpen("invite", { server: response.data });
         } catch (error) {
-            console.log(error);
+            logger.error("Failed to generate invite link", error);
         } finally {
             setIsLoading(false);
         }

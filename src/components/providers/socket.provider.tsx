@@ -31,6 +31,8 @@ export const SocketProvider = ({
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
+    let socketInstance: Socket | null = null;
+
     const initializeSocket = async () => {
       try {
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : "http://localhost:3000");
@@ -47,7 +49,7 @@ export const SocketProvider = ({
           // Proceed without auth if not available
         }
 
-        const socketInstance = ClientIO(siteUrl, {
+        socketInstance = ClientIO(siteUrl, {
           path: "/api/socket/io",
           addTrailingSlash: false,
           transports: ['polling', 'websocket'],
@@ -87,16 +89,21 @@ export const SocketProvider = ({
 
         setSocket(socketInstance);
 
-        return () => {
-          socketInstance.disconnect();
-        };
-
       } catch {
         setIsConnected(false);
       }
     };
 
     initializeSocket();
+
+    // Cleanup function for useEffect
+    return () => {
+      if (socketInstance) {
+        socketInstance.disconnect();
+        setSocket(null);
+        setIsConnected(false);
+      }
+    };
   }, []);
 
   return (

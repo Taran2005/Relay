@@ -1,5 +1,6 @@
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -58,7 +59,7 @@ export async function GET(
 
         return NextResponse.json(server);
     } catch (error) {
-        console.log("[SERVER_ID_GET]", error);
+        logger.error("[SERVER_ID_GET]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
@@ -98,7 +99,7 @@ export async function PATCH(
 
         return NextResponse.json(server);
     } catch (error) {
-        console.log("[SERVER_ID_PATCH]", error);
+        logger.error("[SERVER_ID_PATCH]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
@@ -136,7 +137,7 @@ export async function DELETE(
 
         return new NextResponse("Server deleted successfully", { status: 200 });
     } catch (error) {
-        console.log("[SERVER_ID_DELETE]", error);
+        logger.error("[SERVER_ID_DELETE]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

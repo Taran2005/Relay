@@ -1,5 +1,6 @@
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { NextResponse } from "next/server";
 
 export async function PATCH(
@@ -60,7 +61,7 @@ export async function PATCH(
 
         return NextResponse.json(member);
     } catch (error) {
-        console.log("[SERVER_JOIN_PATCH]", error);
+        logger.error("[SERVER_JOIN_PATCH]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

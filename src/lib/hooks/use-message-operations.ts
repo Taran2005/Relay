@@ -64,3 +64,33 @@ export const useDeleteMessage = () => {
         },
     });
 };
+
+interface EditMessageData {
+    content: string;
+    apiUrl: string;
+    query: Record<string, string>;
+}
+
+export const useEditMessage = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ content, apiUrl, query }: EditMessageData) => {
+            const url = new URL(apiUrl, window.location.origin);
+            Object.entries(query).forEach(([key, value]) => {
+                url.searchParams.append(key, value);
+            });
+
+            const response = await axios.patch(url.toString(), { content });
+            return response.data;
+        },
+        onSuccess: (data, variables) => {
+            const channelId = variables.query.channelId || variables.query.conversationId;
+            if (channelId) {
+                queryClient.invalidateQueries({
+                    queryKey: [getChatQueryKey(channelId)]
+                });
+            }
+        },
+    });
+};

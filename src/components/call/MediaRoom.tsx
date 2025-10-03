@@ -7,6 +7,7 @@ import "@livekit/components-styles";
 import { ConnectionState } from "livekit-client";
 
 import { useProfile } from "@/hooks/use-profile";
+import { logger } from "@/lib/logger";
 
 import { Loader2 } from "lucide-react";
 
@@ -22,7 +23,7 @@ const AudioRoom = ({ onLeave }: { onLeave?: () => void }) => {
     const participants = useParticipants();
 
     // Debug: log participant info
-    console.log('Participants:', participants.map(p => ({
+    logger.debug('Participants:', participants.map(p => ({
         sid: p.sid,
         identity: p.identity,
         name: p.name,
@@ -85,7 +86,7 @@ export const MediaRoom = ({ chatId, video, audio, onLeave }: MediaRoomProps) => 
                 const data = await resp.json();
                 setToken(data.token);
             } catch (error) {
-                console.log(error);
+                logger.error("Failed to get LiveKit token", error);
             }
         })()
     }, [profile?.name, chatId]);

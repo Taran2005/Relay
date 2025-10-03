@@ -1,5 +1,6 @@
 import { currentProfile } from "@/lib/current.profile";
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { NextResponse } from "next/server";
 
 export async function DELETE(
@@ -49,7 +50,7 @@ export async function DELETE(
 
         return new NextResponse("Ban removed successfully", { status: 200 });
     } catch (error) {
-        console.log("[BAN_DELETE]", error);
+        logger.error("[BAN_DELETE]", error);
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

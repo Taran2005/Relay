@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
     req: Request,
-    { params }: { params: Promise<{ [key: string]: string }> }
+    { params }: { params: Promise<{ [key: string]: string | string[] }> }
 ) {
     try {
         const profile = await currentProfile();
